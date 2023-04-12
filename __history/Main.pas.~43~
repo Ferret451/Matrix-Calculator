@@ -1,0 +1,186 @@
+unit Main;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Menus, System.Actions,
+  Vcl.ActnList, Vcl.ExtCtrls;
+
+type
+  TForm1 = class(TForm)
+    ButTwo: TButton;
+    ButFive: TButton;
+    ButThree: TButton;
+    ButSix: TButton;
+    ButOne: TButton;
+    ButFour: TButton;
+    ButEight: TButton;
+    ButSeven: TButton;
+    ButNine: TButton;
+    ButZero: TButton;
+    ButComma: TButton;
+    MainMenu1: TMainMenu;
+    File1: TMenuItem;
+    Open1: TMenuItem;
+    Close1: TMenuItem;
+    SaveAs1: TMenuItem;
+    EdMatrixExpression: TEdit;
+    LabHistory: TLabel;
+    ShHistoryBorder: TShape;
+    ButHistory: TButton;
+    ButMatrixes: TButton;
+    ButBackspace: TButton;
+    ButCalculate: TButton;
+    ButPlus: TButton;
+    ButMinus: TButton;
+    ButMultiplication: TButton;
+    Button1: TButton;
+    procedure FormCreate(Sender: TObject);
+    procedure ButOneClick(Sender: TObject);
+    procedure ButTwoClick(Sender: TObject);
+    procedure ButThreeClick(Sender: TObject);
+    procedure ButFourClick(Sender: TObject);
+    procedure ButFiveClick(Sender: TObject);
+    procedure ButSixClick(Sender: TObject);
+    procedure ButSevenClick(Sender: TObject);
+    procedure ButEightClick(Sender: TObject);
+    procedure ButNineClick(Sender: TObject);
+    procedure ButZeroClick(Sender: TObject);
+    procedure ButCommaClick(Sender: TObject);
+    procedure EdMatrixExpressionExit(Sender: TObject);
+    procedure ButBackspaceClick(Sender: TObject);
+    procedure ButPlusClick(Sender: TObject);
+    procedure ButMinusClick(Sender: TObject);
+    procedure ButMultiplicationClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure OnCalcBattonClick(Sender: TObject);
+
+  private
+    { Private declarations }
+    CursPos: Integer;
+
+  public
+
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  CursPos := 1;
+end;
+
+procedure TForm1.OnCalcBattonClick(Sender: TObject);
+begin
+  EdMatrixExpression.Text := Copy(EdMatrixExpression.Text, 1, CursPos) + TButton(Sender).Caption + Copy(EdMatrixExpression.Text, CursPos + 1);
+  inc(CursPos);
+end;
+
+procedure TForm1.EdMatrixExpressionExit(Sender: TObject);
+begin
+  CursPos := EdMatrixExpression.SelStart;
+end;
+
+procedure TForm1.ButZeroClick(Sender: TObject);
+begin
+  EdMatrixExpression.Text := Copy(EdMatrixExpression.Text, 1, CursPos) + '0' + Copy(EdMatrixExpression.Text, CursPos + 1);
+  inc(CursPos);
+end;
+
+procedure TForm1.ButOneClick(Sender: TObject);
+begin
+  EdMatrixExpression.Text := Copy(EdMatrixExpression.Text, 1, CursPos) + '1' + Copy(EdMatrixExpression.Text, CursPos + 1);
+  inc(CursPos);
+end;
+
+procedure TForm1.ButTwoClick(Sender: TObject);
+begin
+  EdMatrixExpression.Text := Copy(EdMatrixExpression.Text, 1, CursPos) + '2' + Copy(EdMatrixExpression.Text, CursPos + 1);
+  inc(CursPos);
+end;
+
+procedure TForm1.ButThreeClick(Sender: TObject);
+begin
+  EdMatrixExpression.Text := Copy(EdMatrixExpression.Text, 1, CursPos) + '3' + Copy(EdMatrixExpression.Text, CursPos + 1);
+  inc(CursPos);
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  EdMatrixExpression.Text := Copy(EdMatrixExpression.Text, 1, CursPos) + '/' + Copy(EdMatrixExpression.Text, CursPos + 1);
+  inc(CursPos);
+end;
+
+procedure TForm1.ButFourClick(Sender: TObject);
+begin
+  EdMatrixExpression.Text := Copy(EdMatrixExpression.Text, 1, CursPos) + '4' + Copy(EdMatrixExpression.Text, CursPos + 1);
+  inc(CursPos);
+end;
+
+procedure TForm1.ButMinusClick(Sender: TObject);
+begin
+  EdMatrixExpression.Text := Copy(EdMatrixExpression.Text, 1, CursPos) + '-' + Copy(EdMatrixExpression.Text, CursPos + 1);
+  inc(CursPos);
+end;
+
+procedure TForm1.ButMultiplicationClick(Sender: TObject);
+begin
+  EdMatrixExpression.Text := Copy(EdMatrixExpression.Text, 1, CursPos) + '*' + Copy(EdMatrixExpression.Text, CursPos + 1);
+  inc(CursPos);
+end;
+
+procedure TForm1.ButFiveClick(Sender: TObject);
+begin
+  EdMatrixExpression.Text := Copy(EdMatrixExpression.Text, 1, CursPos) + '5' + Copy(EdMatrixExpression.Text, CursPos + 1);
+  inc(CursPos);
+end;
+
+procedure TForm1.ButSixClick(Sender: TObject);
+begin
+  EdMatrixExpression.Text := Copy(EdMatrixExpression.Text, 1, CursPos) + '6' + Copy(EdMatrixExpression.Text, CursPos + 1);
+  inc(CursPos);
+end;
+
+procedure TForm1.ButSevenClick(Sender: TObject);
+begin
+  EdMatrixExpression.Text := Copy(EdMatrixExpression.Text, 1, CursPos) + '7' + Copy(EdMatrixExpression.Text, CursPos + 1);
+  inc(CursPos);
+end;
+
+procedure TForm1.ButEightClick(Sender: TObject);
+begin
+  EdMatrixExpression.Text := Copy(EdMatrixExpression.Text, 1, CursPos) + '8' + Copy(EdMatrixExpression.Text, CursPos + 1);
+  inc(CursPos);
+end;
+
+procedure TForm1.ButNineClick(Sender: TObject);
+begin
+  EdMatrixExpression.Text := Copy(EdMatrixExpression.Text, 1, CursPos) + '9' + Copy(EdMatrixExpression.Text, CursPos + 1);
+  inc(CursPos);
+end;
+
+procedure TForm1.ButBackspaceClick(Sender: TObject);
+begin
+  EdMatrixExpression.Text := Copy(EdMatrixExpression.Text, 1, CursPos - 1) + Copy(EdMatrixExpression.Text, CursPos + 1);
+  dec(CursPos);
+end;
+
+procedure TForm1.ButCommaClick(Sender: TObject);
+begin
+  EdMatrixExpression.Text := Copy(EdMatrixExpression.Text, 1, CursPos) + ',' + Copy(EdMatrixExpression.Text, CursPos + 1);
+  inc(CursPos);
+end;
+
+procedure TForm1.ButPlusClick(Sender: TObject);
+begin
+  EdMatrixExpression.Text := Copy(EdMatrixExpression.Text, 1, CursPos) + '+' + Copy(EdMatrixExpression.Text, CursPos + 1);
+  inc(CursPos);
+end;
+
+end.
