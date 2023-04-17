@@ -1,0 +1,86 @@
+unit Stack;
+
+interface
+
+Type
+  PStackSegment = ^TStackSegment;
+  TStackSegment = record
+    Value: String;
+    Next: PStackSegment;
+  end;
+
+Type
+  TStack = class
+
+  Private
+    FTop: PStackSegment;
+    FSize: integer;
+
+  Public
+    Constructor Create;
+    Destructor Destroy; override;
+    Procedure Push(Value: String);
+    Function Top: String;
+    Function Pop: String;
+    Function Size: integer;
+    Function IsEmpty: boolean;
+
+  end;
+
+implementation
+  Constructor TStackOfString.Create;
+  begin
+    FSize := 0;
+    FTop := nil;
+  end;
+
+  Destructor TStack.Destroy;
+  begin
+    while not IsEmpty do
+      Pop;
+    inherited;
+  end;
+
+  Procedure TStack.Push (Value: String);
+  Var
+    Segment: PStackSegment;
+  begin
+    New(Segment);
+    Segment.Value := Value;
+    Segment.Next := FTop;
+    FTop := Segment;
+    Inc(FSize);
+  end;
+
+  Function TStackOfString.Top: String;
+  begin
+    Result := FTop.value;
+  end;
+
+  Function TStackOfString.Pop: String;
+  Var
+    Segment: PStackSegment;
+  begin
+    Segment := FTop;
+    Result := Segment.Value;
+    FTop := Segment.Next;
+    Dispose(Segment);
+    Dec(FSize);
+  end;
+
+  Function TStack.Size: integer;
+  begin
+    Result := FSize;
+  end;
+
+  Function TStack.IsEmpty: boolean;
+  begin
+    if (FSize = 0) then
+      Result := True
+    else
+      Result := False;
+  end;
+end.
+
+
+

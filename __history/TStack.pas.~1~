@@ -1,0 +1,86 @@
+unit TStack;
+
+interface
+
+Type
+  PStackOfCharSegment = ^TStackOfCharSegment;
+  TStackOfCharSegment = record
+    Value: char;
+    Next: PStackOfCharSegment;
+  end;
+
+Type
+  TStackOfChar = class
+
+  Private
+    FTop: PStackOfCharSegment;
+    FSize: integer;
+
+  Public
+    Constructor Create;
+    Destructor Destroy; override;
+    Procedure Push(Value: char);
+    Function Top: char;
+    Function Pop: char;
+    Function Size: integer;
+    Function IsEmpty: boolean;
+
+end;
+
+implementation
+  Constructor TStackOfChar.Create;
+  begin
+    FSize := 0;
+    FTop := nil;
+  end;
+
+  Destructor TStackOfChar.Destroy;
+  begin
+    while not IsEmpty do
+      Pop;
+    inherited;
+  end;
+
+  Procedure TStackOfChar.Push (Value: char);
+  Var
+    Segment: PStackOfCharSegment;
+  begin
+    New(Segment);
+    Segment.Value := Value;
+    Segment.Next := FTop;
+    FTop := Segment;
+    Inc(FSize);
+  end;
+
+  Function TStackOfChar.Top: char;
+  begin
+    Result := FTop.value
+  end;
+
+  Function TStackOfChar.Pop: char;
+  Var
+    Segment: PStackOfCharSegment;
+  begin
+    Segment := FTop;
+    Result := Segment.Value;
+    FTop := Segment.Next;
+    Dispose(Segment);
+    Dec(FSize);
+  end;
+
+  Function TStackOfChar.Size: integer;
+  begin
+    Result := FSize;
+  end;
+
+  Function TStackOfChar.IsEmpty: boolean;
+  begin
+    if (FSize = 0) then
+      Result := True
+    else
+      Result := False;
+  end;
+end.
+
+
+

@@ -1,0 +1,60 @@
+Unit Calculations;
+
+Interface
+
+
+Implementation
+
+  //Procedure for summing two matrixes
+  Function SumMatrixes (const FirstMatr, SecondMatr: Integer): Integer;
+  var
+    i, j: byte;
+    //i, j - iterators for cycles
+  Begin
+    //Summing the matrixes
+    for i := 1 to 3 do
+      for j := 1 to 3 do
+        result[i][j] := FirstMatr[i][j] + SecondMatr[i][j];
+  End;
+
+  //Procedure for substract two matrixes
+  Function SubMatrixes (const FirstMatr, SecondMatr: Integer): Integer;
+  var
+    i, j: byte;
+    //i, j - iterators for cycles
+  Begin
+    //Substract the matrixes
+    for i := 1 to 3 do
+      for j := 1 to 3 do
+        result[i][j] := FirstMatr[i][j] - SecondMatr[i][j];
+  End;
+
+  //Procedure for multiplying number on matrix
+  Function MultConstMatrix(const Numb: integer; const FirstMatr: Integer): Integer;
+  var
+    i, j: byte;
+    //i, j - iterators for cycles
+  Begin
+    //Myltiplying number on matrix
+    for i := 1 to 3 do
+      for j := 1 to 3 do
+        result[i][j] := Numb * FirstMatr[i][j];
+  End;
+
+  //Procedure for multiplying matrixes
+  Function MultMatrixes(const FirstMatr, SecondMatr: Integer): Integer;
+  var
+    i, j, k: byte;
+    //i, j, k - iterators for cycles
+  Begin
+    //Myltiplying the matrixes
+    for i := 1 to 3 do
+      for j := 1 to 3 do
+      begin
+        result[i][j] := 0;
+        for k := 1 to 3 do
+          result[i][j] := result[i][j] + FirstMatr[i][k] * SecondMatr[k][j];
+      end;
+  End;
+
+End.
