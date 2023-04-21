@@ -1,0 +1,280 @@
+object MainForm: TMainForm
+  Left = 0
+  Top = 0
+  Margins.Bottom = 5
+  Caption = 'MatrixCalculator'
+  ClientHeight = 367
+  ClientWidth = 725
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  Menu = MainMenu
+  OldCreateOrder = False
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object shHistoryBorder: TShape
+    Left = 8
+    Top = 31
+    Width = 153
+    Height = 328
+    Brush.Color = clHighlightText
+    Pen.Width = 2
+  end
+  object edMatrixExpression: TEdit
+    Left = 229
+    Top = 125
+    Width = 336
+    Height = 21
+    TabOrder = 0
+    OnExit = edMatrixExpressionExit
+  end
+  object Panel1: TPanel
+    Left = 229
+    Top = 184
+    Width = 336
+    Height = 175
+    TabOrder = 1
+    object butTwo: TButton
+      Left = 92
+      Top = 41
+      Width = 72
+      Height = 25
+      Cursor = crHandPoint
+      Caption = '2'
+      DragCursor = crDefault
+      TabOrder = 0
+      OnClick = butInputClick
+    end
+    object butFive: TButton
+      Left = 92
+      Top = 72
+      Width = 72
+      Height = 25
+      Cursor = crHandPoint
+      Caption = '5'
+      DragCursor = crDefault
+      TabOrder = 1
+      OnClick = butInputClick
+    end
+    object butThree: TButton
+      Left = 170
+      Top = 41
+      Width = 72
+      Height = 25
+      Cursor = crHandPoint
+      Caption = '3'
+      DragCursor = crDefault
+      TabOrder = 2
+      OnClick = butInputClick
+    end
+    object butSix: TButton
+      Left = 170
+      Top = 72
+      Width = 72
+      Height = 25
+      Cursor = crHandPoint
+      Caption = '6'
+      DragCursor = crDefault
+      TabOrder = 3
+      OnClick = butInputClick
+    end
+    object butOne: TButton
+      Left = 14
+      Top = 41
+      Width = 72
+      Height = 25
+      Cursor = crHandPoint
+      Caption = '1'
+      DragCursor = crDefault
+      TabOrder = 4
+      OnClick = butInputClick
+    end
+    object butFour: TButton
+      Left = 14
+      Top = 72
+      Width = 72
+      Height = 25
+      Cursor = crHandPoint
+      Caption = '4'
+      DragCursor = crDefault
+      TabOrder = 5
+      OnClick = butInputClick
+    end
+    object butEight: TButton
+      Left = 92
+      Top = 103
+      Width = 72
+      Height = 25
+      Cursor = crHandPoint
+      Caption = '8'
+      DragCursor = crDefault
+      TabOrder = 6
+      OnClick = butInputClick
+    end
+    object butSeven: TButton
+      Left = 14
+      Top = 103
+      Width = 72
+      Height = 25
+      Cursor = crHandPoint
+      Caption = '7'
+      DragCursor = crDefault
+      TabOrder = 7
+      OnClick = butInputClick
+    end
+    object butNine: TButton
+      Left = 170
+      Top = 103
+      Width = 72
+      Height = 25
+      Cursor = crHandPoint
+      Caption = '9'
+      DragCursor = crDefault
+      TabOrder = 8
+      OnClick = butInputClick
+    end
+    object butZero: TButton
+      Left = 92
+      Top = 134
+      Width = 72
+      Height = 25
+      Cursor = crHandPoint
+      Caption = '0'
+      DragCursor = crDefault
+      TabOrder = 9
+      OnClick = butInputClick
+    end
+    object butComma: TButton
+      Left = 170
+      Top = 134
+      Width = 72
+      Height = 25
+      Cursor = crHandPoint
+      Caption = ','
+      DragCursor = crDefault
+      TabOrder = 10
+      OnClick = butInputClick
+    end
+    object butDelete: TButton
+      Left = 14
+      Top = 134
+      Width = 72
+      Height = 25
+      Cursor = crHandPoint
+      Caption = #8592
+      DragCursor = crDefault
+      TabOrder = 11
+      OnClick = butDeleteClick
+    end
+    object butCalculate: TButton
+      Left = 248
+      Top = 134
+      Width = 72
+      Height = 25
+      Cursor = crHandPoint
+      Caption = '='
+      DragCursor = crDefault
+      TabOrder = 12
+      OnClick = butCalculateClick
+    end
+    object butPlus: TButton
+      Left = 248
+      Top = 103
+      Width = 72
+      Height = 25
+      Cursor = crHandPoint
+      Caption = '+'
+      DragCursor = crDefault
+      TabOrder = 13
+      OnClick = butInputClick
+    end
+    object butMinus: TButton
+      Left = 248
+      Top = 72
+      Width = 72
+      Height = 25
+      Cursor = crHandPoint
+      Caption = '-'
+      DragCursor = crDefault
+      TabOrder = 14
+      OnClick = butInputClick
+    end
+    object butMultiplication: TButton
+      Left = 248
+      Top = 41
+      Width = 72
+      Height = 25
+      Cursor = crHandPoint
+      Caption = '*'
+      DragCursor = crDefault
+      TabOrder = 15
+      OnClick = butInputClick
+    end
+    object butDivision: TButton
+      Left = 248
+      Top = 10
+      Width = 72
+      Height = 25
+      Cursor = crHandPoint
+      Caption = '/'
+      DragCursor = crDefault
+      TabOrder = 16
+      OnClick = butInputClick
+    end
+    object butOpenBrace: TButton
+      Left = 14
+      Top = 10
+      Width = 72
+      Height = 25
+      Cursor = crHandPoint
+      Caption = '('
+      DragCursor = crDefault
+      TabOrder = 17
+      OnClick = butInputClick
+    end
+    object butCloseBrace: TButton
+      Left = 92
+      Top = 10
+      Width = 72
+      Height = 25
+      Cursor = crHandPoint
+      Caption = ')'
+      DragCursor = crDefault
+      TabOrder = 18
+      OnClick = butInputClick
+    end
+    object butClear: TButton
+      Left = 170
+      Top = 10
+      Width = 72
+      Height = 25
+      Cursor = crHandPoint
+      Caption = 'C'
+      DragCursor = crDefault
+      TabOrder = 19
+      OnClick = butClearClick
+    end
+  end
+  object MainMenu: TMainMenu
+    Left = 680
+    Top = 8
+    object File1: TMenuItem
+      Caption = 'File'
+      object Open1: TMenuItem
+        Caption = 'Open'
+        ShortCut = 16463
+      end
+      object Close1: TMenuItem
+        Caption = 'Save'
+        ShortCut = 16467
+      end
+      object SaveAs1: TMenuItem
+        Caption = 'SaveAs'
+      end
+    end
+  end
+end

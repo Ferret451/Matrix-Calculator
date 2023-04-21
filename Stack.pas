@@ -2,26 +2,25 @@ unit Stack;
 
 interface
 
-
-
 Type
   TStack<T> = class
 
-  Private Type
+  Private
+  Type
   PStackSegment = ^TStackSegment;
   TStackSegment = record
-    Value: T;
-    Next: PStackSegment;
+    FValue: T;
+    FNext: PStackSegment;
   end;
 
   Private
     FTop: PStackSegment;
-    FSize: integer;
+    FSize: Integer;
 
   Public
     Constructor Create;
     Destructor Destroy; override;
-    Procedure Push(const Value: T);
+    Procedure Push(const AValue: T);
     Function Top: T;
     Function Pop: T;
     Function Size: Integer;
@@ -32,8 +31,8 @@ Type
 implementation
   Constructor TStack<T>.Create;
   begin
-    FSize := 0;
     FTop := nil;
+    FSize := 0;
   end;
 
   Destructor TStack<T>.Destroy;
@@ -43,20 +42,20 @@ implementation
     inherited;
   end;
 
-  Procedure TStack<T>.Push (const Value: T);
+  Procedure TStack<T>.Push (const AValue: T);
   Var
     Segment: PStackSegment;
   begin
     New(Segment);
-    Segment.Value := Value;
-    Segment.Next := FTop;
+    Segment.FValue := AValue;
+    Segment.FNext := FTop;
     FTop := Segment;
     Inc(FSize);
   end;
 
   Function TStack<T>.Top: T;
   begin
-    Result := FTop.value;
+    Result := FTop^.FValue;
   end;
 
   Function TStack<T>.Pop: T;
@@ -64,8 +63,8 @@ implementation
     Segment: PStackSegment;
   begin
     Segment := FTop;
-    Result := Segment.Value;
-    FTop := Segment.Next;
+    Result := Segment.FValue;
+    FTop := Segment.FNext;
     Dispose(Segment);
     Dec(FSize);
   end;

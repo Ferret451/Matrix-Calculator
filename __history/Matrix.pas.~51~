@@ -1,0 +1,105 @@
+unit Matrix;
+
+interface
+
+type
+  TMatrix = class
+    private
+      FLinesAmount: Integer;
+      FColumnsAmount: Integer;
+    public
+      FName: String;
+      FElements: array of array of Real;
+      constructor Create(const AName: String; const ALines, AColumns: Integer);
+      destructor Destroy; override;
+      function Add(const AMatr: TMatrix): TMatrix;
+      function Substr(const AMatr: TMatrix): TMatrix;
+      function MultConst(const ANumb: Real; const AMatr: TMatrix): TMatrix;
+      function MultMatr(const AMatr: TMatrix): TMatrix;
+  end;
+
+
+
+
+implementation
+  Constructor TMatrix.Create(const AName: String; const ALines, AColumns: Integer);
+  var
+    i, j: integer;
+  begin
+    FName := AName;
+    FLinesAmount := ALines;
+    FColumnsAmount := AColumns;
+
+    SetLength(FElements, ALines);
+    for i := 0 to ALines - 1 do
+    begin
+      SetLength(FElements[i], AColumns);
+      for j := 0 to AColumns - 1 do
+        FElements[i][j] := 0;
+    end;
+  end;
+
+  Destructor TMatrix.Destroy;
+  var
+    i: integer;
+  begin
+    for i := 0 to High(FElements) do
+      SetLength(FElements[i], 0);
+
+    SetLength(FElements, 0);
+  end;
+
+  //Procedure for summing two matrixes
+  Function TMatrix.Add(const AMatr: TMatrix): TMatrix;
+  var
+    i, j: integer;
+    //i, j - iterators for cycles
+  Begin
+    Result := TMatrix.Create('Res', Self.FLinesAmount, Self.FColumnsAmount);
+
+    //Summing the matrixes
+    for i := 0 to Self.FLinesAmount - 1 do
+      for j := 0 to Self.FColumnsAmount - 1 do
+        Result.FElements[i][j] := Self.FElements[i][j] + AMatr.FElements[i][j];
+  End;
+
+  //Procedure for substract two matrixes
+  Function TMatrix.Substr(const AMatr: TMatrix): TMatrix;
+  var
+    i, j: integer;
+    //i, j - iterators for cycles
+  Begin
+    //Substract the matrixes
+    for i := 0 to Self.FLinesAmount - 1 do
+      for j := 0 to Self.FColumnsAmount - 1 do
+        Result.FElements[i][j] := Self.FElements[i][j] - AMatr.FElements[i][j];
+  End;
+
+  //Procedure for multiplying number on matrix
+  Function TMatrix.MultConst(const ANumb: Real; const AMatr: TMatrix): TMatrix;
+  var
+    i, j: integer;
+    //i, j - iterators for cycles
+  Begin
+    //Myltiplying number on matrix
+    for i := 0 to Self.FLinesAmount - 1 do
+      for j := 0 to Self.FColumnsAmount - 1 do
+        Result.FElements[i][j] := ANumb * AMatr.FElements[i][j];
+  End;
+
+  //Procedure for multiplying matrixes
+  Function TMatrix.MultMatr(const AMatr: TMatrix): TMatrix;
+  var
+    i, j, k: integer;
+    //i, j, k - iterators for cycles
+  Begin
+    //Myltiplying the matrixes
+    for i := 0 to Self.FLinesAmount - 1 do
+      for j := 0 to AMatr.FColumnsAmount - 1 do
+      begin
+        Result.FElements[i][j] := 0;
+        for k := 0 to Self.FColumnsAmount - 1 do
+          Result.FElements[i][j] := Result.FElements[i][j] + Self.FElements[i][k] * AMatr.FElements[k][j];
+      end;
+  End;
+end.

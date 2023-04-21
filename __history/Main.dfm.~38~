@@ -1,0 +1,259 @@
+object MainForm: TMainForm
+  Left = 0
+  Top = 0
+  Caption = 'MatrixCalculator'
+  ClientHeight = 367
+  ClientWidth = 725
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  Menu = MainMenu
+  OldCreateOrder = False
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object shHistoryBorder: TShape
+    Left = 8
+    Top = 31
+    Width = 153
+    Height = 328
+    Brush.Color = clHighlightText
+    Pen.Width = 2
+  end
+  object edMatrixExpression: TEdit
+    Left = 229
+    Top = 125
+    Width = 336
+    Height = 21
+    TabOrder = 0
+    OnExit = edMatrixExpressionExit
+  end
+  object Panel1: TPanel
+    Left = 229
+    Top = 184
+    Width = 336
+    Height = 175
+    TabOrder = 1
+    object butTwo: TButton
+      Left = 92
+      Top = 41
+      Width = 72
+      Height = 25
+      Action = aInput
+      Caption = '2'
+      TabOrder = 0
+    end
+    object butFive: TButton
+      Left = 92
+      Top = 72
+      Width = 72
+      Height = 25
+      Action = aInput
+      Caption = '5'
+      TabOrder = 1
+    end
+    object butThree: TButton
+      Left = 170
+      Top = 41
+      Width = 72
+      Height = 25
+      Action = aInput
+      Caption = '3'
+      TabOrder = 2
+    end
+    object butSix: TButton
+      Left = 170
+      Top = 72
+      Width = 72
+      Height = 25
+      Action = aInput
+      Caption = '6'
+      TabOrder = 3
+    end
+    object butOne: TButton
+      Left = 14
+      Top = 41
+      Width = 72
+      Height = 25
+      Action = aInput
+      Caption = '1'
+      TabOrder = 4
+    end
+    object butFour: TButton
+      Left = 14
+      Top = 72
+      Width = 72
+      Height = 25
+      Action = aInput
+      Caption = '4'
+      TabOrder = 5
+    end
+    object butEight: TButton
+      Left = 92
+      Top = 103
+      Width = 72
+      Height = 25
+      Action = aInput
+      Caption = '8'
+      TabOrder = 6
+    end
+    object butSeven: TButton
+      Left = 14
+      Top = 103
+      Width = 72
+      Height = 25
+      Action = aInput
+      Caption = '7'
+      TabOrder = 7
+    end
+    object butNine: TButton
+      Left = 170
+      Top = 103
+      Width = 72
+      Height = 25
+      Action = aInput
+      Caption = '9'
+      TabOrder = 8
+    end
+    object butZero: TButton
+      Left = 92
+      Top = 134
+      Width = 72
+      Height = 25
+      Action = aInput
+      Caption = '0'
+      TabOrder = 9
+    end
+    object butComma: TButton
+      Left = 170
+      Top = 134
+      Width = 72
+      Height = 25
+      Action = aInput
+      Caption = ','
+      TabOrder = 10
+    end
+    object butBackspace: TButton
+      Left = 14
+      Top = 134
+      Width = 72
+      Height = 25
+      Action = aDelete
+      Caption = #8592
+      TabOrder = 11
+    end
+    object butCalculate: TButton
+      Left = 248
+      Top = 134
+      Width = 72
+      Height = 25
+      Action = aCalculate
+      Caption = '='
+      TabOrder = 12
+    end
+    object butPlus: TButton
+      Left = 248
+      Top = 103
+      Width = 72
+      Height = 25
+      Action = aInput
+      Caption = '+'
+      TabOrder = 13
+    end
+    object butMinus: TButton
+      Left = 248
+      Top = 72
+      Width = 72
+      Height = 25
+      Action = aInput
+      Caption = '-'
+      TabOrder = 14
+    end
+    object butMultiplication: TButton
+      Left = 248
+      Top = 41
+      Width = 72
+      Height = 25
+      Action = aInput
+      Caption = '*'
+      TabOrder = 15
+    end
+    object butDivision: TButton
+      Left = 248
+      Top = 10
+      Width = 72
+      Height = 25
+      Action = aInput
+      Caption = '/'
+      TabOrder = 16
+    end
+    object butOpenBrace: TButton
+      Left = 14
+      Top = 10
+      Width = 72
+      Height = 25
+      Action = aInput
+      Caption = '('
+      TabOrder = 17
+    end
+    object butCloseBrace: TButton
+      Left = 92
+      Top = 10
+      Width = 72
+      Height = 25
+      Action = aInput
+      Caption = ')'
+      TabOrder = 18
+    end
+    object butClear: TButton
+      Left = 170
+      Top = 10
+      Width = 72
+      Height = 25
+      Action = aDeleteAll
+      Caption = 'C'
+      TabOrder = 19
+    end
+  end
+  object MainMenu: TMainMenu
+    Left = 680
+    Top = 8
+    object File1: TMenuItem
+      Caption = 'File'
+      object Open1: TMenuItem
+        Caption = 'Open'
+        ShortCut = 16463
+      end
+      object Close1: TMenuItem
+        Caption = 'Save'
+        ShortCut = 16467
+      end
+      object SaveAs1: TMenuItem
+        Caption = 'SaveAs'
+      end
+    end
+  end
+  object alCalcButtons: TActionList
+    Left = 608
+    Top = 56
+    object aInput: TAction
+      Caption = 'aInputButClick'
+      OnExecute = aInputExecute
+    end
+    object aDelete: TAction
+      Caption = 'aDelete'
+      OnExecute = aDeleteExecute
+    end
+    object aDeleteAll: TAction
+      Caption = 'aDeleteAll'
+      OnExecute = aDeleteAllExecute
+    end
+    object aCalculate: TAction
+      Caption = 'aCalculate'
+      OnExecute = aCalculateExecute
+    end
+  end
+end

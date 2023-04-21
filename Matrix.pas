@@ -5,105 +5,104 @@ interface
 type
   TMatrix = class
     private
-      Lines: Integer;
-      Columns: Integer;
+      FLinesAmount: Integer;
+      FColumnsAmount: Integer;
     public
-
-      Elements: array of array of Real;
-      Constructor Create(const Lines, Columns: Integer);
-      Destructor Destroy; override;
+      FName: String;
+      FElements: array of array of Real;
+      constructor Create(const AName: String; const ALines, AColumns: Integer);
+      destructor Destroy; override;
+      function Add(const AMatr: TMatrix): TMatrix;
+      function Substr(const AMatr: TMatrix): TMatrix;
+      function MultConst(const ANumb: TMatrix): TMatrix;
+      function MultMatr(const AMatr: TMatrix): TMatrix;
   end;
 
-  Function NumbToMatr(const Numb: Real): TMatrix;
-
-  Function SumMatrixes(const FirstMatr, SecondMatr: TMatrix): TMatrix;
-  Function SubMatrixes (const FirstMatr, SecondMatr: TMatrix): TMatrix;
-  Function MultConstMatrix(const Numb: Integer; const FirstMatr: TMatrix): TMatrix;
-  Function MultMatrixes(const FirstMatr, SecondMatr: TMatrix): TMatrix;
-
-
 implementation
-  Constructor TMatrix.Create(const Lines, Columns: Integer);
+  Constructor TMatrix.Create(const AName: String; const ALines, AColumns: Integer);
   var
-    i: integer;
+    I, J: Integer;
   begin
-    Self.Lines := Lines;
-    Self.Columns := Columns;
+    FName := AName;
+    FLinesAmount := ALines;
+    FColumnsAmount := AColumns;
 
-    SetLength(Elements, Lines + 10);
-    for i := 1 to Lines + 10 do
-      SetLength(Elements[i], Columns + 10);
+    SetLength(FElements, ALines);
+    for I := 0 to ALines - 1 do
+    begin
+      SetLength(FElements[i], AColumns);
+      for J := 0 to AColumns - 1 do
+        FElements[I][J] := 0;
+    end;
   end;
 
   Destructor TMatrix.Destroy;
   var
-    i: integer;
+    I: Integer;
   begin
-    for i := 1 to Lines + 10 do
-      SetLength(Elements[i], 0);
-    SetLength(Elements, 0);
+    for I := 0 to High(FElements) do
+      SetLength(FElements[I], 0);
 
-    Lines := 0;
-    Columns := 0;
+    SetLength(FElements, 0);
   end;
 
-  Function NumbToMatr(const Numb: Real): TMatrix;
-  begin
-    Result.Lines := 1;
-    Result.Columns := 1;
-
-    Result.Elements[0][0] := Numb;
-  end;
-
-  //Procedure for summing two m  atrixes
-  Function SumMatrixes(const FirstMatr, SecondMatr: TMatrix): TMatrix;
+  //Procedure for summing two matrixes
+  Function TMatrix.Add(const AMatr: TMatrix): TMatrix;
   var
-    i, j: byte;
+    i, j: integer;
     //i, j - iterators for cycles
   Begin
+    Result := TMatrix.Create('Res', Self.FLinesAmount, Self.FColumnsAmount);
+
     //Summing the matrixes
-    for i := 1 to 3 do
-      for j := 1 to 3 do
-        Result.Elements[i][j] := FirstMatr.Elements[i][j] + SecondMatr.Elements[i][j];
+    for i := 0 to Self.FLinesAmount - 1 do
+      for j := 0 to Self.FColumnsAmount - 1 do
+        Result.FElements[i][j] := Self.FElements[i][j] + AMatr.FElements[i][j];
   End;
 
   //Procedure for substract two matrixes
-  Function SubMatrixes (const FirstMatr, SecondMatr: TMatrix): TMatrix;
+  Function TMatrix.Substr(const AMatr: TMatrix): TMatrix;
   var
-    i, j: byte;
+    i, j: integer;
     //i, j - iterators for cycles
   Begin
+    Result := TMatrix.Create('Res', Self.FLinesAmount, Self.FColumnsAmount);
+
     //Substract the matrixes
-    for i := 1 to 3 do
-      for j := 1 to 3 do
-        Result.Elements[i][j] := FirstMatr.Elements[i][j] - SecondMatr.Elements[i][j];
+    for i := 0 to Self.FLinesAmount - 1 do
+      for j := 0 to Self.FColumnsAmount - 1 do
+        Result.FElements[i][j] := Self.FElements[i][j] - AMatr.FElements[i][j];
   End;
 
   //Procedure for multiplying number on matrix
-  Function MultConstMatrix(const Numb: integer; const FirstMatr: TMatrix): TMatrix;
+  Function TMatrix.MultConst(const ANumb: TMatrix): TMatrix;
   var
-    i, j: byte;
+    i, j: integer;
     //i, j - iterators for cycles
   Begin
+    Result := TMatrix.Create('Res', Self.FLinesAmount, Self.FColumnsAmount);
+
     //Myltiplying number on matrix
-    for i := 1 to 3 do
-      for j := 1 to 3 do
-        Result.Elements[i][j] := Numb * FirstMatr.Elements[i][j];
+    for i := 0 to Self.FLinesAmount - 1 do
+      for j := 0 to Self.FColumnsAmount - 1 do
+        Result.FElements[i][j] := ANumb.FElements[i][j] * Self.FElements[i][j];
   End;
 
   //Procedure for multiplying matrixes
-  Function MultMatrixes(const FirstMatr, SecondMatr: TMatrix): TMatrix;
+  Function TMatrix.MultMatr(const AMatr: TMatrix): TMatrix;
   var
-    i, j, k: byte;
+    i, j, k: integer;
     //i, j, k - iterators for cycles
   Begin
+    Result := TMatrix.Create('Res', Self.FLinesAmount, AMatr.FColumnsAmount);
+
     //Myltiplying the matrixes
-    for i := 1 to 3 do
-      for j := 1 to 3 do
+    for i := 0 to Self.FLinesAmount - 1 do
+      for j := 0 to AMatr.FColumnsAmount - 1 do
       begin
-        Result.Elements[i][j] := 0;
-        for k := 1 to 3 do
-          Result.Elements[i][j] := Result.Elements[i][j] + FirstMatr.Elements[i][k] * SecondMatr.Elements[k][j];
+        Result.FElements[i][j] := 0;
+        for k := 0 to Self.FColumnsAmount - 1 do
+          Result.FElements[i][j] := Result.FElements[i][j] + Self.FElements[i][k] * AMatr.FElements[k][j];
       end;
   End;
 end.
