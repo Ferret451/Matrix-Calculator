@@ -308,6 +308,14 @@ object fMainForm: TfMainForm
       Action = aClearMatrixList
     end
   end
+  object ListBox1: TListBox
+    Left = 584
+    Top = 56
+    Width = 121
+    Height = 97
+    ItemHeight = 13
+    TabOrder = 3
+  end
   object MainMenu: TMainMenu
     Images = ilToolBar
     Left = 680

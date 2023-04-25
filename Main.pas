@@ -61,6 +61,7 @@ type
     aClearMatrixList: TAction;
     Clearlist1: TMenuItem;
     ToolButton2: TToolButton;
+    ListBox1: TListBox;
     procedure FormCreate(Sender: TObject);
     procedure edMatrixExpressionExit(Sender: TObject);
     procedure butCalculateClick(Sender: TObject);
@@ -77,6 +78,7 @@ type
 
   private
     CursPos: Integer;
+    MatrixesList: TSingleLinkedList<TMatrix>;
 
   public
 
@@ -85,7 +87,7 @@ type
 var
   fMainForm: TfMainForm;
   fMatrixList: TfMatrixList;
-  MatrixesList: TSingleLinkedList<TMatrix>;
+
 
 implementation
 

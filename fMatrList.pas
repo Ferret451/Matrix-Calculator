@@ -4,10 +4,26 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls,
+  System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList, Vcl.ComCtrls,
+  fNewMatr;
 
 type
   TfMatrixList = class(TForm)
+    alMatrixList: TActionList;
+    ilMatrixList: TImageList;
+    aNewMatrix: TAction;
+    aSortListAtoZ: TAction;
+    tbMatrixList: TToolBar;
+    tbNewMatrix: TToolButton;
+    ToolButton1: TToolButton;
+    aClearList: TAction;
+    tbClearList: TToolButton;
+    aSortListZtoA: TAction;
+    tbClear: TToolButton;
+    procedure aNewMatrixExecute(Sender: TObject);
+    procedure aSortListAtoZExecute(Sender: TObject);
+    procedure aClearListExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -21,6 +37,24 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TfMatrixList.aClearListExecute(Sender: TObject);
+begin
+//
+end;
+
+procedure TfMatrixList.aNewMatrixExecute(Sender: TObject);
+begin
+  fNewMatrix := TfNewMatrix.Create(Self);
+  fNewMatrix.ShowModal;
+
+  fNewMatrix.Destroy;
+end;
+
+procedure TfMatrixList.aSortListAtoZExecute(Sender: TObject);
+begin
+//
+end;
 
 constructor TfMatrixList.Create(AOwner: TComponent);
   var
