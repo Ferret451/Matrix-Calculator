@@ -5,12 +5,11 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Menus, System.Actions,
-  Vcl.ActnList, Vcl.ExtCtrls,
-  ExprCalculate, SingleLinkedList, Matrix, System.ImageList, Vcl.ImgList,
-  Vcl.ToolWin, Vcl.ComCtrls;
+  Vcl.ActnList, Vcl.ExtCtrls, System.ImageList, Vcl.ImgList, Vcl.ToolWin, Vcl.ComCtrls,
+  ExprCalculate, SingleLinkedList, Matrix, fMatrList;
 
 type
-  TMainForm = class(TForm)
+  TfMainForm = class(TForm)
     MainMenu: TMainMenu;
     File1: TMenuItem;
     Open1: TMenuItem;
@@ -54,6 +53,14 @@ type
     tbOpenFile: TToolButton;
     N1: TMenuItem;
     aExit: TAction;
+    Matrix: TMenuItem;
+    ViewList1: TMenuItem;
+    aViewMatrixList: TAction;
+    ToolButton1: TToolButton;
+    tbViewMatrixList: TToolButton;
+    aClearMatrixList: TAction;
+    Clearlist1: TMenuItem;
+    ToolButton2: TToolButton;
     procedure FormCreate(Sender: TObject);
     procedure edMatrixExpressionExit(Sender: TObject);
     procedure butCalculateClick(Sender: TObject);
@@ -65,6 +72,8 @@ type
     procedure aNewFileExecute(Sender: TObject);
     procedure aOpenFileExecute(Sender: TObject);
     procedure aExitExecute(Sender: TObject);
+    procedure aViewMatrixListExecute(Sender: TObject);
+    procedure aClearMatrixListExecute(Sender: TObject);
 
   private
     CursPos: Integer;
@@ -74,24 +83,25 @@ type
   end;
 
 var
-  MainForm: TMainForm;
+  fMainForm: TfMainForm;
+  fMatrixList: TfMatrixList;
   MatrixesList: TSingleLinkedList<TMatrix>;
 
 implementation
 
 {$R *.dfm}
 
-procedure TMainForm.FormCreate(Sender: TObject);
+procedure TfMainForm.FormCreate(Sender: TObject);
 begin
   CursPos := 1;
 end;
 
-procedure TMainForm.edMatrixExpressionExit(Sender: TObject);
+procedure TfMainForm.edMatrixExpressionExit(Sender: TObject);
 begin
   CursPos := EdMatrixExpression.SelStart;
 end;
 
-procedure TMainForm.butDeleteClick(Sender: TObject);
+procedure TfMainForm.butDeleteClick(Sender: TObject);
 begin
   if CursPos >= 1 then
   begin
@@ -103,37 +113,51 @@ begin
   EdMatrixExpression.SelStart := CursPos;
 end;
 
-procedure TMainForm.aExitExecute(Sender: TObject);
+procedure TfMainForm.aClearMatrixListExecute(Sender: TObject);
 begin
 //
 end;
 
-procedure TMainForm.aNewFileExecute(Sender: TObject);
+procedure TfMainForm.aExitExecute(Sender: TObject);
 begin
 //
 end;
 
-procedure TMainForm.aOpenFileExecute(Sender: TObject);
+procedure TfMainForm.aNewFileExecute(Sender: TObject);
 begin
 //
 end;
 
-procedure TMainForm.aSaveFileAsExecute(Sender: TObject);
+procedure TfMainForm.aOpenFileExecute(Sender: TObject);
 begin
 //
 end;
 
-procedure TMainForm.aSaveFileExecute(Sender: TObject);
+procedure TfMainForm.aSaveFileAsExecute(Sender: TObject);
 begin
 //
 end;
 
-procedure TMainForm.butCalculateClick(Sender: TObject);
+procedure TfMainForm.aSaveFileExecute(Sender: TObject);
+begin
+//
+end;
+
+procedure TfMainForm.aViewMatrixListExecute(Sender: TObject);
+begin
+  fMatrixList := TfMatrixList.Create(Self);
+  fMatrixList.ShowModal;
+
+  fMatrixList.Destroy;
+end;
+
+
+procedure TfMainForm.butCalculateClick(Sender: TObject);
 begin
   EdMatrixExpression.Text := ExprCalculation(EdMatrixExpression.Text);
 end;
 
-procedure TMainForm.butClearClick(Sender: TObject);
+procedure TfMainForm.butClearClick(Sender: TObject);
 begin
   EdMatrixExpression.Text := '';
   CursPos := 1;
@@ -142,7 +166,7 @@ begin
   EdMatrixExpression.SelStart := CursPos;
 end;
 
-procedure TMainForm.butInputClick(Sender: TObject);
+procedure TfMainForm.butInputClick(Sender: TObject);
 begin
   EdMatrixExpression.Text := Copy(EdMatrixExpression.Text, 1, CursPos) + (Sender as TButton).Caption + Copy(EdMatrixExpression.Text, CursPos + 1);
   inc(CursPos);
