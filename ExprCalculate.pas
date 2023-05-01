@@ -3,7 +3,7 @@ unit ExprCalculate;
 interface
 
 uses
-  System.SysUtils, Stack, Matrix;
+  System.SysUtils, ClStack, ClMatrix;
 
 var
   OperandStack: TStack<String>;

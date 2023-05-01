@@ -1,9 +1,10 @@
 object fNewMatrix: TfNewMatrix
   Left = 0
   Top = 0
+  BorderStyle = bsSingle
   Caption = 'NewMatrix'
-  ClientHeight = 144
-  ClientWidth = 322
+  ClientHeight = 154
+  ClientWidth = 312
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -29,7 +30,7 @@ object fNewMatrix: TfNewMatrix
   object labDimensions: TLabel
     Left = 16
     Top = 62
-    Width = 125
+    Width = 113
     Height = 25
     Caption = 'Dimensions:'
     Font.Charset = DEFAULT_CHARSET
@@ -73,12 +74,22 @@ object fNewMatrix: TfNewMatrix
     Height = 21
     TabOrder = 2
   end
-  object Button1: TButton
-    Left = 121
+  object butOK: TButton
+    Left = 66
     Top = 111
     Width = 75
     Height = 25
-    Caption = 'Button1'
+    Caption = 'OK'
     TabOrder = 3
+    OnClick = butOKClick
+  end
+  object butCancel: TButton
+    Left = 172
+    Top = 111
+    Width = 75
+    Height = 25
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 4
   end
 end

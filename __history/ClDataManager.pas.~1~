@@ -1,0 +1,18 @@
+unit DataManager;
+
+interface
+
+uses MatrixList;
+
+type
+  TDataManager = class
+
+    private
+      ListOfMatrixes: TMatrixList;
+    public
+
+  end;
+
+implementation
+
+end.

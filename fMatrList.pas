@@ -6,6 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls,
   System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList, Vcl.ComCtrls,
+  ClMatrixList,
   fNewMatr;
 
 type
@@ -26,13 +27,16 @@ type
     procedure aClearListExecute(Sender: TObject);
   private
     { Private declarations }
+
+
   public
     { Public declarations }
+
     constructor Create(AOwner: TComponent);
   end;
 
-var
-  fMatrixList: TfMatrixList;
+//var
+  //fMatrixList: TfMatrixList;
 
 implementation
 
@@ -48,6 +52,14 @@ begin
   fNewMatrix := TfNewMatrix.Create(Self);
   fNewMatrix.ShowModal;
 
+  {if fNewMatrix.ModalResult = mrOk then
+  begin
+    Result:= True;
+    AInitialStr:= Write—ase—onditions.Get—ase—onditions;
+  end
+  else
+    Result:= False;
+                             }
   fNewMatrix.Destroy;
 end;
 

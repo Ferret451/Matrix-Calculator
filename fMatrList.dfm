@@ -3,7 +3,7 @@ object fMatrixList: TfMatrixList
   Top = 0
   Caption = 'MatrixList'
   ClientHeight = 325
-  ClientWidth = 444
+  ClientWidth = 450
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,14 +16,13 @@ object fMatrixList: TfMatrixList
   object tbMatrixList: TToolBar
     Left = 0
     Top = 0
-    Width = 444
+    Width = 450
     Height = 49
     ButtonHeight = 49
     ButtonWidth = 49
     Caption = 'tbMatrixList'
     Images = ilMatrixList
     TabOrder = 0
-    ExplicitWidth = 447
     object tbNewMatrix: TToolButton
       Left = 0
       Top = 0
@@ -50,21 +49,21 @@ object fMatrixList: TfMatrixList
     Left = 392
     Top = 8
     object aNewMatrix: TAction
-      Caption = 'New Matrix'
+      Caption = 'New Matrix...'
       ImageIndex = 0
       OnExecute = aNewMatrixExecute
     end
     object aSortListAtoZ: TAction
-      Caption = 'Sort List A to Z '
+      Caption = 'Sort List A to Z...'
       ImageIndex = 1
       OnExecute = aSortListAtoZExecute
     end
     object aSortListZtoA: TAction
-      Caption = 'Sort List Z to A'
+      Caption = 'Sort List Z to A...'
       ImageIndex = 2
     end
     object aClearList: TAction
-      Caption = 'Clear List'
+      Caption = 'Clear List...'
       ImageIndex = 3
       OnExecute = aClearListExecute
     end

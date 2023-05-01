@@ -4,10 +4,13 @@ uses
   Vcl.Forms,
   Main in 'Main.pas' {fMainForm},
   ExprCalculate in 'ExprCalculate.pas',
-  Stack in 'Stack.pas',
-  Matrix in 'Matrix.pas',
-  SingleLinkedList in 'SingleLinkedList.pas',
-  fMatrList in 'fMatrList.pas' {fMatrixList};
+  ClStack in 'ClStack.pas',
+  ClMatrix in 'ClMatrix.pas',
+  ClSingleLinkedList in 'ClSingleLinkedList.pas',
+  fMatrList in 'fMatrList.pas' {fMatrixList},
+  fNewMatr in 'fNewMatr.pas' {fNewMatrix},
+  ClMatrixList in 'ClMatrixList.pas',
+  ClDataManager in 'ClDataManager.pas';
 
 {$R *.res}
 
@@ -16,5 +19,6 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TfMainForm, fMainForm);
   Application.CreateForm(TfMatrixList, fMatrixList);
+  Application.CreateForm(TfNewMatrix, fNewMatrix);
   Application.Run;
 end.

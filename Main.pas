@@ -6,7 +6,13 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Menus, System.Actions,
   Vcl.ActnList, Vcl.ExtCtrls, System.ImageList, Vcl.ImgList, Vcl.ToolWin, Vcl.ComCtrls,
-  ExprCalculate, SingleLinkedList, Matrix, fMatrList;
+  ExprCalculate,
+  ClSingleLinkedList,
+  ClMatrix,
+  ClMatrixList,
+  ClDataManager,
+  fMatrList,
+  fNewMatr;
 
 type
   TfMainForm = class(TForm)
@@ -58,10 +64,8 @@ type
     aViewMatrixList: TAction;
     ToolButton1: TToolButton;
     tbViewMatrixList: TToolButton;
-    aClearMatrixList: TAction;
     Clearlist1: TMenuItem;
-    ToolButton2: TToolButton;
-    ListBox1: TListBox;
+
     procedure FormCreate(Sender: TObject);
     procedure edMatrixExpressionExit(Sender: TObject);
     procedure butCalculateClick(Sender: TObject);
@@ -78,7 +82,7 @@ type
 
   private
     CursPos: Integer;
-    MatrixesList: TSingleLinkedList<TMatrix>;
+
 
   public
 
@@ -87,6 +91,7 @@ type
 var
   fMainForm: TfMainForm;
   fMatrixList: TfMatrixList;
+
 
 
 implementation

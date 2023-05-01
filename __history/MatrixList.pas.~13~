@@ -1,0 +1,37 @@
+unit MatrixList;
+
+interface
+
+uses
+  Matrix, SingleLinkedList;
+
+type
+  TMatrixList = class(TSingleLinkedList<TMatrix>)
+
+  private
+
+  public
+    procedure Sort();
+  end;
+
+implementation
+
+procedure TMatrixList.Sort();
+var
+  CurrNode, BarrierNode: PNode;
+begin
+  BarrierNode := FTail;
+
+  while
+
+  CurrNode := FHead;
+
+  while CurrNode^.FNext <> BarrierNode do
+  begin
+    if CurrNode^.FValue.FName > CurrNode^.FNext^.FValue.FName then
+
+  end;
+
+end;
+
+end.

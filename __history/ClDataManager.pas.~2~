@@ -1,0 +1,21 @@
+unit ClDataManager;
+
+interface
+
+uses MatrixList;
+
+type
+  TDataManager = class
+
+    private
+      FListOfMatrixes: TMatrixList;
+    published
+      property ListOfMatrixes: TMatrixList read FListOfMatrixes write FListOfMatrixes;
+  end;
+
+implementation
+
+var
+  DataManager: TDataManager;
+
+end.

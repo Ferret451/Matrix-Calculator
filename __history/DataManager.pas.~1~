@@ -1,0 +1,14 @@
+unit DataManager;
+
+interface
+
+
+
+type
+  TDataManager = class
+
+  end;
+
+implementation
+
+end.
