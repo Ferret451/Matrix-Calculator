@@ -9,8 +9,7 @@ type
 
   TSingleLinkedList<T> = class
 
-  protected
-  type
+  public type
     PNode = ^TNode;
     TNode = record
       FValue: T;
@@ -23,20 +22,20 @@ type
     FSize: Integer;
 
   public
-    constructor Create();
+    property Head: PNode read FHead write FHead;
+    constructor Create;
     destructor Destroy(); override;
 
     procedure Add(const AValue: T);
     procedure Remove(const AValue: T);
     procedure Swap(out ARefFirst, ARefSecond: PNode);
-    //procedure SwapValues(const AFirstIndex, ASecondIndex: Integer);
+
   end;
 
 implementation
 
-  constructor TSingleLinkedList<T>.Create();
+  constructor TSingleLinkedList<T>.Create;
   begin
-    inherited;
     FHead := nil;
     FTail := nil;
     FSize := 0;

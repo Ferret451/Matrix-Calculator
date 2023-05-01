@@ -10,7 +10,6 @@ uses
   ClSingleLinkedList,
   ClMatrix,
   ClMatrixList,
-  ClDataManager,
   fMatrList,
   fNewMatr;
 
@@ -92,8 +91,6 @@ var
   fMainForm: TfMainForm;
   fMatrixList: TfMatrixList;
 
-
-
 implementation
 
 {$R *.dfm}
@@ -153,11 +150,10 @@ end;
 procedure TfMainForm.aViewMatrixListExecute(Sender: TObject);
 begin
   fMatrixList := TfMatrixList.Create(Self);
-  fMatrixList.ShowModal;
-
-  fMatrixList.Destroy;
+  fMatrixList.Show;
 end;
 
+//”∆≈ ”“≈◊ ¿, ‘Œ–Ã¿ —Œ —œ»— ŒÃ Ã¿“–»÷ Õ≈ ”Õ»◊“Œ∆¿≈“—ﬂ!!!
 
 procedure TfMainForm.butCalculateClick(Sender: TObject);
 begin

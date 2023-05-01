@@ -29,7 +29,7 @@ begin
 
     while CurrNode^.FNext <> BarrierNode do
     begin
-      if CurrNode^.FValue.FName > CurrNode^.FNext^.FValue.FName then
+      if CurrNode^.FValue.Name > CurrNode^.FNext^.FValue.Name then
       begin
         Self.Swap(CurrNode, CurrNode^.FNext);
 

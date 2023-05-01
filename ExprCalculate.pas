@@ -63,17 +63,17 @@ var
 begin
     //днаюбхрэ опнбепйс мю рхош
     SecondOperand := TMatrix.Create('SecondOper', 1, 1);
-    SecondOperand.FElements[0][0] := StrToFloat(OperandStack.Top);
+    SecondOperand.Elements[0, 0] := StrToFloat(OperandStack.Top);
     OperandStack.Pop;
 
     FirstOperand := TMatrix.Create('FirstOper', 1, 1);
-    FirstOperand.FElements[0][0] := StrToFloat(OperandStack.Top);
+    FirstOperand.Elements[0, 0] := StrToFloat(OperandStack.Top);
     OperandStack.Pop;
 
     case (OperatorStack.Top) of
-      '+':  OperandStack.Push(FloatToStr(FirstOperand.Add(SecondOperand).FElements[0][0]));
-      '-':  OperandStack.Push(FloatToStr(FirstOperand.Substr(SecondOperand).FElements[0][0]));
-      '*':  OperandStack.Push(FloatToStr(FirstOperand.MultConst(SecondOperand).FElements[0][0]));
+      '+':  OperandStack.Push(FloatToStr(FirstOperand.Add(SecondOperand).Elements[0, 0]));
+      '-':  OperandStack.Push(FloatToStr(FirstOperand.Substr(SecondOperand).Elements[0, 0]));
+      '*':  OperandStack.Push(FloatToStr(FirstOperand.MultConst(SecondOperand).Elements[0, 0]));
     end;
 
     OperatorStack.Pop();

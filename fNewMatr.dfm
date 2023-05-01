@@ -60,14 +60,14 @@ object fNewMatrix: TfNewMatrix
     Height = 21
     TabOrder = 0
   end
-  object edLines: TEdit
+  object edMatrixLines: TEdit
     Left = 160
     Top = 69
     Width = 57
     Height = 21
     TabOrder = 1
   end
-  object edColumns: TEdit
+  object edMatrixColumns: TEdit
     Left = 238
     Top = 69
     Width = 57
@@ -80,6 +80,7 @@ object fNewMatrix: TfNewMatrix
     Width = 75
     Height = 25
     Caption = 'OK'
+    Default = True
     TabOrder = 3
     OnClick = butOKClick
   end

@@ -10,7 +10,7 @@ uses
   fMatrList in 'fMatrList.pas' {fMatrixList},
   fNewMatr in 'fNewMatr.pas' {fNewMatrix},
   ClMatrixList in 'ClMatrixList.pas',
-  ClDataManager in 'ClDataManager.pas';
+  Constants in 'Constants.pas';
 
 {$R *.res}
 

@@ -7,9 +7,13 @@ type
     private
       FLinesAmount: Integer;
       FColumnsAmount: Integer;
-    public
       FName: String;
       FElements: array of array of Real;
+      function GetElement(X, Y: Integer): Real;
+      procedure SetElement(X, Y: Integer; const Value: Real);
+    public
+      property Name: String read FName write FName;
+      property Elements[X, Y: Integer]: Real read GetElement write SetElement;
       constructor Create(const AName: String; const ALines, AColumns: Integer);
       destructor Destroy; override;
       function Add(const AMatr: TMatrix): TMatrix;
@@ -44,6 +48,16 @@ implementation
       SetLength(FElements[I], 0);
 
     SetLength(FElements, 0);
+  end;
+
+  function TMatrix.GetElement(X, Y: Integer): Real;
+  begin
+    Result := FElements[X, Y];
+  end;
+
+  procedure TMatrix.SetElement(X, Y: Integer; const Value: Real);
+  begin
+    FElements[X, Y] := Value;
   end;
 
   //Procedure for summing two matrixes

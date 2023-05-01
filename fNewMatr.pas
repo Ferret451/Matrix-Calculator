@@ -13,8 +13,8 @@ type
     labMatrixName: TLabel;
     labDimensions: TLabel;
     edMatrixName: TEdit;
-    edLines: TEdit;
-    edColumns: TEdit;
+    edMatrixLines: TEdit;
+    edMatrixColumns: TEdit;
     labX: TLabel;
     butOK: TButton;
     butCancel: TButton;
@@ -22,10 +22,11 @@ type
   private
     { Private declarations }
 
-    function isCorrectData(const AName, ALines, AColumns: string): boolean;
+    function isCorrectData(): boolean;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent);
+    function TryGetMatrix(): TMatrix;
   end;
 
 var
@@ -36,76 +37,86 @@ implementation
 
 {$R *.dfm}
 
+procedure TfNewMatrix.butOKClick(Sender: TObject);
+begin
+  if isCorrectData() then
+    ModalResult := mrOK;
+end;
+
 constructor TfNewMatrix.Create(AOwner: TComponent);
-  var
-    OwnerControl: TControl;
+var
+  OwnerControl: TControl;
 
+begin
+
+  inherited;
+
+  if AOwner is TControl then
   begin
-
-    inherited;
-
-    if AOwner is TControl then
-    begin
-      OwnerControl := TControl(AOwner);
-      Left := OwnerControl.Left + (OwnerControl.Width - Width) shr 1;
-      Top := OwnerControl.Top + (OwnerControl.Height - Height) shr 1;
-    end
-    else
-    begin
-      Left := (Screen.Width - Width) shr 1;
-      Top := (Screen.Height - Height) shr 1;
-    end;
-
+    OwnerControl := TControl(AOwner);
+    Left := OwnerControl.Left + (OwnerControl.Width - Width) shr 1;
+    Top := OwnerControl.Top + (OwnerControl.Height - Height) shr 1;
+  end
+  else
+  begin
+    Left := (Screen.Width - Width) shr 1;
+    Top := (Screen.Height - Height) shr 1;
   end;
 
-  function TfNewMatrix.isCorrectData(const AName, ALines, AColumns: string): boolean;
-  const
-    NameValidSymbols = ['a'..'z', 'A'..'Z', '0'..'9', '_'];
-  var
-    i, temp: integer;
-    isCorrName, isCorrLines, isCorrColumns: boolean;
-  begin
-    isCorrName := true;
-    isCorrLines := true;
-    isCorrColumns := true;
-    Result := true;
+end;
 
-    if not (AName[1] in ['a'..'z', 'A'..'Z', '_']) then
+function TfNewMatrix.isCorrectData(): boolean;
+const
+  NameFirstElValidSymbols = ['a'..'z', 'A'..'Z', '_'];
+  NameValidSymbols = ['a'..'z', 'A'..'Z', '_', '0'..'9'];
+
+var
+  i, temp: integer;
+  isCorrName, isCorrLines, isCorrColumns: boolean;
+begin
+  isCorrName := true;
+  isCorrLines := true;
+  isCorrColumns := true;
+  Result := true;
+
+  if not (edMatrixName.Text[1] in ['a'..'z', 'A'..'Z', '_']) then
+    isCorrName := false;
+
+  i := 2;
+  while (i <= length(edMatrixName.Text)) and (isCorrName = true) do
+  begin
+    if not (edMatrixName.Text[i] in NameValidSymbols) then
       isCorrName := false;
 
-    i := 2;
-    while (i <= length(AName)) and (isCorrName = true) do
-    begin
-      if not (AName[i] in NameValidSymbols) then
-        isCorrName := false;
-
-      inc(i);
-    end;
-
-    isCorrLines := TryStrToInt(ALines, temp);
-    isCorrColumns := TryStrToInt(AColumns, temp);
-
-    if not isCorrName then
-      ShowMessage('Entered name is incorrect.');
-
-    if not isCorrLines then
-      ShowMessage('Entered amount of lines is incorrect.');
-
-    if not isCorrColumns then
-      ShowMessage('Entered amount of columns is incorrect.');
-
-    if (not isCorrName) or (not isCorrLines) or (not isCorrColumns) then
-      Result := false;
+    inc(i);
   end;
 
-  procedure TfNewMatrix.butOKClick(Sender: TObject);
+  isCorrLines := TryStrToInt(edMatrixLines.Text, temp);
+  isCorrColumns := TryStrToInt(edMatrixColumns.Text, temp);
+
+  if not isCorrName then
+    ShowMessage('Entered name is incorrect.');
+
+  if not isCorrLines then
+    ShowMessage('Entered amount of lines is incorrect.');
+
+  if not isCorrColumns then
+    ShowMessage('Entered amount of columns is incorrect.');
+
+  if (not isCorrName) or (not isCorrLines) or (not isCorrColumns) then
+    Result := false;
+end;
+
+function TfNewMatrix.TryGetMatrix(): TMatrix;
+begin
+  ShowModal;
+
+  if ModalResult = mrOK then
   begin
-    if isCorrectData(edMatrixName.Text, edLines.Text, edColumns.Text) then
-    begin
-       (TMatrix.Create(edMatrixName.Text, StrToInt(edLines.Text), StrToInt(edColumns.Text)));
-
-      ModalResult := mrOK;
-    end;
-  end;
+    Result := TMatrix.Create(edMatrixName.Text, StrToInt(edMatrixLines.Text), StrToInt(edMatrixColumns.Text));
+  end
+  else
+    Result := nil;
+end;
 
 end.

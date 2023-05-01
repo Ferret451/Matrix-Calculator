@@ -115,7 +115,7 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="ClMatrixList.pas"/>
-        <DCCReference Include="ClDataManager.pas"/>
+        <DCCReference Include="Constants.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

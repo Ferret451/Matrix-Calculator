@@ -44,6 +44,21 @@ object fMatrixList: TfMatrixList
       Action = aClearList
     end
   end
+  object sbMatrixList: TScrollBox
+    Left = 0
+    Top = 49
+    Width = 450
+    Height = 276
+    Align = alClient
+    TabOrder = 1
+    object pbMatrixList: TPaintBox
+      Left = -2
+      Top = -2
+      Width = 131
+      Height = 107
+      OnPaint = RePaint
+    end
+  end
   object alMatrixList: TActionList
     Images = ilMatrixList
     Left = 392
