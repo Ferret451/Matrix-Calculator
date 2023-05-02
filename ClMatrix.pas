@@ -12,6 +12,8 @@ type
       function GetElement(X, Y: Integer): Real;
       procedure SetElement(X, Y: Integer; const Value: Real);
     public
+      property Lines: Integer read FLinesAmount write FLinesAmount;
+      property Columns: Integer read FColumnsAmount write FColumnsAmount;
       property Name: String read FName write FName;
       property Elements[X, Y: Integer]: Real read GetElement write SetElement;
       constructor Create(const AName: String; const ALines, AColumns: Integer);

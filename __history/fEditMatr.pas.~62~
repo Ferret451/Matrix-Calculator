@@ -1,0 +1,239 @@
+unit fEditMatr;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,  Vcl.ExtCtrls,
+  ClMatrix,
+  ClMatrixList,
+  Constants, Vcl.Grids;
+
+type
+  TfNewMatrix = class(TForm)
+    panMatrixMainInfo: TPanel;
+    labMatrixName: TLabel;
+    labDimensions: TLabel;
+    labX: TLabel;
+    edMatrixName: TEdit;
+    edMatrixLines: TEdit;
+    edMatrixColumns: TEdit;
+    butOK: TButton;
+    butCancel: TButton;
+    sgMatrixElements: TStringGrid;
+    procedure butOKClick(Sender: TObject);
+    procedure sgMatrixElementsMouseActivate(Sender: TObject;
+      Button: TMouseButton; Shift: TShiftState; X, Y, HitTest: Integer;
+      var MouseActivate: TMouseActivate);
+  private
+    function isCorrectMainData(): boolean;
+    function isCorrectMatrixElements(): boolean;
+    procedure sgMatrixElementsClear();
+    procedure sgMatrixElementsFill();
+  public
+    constructor Create(AOwner: TComponent);
+    procedure TryGetMatrix(var AEditingMatrix: TMatrix; const AisNewMatrix: boolean = True);
+
+  end;
+
+var
+  fNewMatrix: TfNewMatrix;
+
+
+implementation
+
+{$R *.dfm}
+
+constructor TfNewMatrix.Create(AOwner: TComponent);
+var
+  OwnerControl: TControl;
+
+begin
+
+  inherited;
+
+  if AOwner is TControl then
+  begin
+    OwnerControl := TControl(AOwner);
+    Left := OwnerControl.Left + (OwnerControl.Width - Width) shr 1;
+    Top := OwnerControl.Top + (OwnerControl.Height - Height) shr 1;
+  end
+  else
+  begin
+    Left := (Screen.Width - Width) shr 1;
+    Top := (Screen.Height - Height) shr 1;
+  end;
+end;
+
+procedure TfNewMatrix.butOKClick(Sender: TObject);
+begin
+  if isCorrectMainData() and isCorrectMatrixElements() then
+    ModalResult := mrOK;
+end;
+
+function TfNewMatrix.isCorrectMatrixElements(): boolean;
+var
+  I, J: Integer;
+  TempValue: Extended;
+  isCorrectElements: Boolean;
+begin
+  isCorrectElements := True;
+  I := 0;
+  J := 0;
+
+  while (I < StrToInt(edMatrixLines.Text)) and (isCorrectElements) do
+  begin
+    while (J < StrToInt(edMatrixColumns.Text)) and (isCorrectElements) do
+    begin
+      if not TryStrToFloat(sgMatrixElements.Cells[I, J], TempValue) then
+      begin
+        ShowMessage('Entered elements must be real numbers');
+
+        isCorrectElements := False;
+        Result := False;
+      end;
+
+      inc(J);
+    end;
+
+    inc(I);
+  end;
+
+
+end;
+
+function TfNewMatrix.isCorrectMainData(): boolean;
+var
+  I, TempValue: integer;
+  isCorrName, isCorrLines, isCorrColumns: boolean;
+begin
+  isCorrName := true;
+  isCorrLines := true;
+  isCorrColumns := true;
+  Result := true;
+
+  if length(edMatrixName.Text) >= 1 then
+  begin
+    if not (edMatrixName.Text[1] in MatrixNameFirstElValidSymbols) then
+      isCorrName := false
+  end
+  else
+    isCorrName := false;
+
+  I := 2;
+  while (I <= length(edMatrixName.Text)) and (isCorrName = true) do
+  begin
+    if not (edMatrixName.Text[I] in MatrixNameValidSymbols) then
+      isCorrName := false;
+
+    inc(I);
+  end;
+
+  isCorrLines := TryStrToInt(edMatrixLines.Text, TempValue);
+
+  if isCorrLines then
+  begin
+    TempValue := StrToInt(edMatrixLines.Text);
+    if TempValue <= 0 then
+      isCorrLines := False;
+  end;
+
+  isCorrColumns := TryStrToInt(edMatrixColumns.Text, TempValue);
+
+  if isCorrColumns then
+  begin
+    TempValue := StrToInt(edMatrixColumns.Text);
+    if TempValue <= 0 then
+      isCorrColumns := False;
+  end;
+
+  if not isCorrName then
+    ShowMessage('Entered name is incorrect');
+
+  if not isCorrLines then
+    ShowMessage('Entered amount of lines is incorrect');
+
+  if not isCorrColumns then
+    ShowMessage('Entered amount of columns is incorrect');
+
+  if (not isCorrName) or (not isCorrLines) or (not isCorrColumns) then
+    Result := false;
+end;
+
+procedure TfNewMatrix.sgMatrixElementsMouseActivate(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y, HitTest: Integer;
+  var MouseActivate: TMouseActivate);
+var
+  I, J: Integer;
+begin
+  if isCorrectMainData() then
+  begin
+    if StrToInt(edMatrixLines.Text) < sgMatrixElements.RowCount then
+    begin
+      for I := StrToInt(edMatrixLines.Text) to sgMatrixElements.RowCount - 1 do
+        for J := 0 to sgMatrixElements.ColCount - 1 do
+          sgMatrixElements.Cells[J, I] := ''
+    end;
+    sgMatrixElements.RowCount := StrToInt(edMatrixLines.Text);
+
+    if StrToInt(edMatrixColumns.Text) < sgMatrixElements.ColCount then
+    begin
+      for I := 0 to sgMatrixElements.RowCount - 1 do
+        for J := StrToInt(edMatrixColumns.Text) to sgMatrixElements.ColCount - 1 do
+          sgMatrixElements.Cells[J, I] := ''
+    end;
+    sgMatrixElements.ColCount := StrToInt(edMatrixColumns.Text);
+  end;
+end;
+
+procedure TfNewMatrix.sgMatrixElementsClear();
+var
+  I, J: Integer;
+begin
+  for I := 0 to sgMatrixElements.RowCount - 1 do
+    for J := 0 to sgMatrixElements.ColCount - 1 do
+      sgMatrixElements.Cells[I, J] := '';
+
+  sgMatrixElements.RowCount := 1;
+  sgMatrixElements.ColCount := 1;
+end;
+
+procedure TfNewMatrix.sgMatrixElementsFill();
+begin
+  sgMatrixElements.RowCount := StrToInt(edMatrixLines.Text);
+  sgMatrixElements.ColCount := StrToInt(edMatrixColumns.Text);
+end;
+
+procedure TfNewMatrix.TryGetMatrix(var AEditingMatrix: TMatrix; const AisNewMatrix: boolean = True);
+var
+  I, J: Integer;
+begin
+  if AisNewMatrix then
+  begin
+    edMatrixName.Text := '';
+    edMatrixLines.Text := '';
+    edMatrixColumns.Text := '';
+    sgMatrixElementsClear();
+  end
+  else
+  begin
+    edMatrixName.Text := AEditingMatrix.Name;
+    edMatrixLines.Text := IntToStr(AEditingMatrix.Lines);
+    edMatrixColumns.Text := IntToStr(AEditingMatrix.Columns);
+    sgMatrixElementsFill();
+  end;
+
+  ShowModal;
+
+  if ModalResult = mrOK then
+  begin
+    AEditingMatrix := TMatrix.Create(edMatrixName.Text, StrToInt(edMatrixLines.Text), StrToInt(edMatrixColumns.Text));
+    for I := 0 to AEditingMatrix.Lines - 1 do
+      for J := 0 to AEditingMatrix.Columns - 1 do
+        AEditingMatrix.Elements[I, J] := StrToFloat(sgMatrixElements.Cells[I, J]);
+  end
+  else
+    AEditingMatrix := nil;
+end;
+
+end.

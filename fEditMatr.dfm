@@ -20,6 +20,7 @@ object fNewMatrix: TfNewMatrix
     Height = 319
     Align = alLeft
     TabOrder = 0
+    ExplicitLeft = -6
     object labMatrixName: TLabel
       Left = 16
       Top = 16
@@ -101,24 +102,28 @@ object fNewMatrix: TfNewMatrix
       TabOrder = 4
     end
   end
-  object sbMatrixElements: TScrollBox
+  object sgMatrixElements: TStringGrid
     Left = 169
     Top = 0
     Width = 382
     Height = 319
     Align = alClient
+    ColCount = 1
+    FixedCols = 0
+    RowCount = 1
+    FixedRows = 0
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -14
+    Font.Name = 'Times New Roman'
+    Font.Style = []
+    GradientEndColor = clCream
+    GridLineWidth = 3
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goFixedRowDefAlign]
+    ParentFont = False
     TabOrder = 1
-    OnMouseActivate = sbMatrixElementsMouseActivate
-    object pbMatrixElements: TPaintBox
-      Left = 0
-      Top = 0
-      Width = 378
-      Height = 315
-      Align = alClient
-      ExplicitLeft = 3
-      ExplicitTop = 3
-      ExplicitWidth = 206
-      ExplicitHeight = 110
-    end
+    OnMouseActivate = sgMatrixElementsMouseActivate
+    ExplicitLeft = 174
+    ExplicitTop = -1
   end
 end

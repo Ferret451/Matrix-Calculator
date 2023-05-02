@@ -2,6 +2,8 @@ unit Constants;
 
 interface
 const
+  MatrixNameFirstElValidSymbols = ['a'..'z', 'A'..'Z', '_'];
+  MatrixNameValidSymbols = ['a'..'z', 'A'..'Z', '_', '0'..'9'];
   DefaultFontName = 'Times New Roman';
   DefaultFontSize = 14;
   DefaulePenWidth = 3;

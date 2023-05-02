@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,  Vcl.ExtCtrls,
   ClMatrix,
   ClMatrixList,
-  Constants;
+  Constants, Vcl.Grids;
 
 type
   TfNewMatrix = class(TForm)
@@ -20,27 +20,19 @@ type
     edMatrixColumns: TEdit;
     butOK: TButton;
     butCancel: TButton;
-    sbMatrixElements: TScrollBox;
-    pbMatrixElements: TPaintBox;
+    sgMatrixElements: TStringGrid;
     procedure butOKClick(Sender: TObject);
-    procedure pbMatrixElementsPaint(Sender: TObject);
-    procedure pbMatrixElementsPaintLeftBrace(Sender: TObject);
-    procedure pbMatrixElementsPaintRectangles(Sender: TObject);
-    procedure pbMatrixElementsClear(Sender: TObject);
-    procedure sbMatrixElementsMouseActivate(Sender: TObject;
+    procedure sgMatrixElementsMouseActivate(Sender: TObject;
       Button: TMouseButton; Shift: TShiftState; X, Y, HitTest: Integer;
       var MouseActivate: TMouseActivate);
   private
-    { Private declarations }
-    FIsNewMatrix: boolean;
-
-    function isCorrectData(): boolean;
-
-
+    function isCorrectMainData(): boolean;
+    function isCorrectMatrixElements(): boolean;
+    procedure sgMatrixElementsClear();
+    procedure sgMatrixElementsFill();
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent);
-    function TryGetMatrix(const AisNewMatrix: boolean = True): TMatrix;
+    procedure TryGetMatrix(var AEditingMatrix: TMatrix; const AisNewMatrix: boolean = True);
 
   end;
 
@@ -71,71 +63,48 @@ begin
     Left := (Screen.Width - Width) shr 1;
     Top := (Screen.Height - Height) shr 1;
   end;
-
-
-end;
-
-procedure TfNewMatrix.pbMatrixElementsClear(Sender: TObject);
-begin
-  pbMatrixElements.Color := clWhite;
-  pbMatrixElements.Canvas.FillRect(pbMatrixElements.ClientRect);
-end;
-
-procedure TfNewMatrix.pbMatrixElementsPaintRectangles(Sender: TObject);
-var
-  PosX, PosY: integer;
-begin
-  pbMatrixElements.Canvas.Rectangle(100, 100, 150, 150);
-end;
-
-procedure TfNewMatrix.pbMatrixElementsPaintLeftBrace(Sender: TObject);
-begin
-  pbMatrixElements.Canvas.MoveTo(EditMatrixLeftBraceStartingX, EditMatrixLeftBraceStartingY);
-  pbMatrixElements.Canvas.LineTo(EditMatrixLeftBraceStartingX - 10, EditMatrixLeftBraceStartingY);
-  pbMatrixElements.Canvas.LineTo(EditMatrixLeftBraceStartingX - 10, EditMatrixLeftBraceStartingY + (VerticalElementInterval + MatrixElementHeight) * StrToInt(edMatrixColumns.Text) + VerticalElementInterval);
-  pbMatrixElements.Canvas.LineTo(EditMatrixLeftBraceStartingX, EditMatrixLeftBraceStartingY + (VerticalElementInterval + MatrixElementHeight) * StrToInt(edMatrixColumns.Text) + VerticalElementInterval);
-end;
-
-procedure TfNewMatrix.pbMatrixElementsPaint(Sender: TObject);
-begin
-  pbMatrixElements.Canvas.Pen.Width := DefaulePenWidth;
-  pbMatrixElements.Canvas.Font.Name := DefaultFontName;
-  pbMatrixElements.Canvas.Font.Size := DefaultFontSize;
-
-  pbMatrixElementsClear(pbMatrixElements);
-
-  if not FIsNewMatrix then
-  begin
-    PaintLeftBrace();
-    pbMatrixElements.Canvas.TextOut(20, 20, '123.321');
-    pbMatrixElements.Canvas.TextOut(20, 50, '222222');
-  end;
-end;
-
-procedure TfNewMatrix.sbMatrixElementsMouseActivate(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y, HitTest: Integer;
-  var MouseActivate: TMouseActivate);
-begin
-  if isCorrectData() then
-  begin
-    FIsNewMatrix := False;
-    pbMatrixElementsPaint(pbMatrixElements);
-  end;
 end;
 
 procedure TfNewMatrix.butOKClick(Sender: TObject);
 begin
-  if isCorrectData() then
+  if isCorrectMainData() and isCorrectMatrixElements() then
     ModalResult := mrOK;
 end;
 
-function TfNewMatrix.isCorrectData(): boolean;
-const
-  NameFirstElValidSymbols = ['a'..'z', 'A'..'Z', '_'];
-  NameValidSymbols = ['a'..'z', 'A'..'Z', '_', '0'..'9'];
-
+function TfNewMatrix.isCorrectMatrixElements(): boolean;
 var
-  i, temp: integer;
+  I, J: Integer;
+  TempValue: Extended;
+  isCorrectElements: Boolean;
+begin
+  isCorrectElements := True;
+  I := 0;
+  J := 0;
+
+  while (I < StrToInt(edMatrixLines.Text)) and (isCorrectElements) do
+  begin
+    while (J < StrToInt(edMatrixColumns.Text)) and (isCorrectElements) do
+    begin
+      if not TryStrToFloat(sgMatrixElements.Cells[I, J], TempValue) then
+      begin
+        ShowMessage('Entered elements must be real numbers');
+
+        isCorrectElements := False;
+        Result := False;
+      end;
+
+      inc(J);
+    end;
+
+    inc(I);
+  end;
+
+
+end;
+
+function TfNewMatrix.isCorrectMainData(): boolean;
+var
+  I, TempValue: integer;
   isCorrName, isCorrLines, isCorrColumns: boolean;
 begin
   isCorrName := true;
@@ -145,53 +114,133 @@ begin
 
   if length(edMatrixName.Text) >= 1 then
   begin
-    if not (edMatrixName.Text[1] in NameFirstElValidSymbols) then
+    if not (edMatrixName.Text[1] in MatrixNameFirstElValidSymbols) then
       isCorrName := false
   end
   else
     isCorrName := false;
 
-  i := 2;
-  while (i <= length(edMatrixName.Text)) and (isCorrName = true) do
+  I := 2;
+  while (I <= length(edMatrixName.Text)) and (isCorrName = true) do
   begin
-    if not (edMatrixName.Text[i] in NameValidSymbols) then
+    if not (edMatrixName.Text[I] in MatrixNameValidSymbols) then
       isCorrName := false;
 
-    inc(i);
+    inc(I);
   end;
 
-  isCorrLines := TryStrToInt(edMatrixLines.Text, temp);
-  isCorrColumns := TryStrToInt(edMatrixColumns.Text, temp);
+  isCorrLines := TryStrToInt(edMatrixLines.Text, TempValue);
+
+  if isCorrLines then
+  begin
+    TempValue := StrToInt(edMatrixLines.Text);
+    if TempValue <= 0 then
+      isCorrLines := False;
+  end;
+
+  isCorrColumns := TryStrToInt(edMatrixColumns.Text, TempValue);
+
+  if isCorrColumns then
+  begin
+    TempValue := StrToInt(edMatrixColumns.Text);
+    if TempValue <= 0 then
+      isCorrColumns := False;
+  end;
 
   if not isCorrName then
-    ShowMessage('Entered name is incorrect.');
+    ShowMessage('Entered name is incorrect');
 
   if not isCorrLines then
-    ShowMessage('Entered amount of lines is incorrect.');
+    ShowMessage('Entered amount of lines is incorrect');
 
   if not isCorrColumns then
-    ShowMessage('Entered amount of columns is incorrect.');
+    ShowMessage('Entered amount of columns is incorrect');
 
   if (not isCorrName) or (not isCorrLines) or (not isCorrColumns) then
     Result := false;
 end;
 
-
-function TfNewMatrix.TryGetMatrix(const AisNewMatrix: boolean = True): TMatrix;
+procedure TfNewMatrix.sgMatrixElementsMouseActivate(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y, HitTest: Integer;
+  var MouseActivate: TMouseActivate);
+var
+  I, J: Integer;
 begin
-  FIsNewMatrix := AisNewMatrix;
-  edMatrixName.Text := '';
-  edMatrixLines.Text := '';
-  edMatrixColumns.Text := '';
+  if isCorrectMainData() then
+  begin
+    if StrToInt(edMatrixLines.Text) < sgMatrixElements.RowCount then
+    begin
+      for I := StrToInt(edMatrixLines.Text) to sgMatrixElements.RowCount - 1 do
+        for J := 0 to sgMatrixElements.ColCount - 1 do
+          sgMatrixElements.Cells[J, I] := ''
+    end;
+    sgMatrixElements.RowCount := StrToInt(edMatrixLines.Text);
+
+    if StrToInt(edMatrixColumns.Text) < sgMatrixElements.ColCount then
+    begin
+      for I := 0 to sgMatrixElements.RowCount - 1 do
+        for J := StrToInt(edMatrixColumns.Text) to sgMatrixElements.ColCount - 1 do
+          sgMatrixElements.Cells[J, I] := ''
+    end;
+    sgMatrixElements.ColCount := StrToInt(edMatrixColumns.Text);
+  end;
+end;
+
+procedure TfNewMatrix.sgMatrixElementsClear();
+var
+  I, J: Integer;
+begin
+  for I := 0 to sgMatrixElements.RowCount - 1 do
+    for J := 0 to sgMatrixElements.ColCount - 1 do
+      sgMatrixElements.Cells[I, J] := '';
+
+  sgMatrixElements.RowCount := 1;
+  sgMatrixElements.ColCount := 1;
+end;
+
+procedure TfNewMatrix.sgMatrixElementsFill();
+var
+  I, J: Integer;
+begin
+
+end;
+
+procedure TfNewMatrix.TryGetMatrix(var AEditingMatrix: TMatrix; const AisNewMatrix: boolean = True);
+var
+  I, J: Integer;
+begin
+  if AisNewMatrix then
+  begin
+    edMatrixName.Text := '';
+    edMatrixLines.Text := '';
+    edMatrixColumns.Text := '';
+    sgMatrixElementsClear();
+  end
+  else
+  begin
+    edMatrixName.Text := AEditingMatrix.Name;
+    edMatrixLines.Text := IntToStr(AEditingMatrix.Lines);
+    edMatrixColumns.Text := IntToStr(AEditingMatrix.Columns);
+
+    sgMatrixElements.RowCount := StrToInt(edMatrixLines.Text);
+    sgMatrixElements.ColCount := StrToInt(edMatrixColumns.Text);
+
+    for I := 0 to sgMatrixElements.RowCount - 1 do
+      for J := 0 to sgMatrixElements.ColCount - 1 do
+        sgMatrixElements.Cells[I, J] := FloatToStr(AEditingMatrix.Elements[I, J]);
+  end;
 
   ShowModal;
 
   if ModalResult = mrOK then
   begin
-    Result := TMatrix.Create(edMatrixName.Text, StrToInt(edMatrixLines.Text), StrToInt(edMatrixColumns.Text));
+    AEditingMatrix := TMatrix.Create(edMatrixName.Text, StrToInt(edMatrixLines.Text), StrToInt(edMatrixColumns.Text));
+    for I := 0 to AEditingMatrix.Lines - 1 do
+      for J := 0 to AEditingMatrix.Columns - 1 do
+        AEditingMatrix.Elements[I, J] := StrToFloat(sgMatrixElements.Cells[I, J]);
   end
   else
-    Result := nil;
+    AEditingMatrix := nil;
 end;
 
 end.
