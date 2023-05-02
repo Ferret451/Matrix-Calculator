@@ -11,7 +11,7 @@ uses
   ClMatrix,
   ClMatrixList,
   fMatrList,
-  fNewMatr;
+  fEditMatr;
 
 type
   TfMainForm = class(TForm)

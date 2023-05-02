@@ -8,7 +8,7 @@ uses
   ClMatrix in 'ClMatrix.pas',
   ClSingleLinkedList in 'ClSingleLinkedList.pas',
   fMatrList in 'fMatrList.pas' {fMatrixList},
-  fNewMatr in 'fNewMatr.pas' {fNewMatrix},
+  fEditMatr in 'fEditMatr.pas' {fNewMatrix},
   ClMatrixList in 'ClMatrixList.pas',
   Constants in 'Constants.pas';
 

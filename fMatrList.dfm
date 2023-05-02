@@ -26,7 +26,7 @@ object fMatrixList: TfMatrixList
     object tbNewMatrix: TToolButton
       Left = 0
       Top = 0
-      Action = aNewMatrix
+      Action = aEditMatrix
     end
     object ToolButton1: TToolButton
       Left = 49
@@ -56,17 +56,17 @@ object fMatrixList: TfMatrixList
       Top = -2
       Width = 131
       Height = 107
-      OnPaint = RePaint
+      OnPaint = pbMatrixListPaint
     end
   end
   object alMatrixList: TActionList
     Images = ilMatrixList
     Left = 392
     Top = 8
-    object aNewMatrix: TAction
-      Caption = 'New Matrix...'
+    object aEditMatrix: TAction
+      Caption = 'Edit Matrix...'
       ImageIndex = 0
-      OnExecute = aNewMatrixExecute
+      OnExecute = aEditMatrixExecute
     end
     object aSortListAtoZ: TAction
       Caption = 'Sort List A to Z...'

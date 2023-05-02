@@ -9,13 +9,13 @@ uses
   ClMatrixList,
   CLMatrix,
   Constants,
-  fNewMatr;
+  fEditMatr;
 
 type
   TfMatrixList = class(TForm)
     alMatrixList: TActionList;
     ilMatrixList: TImageList;
-    aNewMatrix: TAction;
+    aEditMatrix: TAction;
     aSortListAtoZ: TAction;
     tbMatrixList: TToolBar;
     tbNewMatrix: TToolButton;
@@ -26,10 +26,10 @@ type
     tbClear: TToolButton;
     sbMatrixList: TScrollBox;
     pbMatrixList: TPaintBox;
-    procedure aNewMatrixExecute(Sender: TObject);
+    procedure aEditMatrixExecute(Sender: TObject);
     procedure aSortListAtoZExecute(Sender: TObject);
     procedure aClearListExecute(Sender: TObject);
-    procedure RePaint(Sender: TObject);
+    procedure pbMatrixListPaint(Sender: TObject);
   private
     { Private declarations }
     FListOfMatrixes: TMatrixList;
@@ -47,11 +47,61 @@ implementation
 
 {$R *.dfm}
 
-procedure TfMatrixList.RePaint(Sender: TObject);
+
+
+procedure TfMatrixList.aClearListExecute(Sender: TObject);
+begin
+//
+end;
+
+procedure TfMatrixList.aEditMatrixExecute(Sender: TObject);
+var
+  EditingMatrix: TMatrix;
+begin
+  EditingMatrix := fNewMatrix.TryGetMatrix();
+
+  if EditingMatrix <> nil then
+  begin
+    FListOfMatrixes.Add(EditingMatrix);
+    pbMatrixListPaint(pbMatrixList);
+  end;
+end;
+
+procedure TfMatrixList.aSortListAtoZExecute(Sender: TObject);
+begin
+//
+end;
+
+constructor TfMatrixList.Create(AOwner: TComponent);
+var
+  OwnerControl: TControl;
+
+begin
+
+  inherited;
+  if AOwner is TControl then
+  begin
+    OwnerControl := TControl(AOwner);
+    Left := OwnerControl.Left + (OwnerControl.Width - Width) shr 1;
+    Top := OwnerControl.Top + (OwnerControl.Height - Height) shr 1;
+  end
+  else
+  begin
+    Left := (Screen.Width - Width) shr 1;
+    Top := (Screen.Height - Height) shr 1;
+  end;
+
+  FListOfMatrixes := TMatrixList.Create();
+end;
+
+procedure TfMatrixList.pbMatrixListPaint(Sender: TObject);
 var
   CurrNode: TMatrixList.PNode;
   CurrMatrixPosX, CurrMatrixPosY: Integer;
 begin
+  pbMatrixList.Canvas.Font.Name := DefaultFontName;
+  pbMatrixList.Canvas.Font.Size := DefaultFontSize;
+
   CurrMatrixPosX := 10;
   CurrMatrixPosY := 10;
   CurrNode := FListOfMatrixes.Head;
@@ -63,56 +113,7 @@ begin
     CurrMatrixPosY := CurrMatrixPosY + 14;
     CurrNode := CurrNode^.FNext;
   end;
-  
+
 end;
-
-procedure TfMatrixList.aClearListExecute(Sender: TObject);
-begin
-//
-end;
-
-procedure TfMatrixList.aNewMatrixExecute(Sender: TObject);
-var
-  NewMatrix: TMatrix;
-begin
-  fNewMatrix := TfNewMatrix.Create(Self);
-  NewMatrix := fNewMatrix.TryGetMatrix();
-  fNewMatrix.Destroy();
-
-  if NewMatrix <> nil then
-  begin
-    FListOfMatrixes.Add(NewMatrix);
-    RePaint(pbMatrixList);
-  end;
-end;
-
-procedure TfMatrixList.aSortListAtoZExecute(Sender: TObject);
-begin
-//
-end;
-
-constructor TfMatrixList.Create(AOwner: TComponent);
-  var
-    OwnerControl: TControl;
-
-  begin
-
-    inherited;
-    if AOwner is TControl then
-    begin
-      OwnerControl := TControl(AOwner);
-      Left := OwnerControl.Left + (OwnerControl.Width - Width) shr 1;
-      Top := OwnerControl.Top + (OwnerControl.Height - Height) shr 1;
-    end
-    else
-    begin
-      Left := (Screen.Width - Width) shr 1;
-      Top := (Screen.Height - Height) shr 1;
-    end;
-
-    pbMatrixList.Canvas.Font.Name := DefaultFontName;
-    pbMatrixList.Canvas.Font.Size := DefaultFontSize;
-    FListOfMatrixes := TMatrixList.Create();
-  end;
 
 end.

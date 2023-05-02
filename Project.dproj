@@ -110,7 +110,7 @@
             <Form>fMatrixList</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="fNewMatr.pas">
+        <DCCReference Include="fEditMatr.pas">
             <Form>fNewMatrix</Form>
             <FormType>dfm</FormType>
         </DCCReference>
