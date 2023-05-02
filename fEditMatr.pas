@@ -24,18 +24,23 @@ type
     pbMatrixElements: TPaintBox;
     procedure butOKClick(Sender: TObject);
     procedure pbMatrixElementsPaint(Sender: TObject);
+    procedure pbMatrixElementsPaintLeftBrace(Sender: TObject);
+    procedure pbMatrixElementsPaintRectangles(Sender: TObject);
+    procedure pbMatrixElementsClear(Sender: TObject);
     procedure sbMatrixElementsMouseActivate(Sender: TObject;
       Button: TMouseButton; Shift: TShiftState; X, Y, HitTest: Integer;
       var MouseActivate: TMouseActivate);
   private
     { Private declarations }
+    FIsNewMatrix: boolean;
 
     function isCorrectData(): boolean;
-    procedure PaintLeftBrace();
+
+
   public
     { Public declarations }
     constructor Create(AOwner: TComponent);
-    function TryGetMatrix(): TMatrix;
+    function TryGetMatrix(const AisNewMatrix: boolean = True): TMatrix;
 
   end;
 
@@ -70,24 +75,41 @@ begin
 
 end;
 
-procedure TfNewMatrix.PaintLeftBrace();
+procedure TfNewMatrix.pbMatrixElementsClear(Sender: TObject);
+begin
+  pbMatrixElements.Color := clWhite;
+  pbMatrixElements.Canvas.FillRect(pbMatrixElements.ClientRect);
+end;
+
+procedure TfNewMatrix.pbMatrixElementsPaintRectangles(Sender: TObject);
+var
+  PosX, PosY: integer;
+begin
+  pbMatrixElements.Canvas.Rectangle(100, 100, 150, 150);
+end;
+
+procedure TfNewMatrix.pbMatrixElementsPaintLeftBrace(Sender: TObject);
 begin
   pbMatrixElements.Canvas.MoveTo(EditMatrixLeftBraceStartingX, EditMatrixLeftBraceStartingY);
   pbMatrixElements.Canvas.LineTo(EditMatrixLeftBraceStartingX - 10, EditMatrixLeftBraceStartingY);
-  pbMatrixElements.Canvas.LineTo(EditMatrixLeftBraceStartingX - 10, EditMatrixLeftBraceStartingY + (VerticalElementInterval + ElementHeight) * StrToInt(edMatrixColumns.Text) + VerticalElementInterval);
-  pbMatrixElements.Canvas.LineTo(EditMatrixLeftBraceStartingX, EditMatrixLeftBraceStartingY + (VerticalElementInterval + ElementHeight) * StrToInt(edMatrixColumns.Text) + VerticalElementInterval);
+  pbMatrixElements.Canvas.LineTo(EditMatrixLeftBraceStartingX - 10, EditMatrixLeftBraceStartingY + (VerticalElementInterval + MatrixElementHeight) * StrToInt(edMatrixColumns.Text) + VerticalElementInterval);
+  pbMatrixElements.Canvas.LineTo(EditMatrixLeftBraceStartingX, EditMatrixLeftBraceStartingY + (VerticalElementInterval + MatrixElementHeight) * StrToInt(edMatrixColumns.Text) + VerticalElementInterval);
 end;
 
 procedure TfNewMatrix.pbMatrixElementsPaint(Sender: TObject);
 begin
-  //pbMatrixElements.Canvas.;
   pbMatrixElements.Canvas.Pen.Width := DefaulePenWidth;
   pbMatrixElements.Canvas.Font.Name := DefaultFontName;
   pbMatrixElements.Canvas.Font.Size := DefaultFontSize;
 
-  PaintLeftBrace();
-  pbMatrixElements.Canvas.TextOut(20, 20, '123.321');
-  pbMatrixElements.Canvas.TextOut(20, 50, '222222');
+  pbMatrixElementsClear(pbMatrixElements);
+
+  if not FIsNewMatrix then
+  begin
+    PaintLeftBrace();
+    pbMatrixElements.Canvas.TextOut(20, 20, '123.321');
+    pbMatrixElements.Canvas.TextOut(20, 50, '222222');
+  end;
 end;
 
 procedure TfNewMatrix.sbMatrixElementsMouseActivate(Sender: TObject;
@@ -95,7 +117,10 @@ procedure TfNewMatrix.sbMatrixElementsMouseActivate(Sender: TObject;
   var MouseActivate: TMouseActivate);
 begin
   if isCorrectData() then
+  begin
+    FIsNewMatrix := False;
     pbMatrixElementsPaint(pbMatrixElements);
+  end;
 end;
 
 procedure TfNewMatrix.butOKClick(Sender: TObject);
@@ -152,13 +177,13 @@ begin
 end;
 
 
-function TfNewMatrix.TryGetMatrix(): TMatrix;
+function TfNewMatrix.TryGetMatrix(const AisNewMatrix: boolean = True): TMatrix;
 begin
+  FIsNewMatrix := AisNewMatrix;
   edMatrixName.Text := '';
   edMatrixLines.Text := '';
   edMatrixColumns.Text := '';
 
-  pbMatrixElements.ControlStyle := pbMatrixElements.ControlStyle - [csNoDesignVisible];
   ShowModal;
 
   if ModalResult = mrOK then
