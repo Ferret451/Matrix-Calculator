@@ -1,9 +1,10 @@
 object fNewMatrix: TfNewMatrix
   Left = 0
   Top = 0
+  BorderStyle = bsDialog
   Caption = 'NewMatrix'
-  ClientHeight = 319
-  ClientWidth = 551
+  ClientHeight = 329
+  ClientWidth = 561
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,10 +18,10 @@ object fNewMatrix: TfNewMatrix
     Left = 0
     Top = 0
     Width = 169
-    Height = 319
+    Height = 329
     Align = alLeft
     TabOrder = 0
-    ExplicitLeft = -6
+    ExplicitHeight = 319
     object labMatrixName: TLabel
       Left = 16
       Top = 16
@@ -83,30 +84,33 @@ object fNewMatrix: TfNewMatrix
     end
     object butOK: TButton
       Left = 1
-      Top = 272
+      Top = 282
       Width = 167
       Height = 24
       Align = alBottom
       Caption = 'OK'
       TabOrder = 3
       OnClick = butOKClick
+      ExplicitTop = 272
     end
     object butCancel: TButton
       Left = 1
-      Top = 296
+      Top = 306
       Width = 167
       Height = 22
       Align = alBottom
+      Cancel = True
       Caption = 'Cancel'
       ModalResult = 2
       TabOrder = 4
+      ExplicitTop = 296
     end
   end
   object sgMatrixElements: TStringGrid
     Left = 169
     Top = 0
-    Width = 382
-    Height = 319
+    Width = 392
+    Height = 329
     Align = alClient
     ColCount = 1
     FixedCols = 0
@@ -123,7 +127,7 @@ object fNewMatrix: TfNewMatrix
     ParentFont = False
     TabOrder = 1
     OnMouseActivate = sgMatrixElementsMouseActivate
-    ExplicitLeft = 174
-    ExplicitTop = -1
+    ExplicitWidth = 382
+    ExplicitHeight = 319
   end
 end

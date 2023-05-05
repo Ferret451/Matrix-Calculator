@@ -28,8 +28,6 @@ type
   private
     function isCorrectMainData(): boolean;
     function isCorrectMatrixElements(): boolean;
-    procedure sgMatrixElementsClear();
-    procedure sgMatrixElementsFill();
   public
     constructor Create(AOwner: TComponent);
     procedure TryGetMatrix(var AEditingMatrix: TMatrix; const AisNewMatrix: boolean = True);
@@ -186,25 +184,6 @@ begin
   end;
 end;
 
-procedure TfNewMatrix.sgMatrixElementsClear();
-var
-  I, J: Integer;
-begin
-  for I := 0 to sgMatrixElements.RowCount - 1 do
-    for J := 0 to sgMatrixElements.ColCount - 1 do
-      sgMatrixElements.Cells[I, J] := '';
-
-  sgMatrixElements.RowCount := 1;
-  sgMatrixElements.ColCount := 1;
-end;
-
-procedure TfNewMatrix.sgMatrixElementsFill();
-var
-  I, J: Integer;
-begin
-
-end;
-
 procedure TfNewMatrix.TryGetMatrix(var AEditingMatrix: TMatrix; const AisNewMatrix: boolean = True);
 var
   I, J: Integer;
@@ -214,7 +193,13 @@ begin
     edMatrixName.Text := '';
     edMatrixLines.Text := '';
     edMatrixColumns.Text := '';
-    sgMatrixElementsClear();
+
+    for I := 0 to sgMatrixElements.RowCount - 1 do
+      for J := 0 to sgMatrixElements.ColCount - 1 do
+        sgMatrixElements.Cells[I, J] := '';
+
+    sgMatrixElements.RowCount := 1;
+    sgMatrixElements.ColCount := 1;
   end
   else
   begin
@@ -240,7 +225,8 @@ begin
         AEditingMatrix.Elements[I, J] := StrToFloat(sgMatrixElements.Cells[I, J]);
   end
   else
-    AEditingMatrix := nil;
+    if AisNewMatrix then
+      AEditingMatrix := nil;
 end;
 
 end.

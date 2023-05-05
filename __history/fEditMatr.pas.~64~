@@ -29,6 +29,7 @@ type
     function isCorrectMainData(): boolean;
     function isCorrectMatrixElements(): boolean;
     procedure sgMatrixElementsClear();
+    procedure sgMatrixElementsFill();
   public
     constructor Create(AOwner: TComponent);
     procedure TryGetMatrix(var AEditingMatrix: TMatrix; const AisNewMatrix: boolean = True);
@@ -197,6 +198,13 @@ begin
   sgMatrixElements.ColCount := 1;
 end;
 
+procedure TfNewMatrix.sgMatrixElementsFill();
+var
+  I, J: Integer;
+begin
+
+end;
+
 procedure TfNewMatrix.TryGetMatrix(var AEditingMatrix: TMatrix; const AisNewMatrix: boolean = True);
 var
   I, J: Integer;
@@ -210,7 +218,16 @@ begin
   end
   else
   begin
+    edMatrixName.Text := AEditingMatrix.Name;
+    edMatrixLines.Text := IntToStr(AEditingMatrix.Lines);
+    edMatrixColumns.Text := IntToStr(AEditingMatrix.Columns);
 
+    sgMatrixElements.RowCount := StrToInt(edMatrixLines.Text);
+    sgMatrixElements.ColCount := StrToInt(edMatrixColumns.Text);
+
+    for I := 0 to sgMatrixElements.RowCount - 1 do
+      for J := 0 to sgMatrixElements.ColCount - 1 do
+        sgMatrixElements.Cells[I, J] := FloatToStr(AEditingMatrix.Elements[I, J]);
   end;
 
   ShowModal;

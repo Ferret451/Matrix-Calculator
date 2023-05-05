@@ -52,11 +52,16 @@ object fMatrixList: TfMatrixList
     Align = alClient
     TabOrder = 1
     object pbMatrixList: TPaintBox
-      Left = -2
-      Top = -2
-      Width = 131
-      Height = 107
+      Left = 0
+      Top = 0
+      Width = 446
+      Height = 272
+      Align = alClient
       OnPaint = pbMatrixListPaint
+      ExplicitLeft = -2
+      ExplicitTop = -2
+      ExplicitWidth = 131
+      ExplicitHeight = 107
     end
   end
   object alMatrixList: TActionList

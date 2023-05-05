@@ -31,12 +31,8 @@ type
     procedure aClearListExecute(Sender: TObject);
     procedure pbMatrixListPaint(Sender: TObject);
   private
-    { Private declarations }
     FListOfMatrixes: TMatrixList;
-
   public
-    { Public declarations }
-
     constructor Create(AOwner: TComponent);
   end;
 
@@ -58,7 +54,7 @@ procedure TfMatrixList.aEditMatrixExecute(Sender: TObject);
 var
   EditingMatrix: TMatrix;
 begin
-  EditingMatrix := fNewMatrix.TryGetMatrix();
+  fNewMatrix.TryGetMatrix(EditingMatrix);
 
   if EditingMatrix <> nil then
   begin

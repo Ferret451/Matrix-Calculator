@@ -31,8 +31,12 @@ type
     procedure aClearListExecute(Sender: TObject);
     procedure pbMatrixListPaint(Sender: TObject);
   private
+    { Private declarations }
     FListOfMatrixes: TMatrixList;
+
   public
+    { Public declarations }
+
     constructor Create(AOwner: TComponent);
   end;
 
@@ -104,7 +108,7 @@ begin
 
   while CurrNode <> nil do
   begin
-    pbMatrixList.Canvas.TextOut(CurrMatrixPosX, CurrMatrixPosY, 'РџСЂРёРјРµСЂ С‚РµРєСЃС‚Р°');
+    pbMatrixList.Canvas.TextOut(CurrMatrixPosX, CurrMatrixPosY, 'Пример текста');
 
     CurrMatrixPosY := CurrMatrixPosY + 14;
     CurrNode := CurrNode^.FNext;
