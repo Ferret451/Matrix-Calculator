@@ -1,0 +1,24 @@
+program Project;
+
+uses
+  Vcl.Forms,
+  frmMain in 'Units\Forms\frmMain.pas' {MainForm},
+  clsStack in 'Units\Classes\clsStack.pas',
+  clsMatrix in 'Units\Classes\clsMatrix.pas',
+  clsSingleLinkedList in 'Units\Classes\clsSingleLinkedList.pas',
+  frmMatrList in 'Units\Forms\frmMatrList.pas' {frmMatrixList},
+  frmEditMatr in 'Units\Forms\frmEditMatr.pas' {frmEditMatrix},
+  clsMatrixList in 'Units\Classes\clsMatrixList.pas',
+  untConstants in 'Units\Additional\untConstants.pas',
+  untExprCalculate in 'Units\Logic\untExprCalculate.pas';
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TfMainForm, fMainForm);
+  Application.CreateForm(TfMatrixList, fMatrixList);
+  Application.CreateForm(TfNewMatrix, fNewMatrix);
+  Application.Run;
+end.
