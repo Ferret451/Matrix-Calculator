@@ -66,6 +66,7 @@ object EditMatrixForm: TEditMatrixForm
       Width = 135
       Height = 21
       TabOrder = 0
+      OnExit = edMatrixNameExit
     end
     object edMatrixLines: TEdit
       Left = 16
@@ -73,6 +74,7 @@ object EditMatrixForm: TEditMatrixForm
       Width = 57
       Height = 21
       TabOrder = 1
+      OnExit = edMatrixLinesExit
     end
     object edMatrixColumns: TEdit
       Left = 94
@@ -80,6 +82,7 @@ object EditMatrixForm: TEditMatrixForm
       Width = 57
       Height = 21
       TabOrder = 2
+      OnExit = edMatrixColumnsExit
     end
     object butOK: TButton
       Left = 1
@@ -124,6 +127,6 @@ object EditMatrixForm: TEditMatrixForm
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goFixedRowDefAlign]
     ParentFont = False
     TabOrder = 1
-    OnMouseActivate = sgMatrixElementsMouseActivate
+    OnEnter = sgMatrixElementsEnter
   end
 end

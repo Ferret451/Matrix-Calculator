@@ -1,0 +1,21 @@
+unit untConstants;
+
+interface
+const
+  MatrixNameFirstElValidSymbols = ['a'..'z', 'A'..'Z', '_'];
+  MatrixNameValidSymbols = ['a'..'z', 'A'..'Z', '_', '0'..'9'];
+
+  DefaultFontName = 'Times New Roman';
+  DefaultFontSize = 20;
+  DefaulePenWidth = 3;
+  MatrixListStartPosX = 10;
+  MatrixListStartPosY = 20;
+  LineHeight = 20;
+  LineInteval = 5;
+  ColumnInterval = 5;
+  EqualsLeftBraceInterval = 7;
+  TopBottomBraceLinesLength = 5;
+
+implementation
+
+end.

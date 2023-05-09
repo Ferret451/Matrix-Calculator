@@ -61,8 +61,6 @@ type
     tbSeparator1: TToolButton;
     shHistoryBorder: TShape;
 
-    procedure OnFormCreate(Sender: TObject);
-    procedure OnFormDestroy(Sender: TObject);
     procedure edMatrixExpressionExit(Sender: TObject);
     procedure butCalculateClick(Sender: TObject);
     procedure butInputClick(Sender: TObject);
@@ -75,11 +73,10 @@ type
     procedure aExitExecute(Sender: TObject);
     procedure aViewMatrixListExecute(Sender: TObject);
     procedure aClearMatrixListExecute(Sender: TObject);
-
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     CursPos: Integer;
-
-
   public
 
   end;
@@ -92,21 +89,20 @@ implementation
 
 {$R *.dfm}
 
-procedure TMainForm.OnFormCreate(Sender: TObject);
-begin
-  DataManager := TDataManager.Create();
-
-  CursPos := 1;
-end;
-
-procedure TMainForm.OnFormDestroy(Sender: TObject);
-begin
-  DataManager.Destroy();
-end;
-
 procedure TMainForm.edMatrixExpressionExit(Sender: TObject);
 begin
   CursPos := edMatrixExpression.SelStart;
+end;
+
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+  DataManager := TDataManager.Create();
+  CursPos := 1;
+end;
+
+procedure TMainForm.FormDestroy(Sender: TObject);
+begin
+  DataManager.Destroy();
 end;
 
 procedure TMainForm.butDeleteClick(Sender: TObject);
@@ -156,8 +152,6 @@ begin
   MatrixListForm := TMatrixListForm.Create(Self);
   MatrixListForm.Show;
 end;
-
-//”∆≈ ”“≈◊ ¿, ‘Œ–Ã¿ —Œ —œ»— ŒÃ Ã¿“–»÷ Õ≈ ”Õ»◊“Œ∆¿≈“—ﬂ!!!
 
 procedure TMainForm.butCalculateClick(Sender: TObject);
 begin

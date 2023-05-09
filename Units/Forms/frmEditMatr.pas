@@ -20,14 +20,18 @@ type
     butCancel: TButton;
     sgMatrixElements: TStringGrid;
     procedure butOKClick(Sender: TObject);
-    procedure sgMatrixElementsMouseActivate(Sender: TObject;
-      Button: TMouseButton; Shift: TShiftState; X, Y, HitTest: Integer;
-      var MouseActivate: TMouseActivate);
+    procedure edMatrixNameExit(Sender: TObject);
+    procedure edMatrixLinesExit(Sender: TObject);
+    procedure edMatrixColumnsExit(Sender: TObject);
+    procedure sgMatrixElementsEnter(Sender: TObject);
   private
-    function isCorrectMainData(): Boolean;
+    function isCorrectName(): Boolean;
+    function isCorrectLinesAmount(): Boolean;
+    function isCorrectColumnsAmount(): Boolean;
     function isCorrectMatrixElements(): Boolean;
   public
     constructor Create(AOwner: TComponent);
+
     procedure TryGetMatrix(var AEditingMatrix: TMatrix;
       const AisNewMatrix: Boolean = True);
 
@@ -44,9 +48,7 @@ implementation
 constructor TEditMatrixForm.Create(AOwner: TComponent);
 var
   OwnerControl: TControl;
-
 begin
-
   inherited;
 
   if AOwner is TControl then
@@ -62,9 +64,36 @@ begin
   end;
 end;
 
+procedure TEditMatrixForm.edMatrixColumnsExit(Sender: TObject);
+begin
+  if not isCorrectColumnsAmount then
+  begin
+    ShowMessage('Entered amount of columns is incorrect');
+    edMatrixColumns.SetFocus;
+  end;
+end;
+
+procedure TEditMatrixForm.edMatrixLinesExit(Sender: TObject);
+begin
+  if not isCorrectLinesAmount then
+  begin
+    ShowMessage('Entered amount of lines is incorrect');
+    edMatrixLines.SetFocus;
+  end;
+end;
+
+procedure TEditMatrixForm.edMatrixNameExit(Sender: TObject);
+begin
+  if not isCorrectName then
+  begin
+    ShowMessage('Entered name is incorrect');
+    edMatrixName.SetFocus;
+  end;
+end;
+
 procedure TEditMatrixForm.butOKClick(Sender: TObject);
 begin
-  if isCorrectMainData() and isCorrectMatrixElements() then
+  if isCorrectName() and isCorrectLinesAmount() and isCorrectcolumnsAmount() and isCorrectMatrixElements() then
     ModalResult := mrOK;
 end;
 
@@ -76,13 +105,14 @@ var
 begin
   isCorrectElements := True;
   i := 0;
-  j := 0;
 
   while (i < StrToInt(edMatrixLines.Text)) and (isCorrectElements) do
   begin
+    j := 0;
+
     while (j < StrToInt(edMatrixColumns.Text)) and (isCorrectElements) do
     begin
-      if not TryStrToFloat(sgMatrixElements.Cells[i, j], TempValue) then
+      if not TryStrToFloat(sgMatrixElements.Cells[j, i], TempValue) then
       begin
         ShowMessage('Entered elements must be real numbers');
 
@@ -95,75 +125,71 @@ begin
 
     inc(i);
   end;
-
-
 end;
 
-function TEditMatrixForm.isCorrectMainData(): Boolean;
+function TEditMatrixForm.isCorrectName(): Boolean;
 var
-  i, TempValue: Integer;
-  IsCorrectName, IsCorrectLines, IsCorrectColumns: Boolean;
+  i: Integer;
 begin
-  IsCorrectName := true;
-  IsCorrectLines := true;
-  IsCorrectColumns := true;
-  Result := true;
+  Result := True;
 
   if length(edMatrixName.Text) >= 1 then
   begin
     if not (edMatrixName.Text[1] in MatrixNameFirstElValidSymbols) then
-      IsCorrectName := false
+      Result := False
   end
   else
-    IsCorrectName := false;
+    Result := False;
 
-  i := 2;
-  while (i <= length(edMatrixName.Text)) and (IsCorrectName = true) do
+  if Result then
   begin
-    if not (edMatrixName.Text[i] in MatrixNameValidSymbols) then
-      IsCorrectName := false;
-
-    inc(i);
+    i := 2;
+    while (i <= length(edMatrixName.Text)) and (Result = true) do
+    begin
+      if not (edMatrixName.Text[i] in MatrixNameValidSymbols) then
+        Result := False;
+      inc(i);
+    end;
   end;
+end;
 
-  IsCorrectLines := TryStrToInt(edMatrixLines.Text, TempValue);
+function TEditMatrixForm.isCorrectLinesAmount(): Boolean;
+var
+  TempValue: Integer;
+begin
+  Result := True;
 
-  if IsCorrectLines then
+  Result := TryStrToInt(edMatrixLines.Text, TempValue);
+
+  if Result then
   begin
     TempValue := StrToInt(edMatrixLines.Text);
     if TempValue <= 0 then
-      IsCorrectLines := False;
+      Result := False;
   end;
+end;
 
-  IsCorrectColumns := TryStrToInt(edMatrixColumns.Text, TempValue);
+function TEditMatrixForm.isCorrectColumnsAmount(): Boolean;
+var
+  TempValue: Integer;
+begin
+  Result := True;
 
-  if IsCorrectColumns then
+  Result := TryStrToInt(edMatrixColumns.Text, TempValue);
+
+  if Result then
   begin
     TempValue := StrToInt(edMatrixColumns.Text);
     if TempValue <= 0 then
-      IsCorrectColumns := False;
+      Result := False;
   end;
-
-  if not IsCorrectName then
-    ShowMessage('Entered name is incorrect');
-
-  if not IsCorrectLines then
-    ShowMessage('Entered amount of lines is incorrect');
-
-  if not IsCorrectColumns then
-    ShowMessage('Entered amount of columns is incorrect');
-
-  if (not IsCorrectName) or (not IsCorrectLines) or (not IsCorrectColumns) then
-    Result := false;
 end;
 
-procedure TEditMatrixForm.sgMatrixElementsMouseActivate(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y, HitTest: Integer;
-  var MouseActivate: TMouseActivate);
+procedure TEditMatrixForm.sgMatrixElementsEnter(Sender: TObject);
 var
   i, j: Integer;
 begin
-  if isCorrectMainData() then
+  if isCorrectName and isCorrectLinesAmount and isCorrectColumnsAmount then
   begin
     if StrToInt(edMatrixLines.Text) < sgMatrixElements.RowCount then
     begin

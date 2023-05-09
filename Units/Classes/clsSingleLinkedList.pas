@@ -23,7 +23,7 @@ type
 
   public
     constructor Create;
-    destructor Destroy(); virtual; override;
+    destructor Destroy(); override;
 
     procedure Add(const AValue: T);
     procedure Remove(const AValue: T);
@@ -69,7 +69,7 @@ begin
     FNext := nil;
   end;
 
-  if FTail <> nil then
+  if Assigned(FTail) then
     FTail^.FNext := NewNode
   else
     FHead := NewNode;

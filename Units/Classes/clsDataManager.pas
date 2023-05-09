@@ -14,14 +14,13 @@ type
 
 
     function GetMatrixList(): TMatrixList;
-    procedure SetMatrixList(const AMAtrixList: TMatrixList);
   public
     constructor Create();
     destructor Destroy(); override;
 
-    procedure CallBack(AComponentToRedraw: TObject);
+    procedure CallBack(Sender: TObject);
 
-    property MatrixList: TMatrixList read GetMatrixList write SetMatrixList;
+    property MatrixList: TMatrixList read GetMatrixList;
   end;
 
 var
@@ -46,20 +45,15 @@ end;
 function TDataManager.GetMatrixList(): TMatrixList;
 begin
   Result := FMatrixList;
-end;
-
-procedure TDataManager.SetMatrixList(const AMAtrixList: TMatrixList);
-begin
-  FMatrixList := AMatrixList;
 
   IsMatrixListChanged := True;
 end;
 
-procedure TDataManager.CallBack(AComponentToRedraw: TObject);
+procedure TDataManager.CallBack(Sender: TObject);
 begin
   if IsMatrixListChanged then
   begin
-    (AComponentToRedraw as TPaintBox)
+    (Sender as TPaintBox).OnPaint(Sender as TPaintBox);
 
     IsMatrixListChanged := False;
   end;

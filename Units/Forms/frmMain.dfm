@@ -13,8 +13,8 @@ object MainForm: TMainForm
   Font.Style = []
   Menu = MainMenu
   OldCreateOrder = False
-  OnCreate = OnFormCreate
-  OnDestroy = OnFormDestroy
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object shHistoryBorder: TShape

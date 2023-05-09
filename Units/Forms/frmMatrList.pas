@@ -27,12 +27,21 @@ type
     procedure aSortListAtoZExecute(Sender: TObject);
     procedure aClearListExecute(Sender: TObject);
     procedure pbMatrixListPaint(Sender: TObject);
-
+    procedure FormCreate(Sender: TObject);
 
   private
 
   public
-    constructor Create(AOwner: TComponent);
+    constructor Create(AOwner: TComponent); override;
+
+    procedure MatrixNamePrint(const AMatrixHeight: Integer;
+      var AX, AY: Integer; const AMatrixName: string; Sender: TObject);
+    procedure PaintLeftBrace(const AMatrixHeight: Integer; var AX, AY: Integer;
+      Sender: TObject);
+    procedure PaintRightBrace(const AMatrixHeight: Integer; var AX, AY: Integer;
+      Sender: TObject);
+    procedure MatrixElementsPrint(var AX, AY: Integer; AMatrix: TMatrix;
+      Sender: TObject);
   end;
 
 var
@@ -55,7 +64,7 @@ var
 begin
   EditMatrixForm.TryGetMatrix(EditingMatrix);
 
-  if EditingMatrix <> nil then
+  if Assigned(EditingMatrix) then
   begin
     DataManager.MatrixList.Add(EditingMatrix);
     DataManager.CallBack(pbMatrixList);
@@ -84,26 +93,142 @@ begin
     Left := (Screen.Width - Width) shr 1;
     Top := (Screen.Height - Height) shr 1;
   end;
+
+  pbMatrixList.Canvas.Font.Name := DefaultFontName;
+  pbMatrixList.Canvas.Font.Size := DefaultFontSize;
+  pbMatrixListPaint(pbMatrixList);
 end;
 
+procedure TMatrixListForm.FormCreate(Sender: TObject);
+var
+  OwnerControl: TControl;
+begin
+  inherited;
+
+  if Sender is TControl then
+  begin
+    OwnerControl := TControl(Sender);
+    Left := OwnerControl.Left + (OwnerControl.Width - Width) shr 1;
+    Top := OwnerControl.Top + (OwnerControl.Height - Height) shr 1;
+  end
+  else
+  begin
+    Left := (Screen.Width - Width) shr 1;
+    Top := (Screen.Height - Height) shr 1;
+  end;
+end;
+
+procedure TMatrixListForm.MatrixNamePrint(const AMatrixHeight: Integer;
+  var AX, AY: Integer; const AMatrixName: string; Sender: TObject);
+var
+  TextToOut: string;
+begin
+  TextToOut := AMatrixName + ' = ';
+
+  TPaintBox(Sender).Canvas.TextOut(AX, (AY + AMatrixHeight) div 2, TextToOut);
+
+  AX := AX + TPaintBox(Sender).Canvas.TextWidth(TextToOut);
+  AY := AY + TPaintBox(Sender).Canvas.TextHeight(TextToOut);
+end;
+
+procedure TMatrixListForm.PaintLeftBrace(const AMatrixHeight: Integer;
+  var AX, AY: Integer; Sender: TObject);
+begin
+  TPaintBox(Sender).Canvas.MoveTo(AX, AY);
+
+  AX := AX - TopBottomBraceLinesLength;
+  TPaintBox(Sender).Canvas.LineTo(AX, AY);
+
+  AY := AY + AMatrixHeight;
+  TPaintBox(Sender).Canvas.LineTo(AX, AY);
+
+  AX := AX + TopBottomBraceLinesLength;
+  TPaintBox(Sender).Canvas.LineTo(AX, AY);
+end;
+
+procedure TMatrixListForm.PaintRightBrace(const AMatrixHeight: Integer;
+  var AX, AY: Integer; Sender: TObject);
+begin
+  TPaintBox(Sender).Canvas.MoveTo(AX, AY);
+
+  AX := AX + TopBottomBraceLinesLength;
+  TPaintBox(Sender).Canvas.LineTo(AX, AY);
+
+  AY := AY + AMatrixHeight;
+  TPaintBox(Sender).Canvas.LineTo(AX, AY);
+
+  AX := AX - TopBottomBraceLinesLength;
+  TPaintBox(Sender).Canvas.LineTo(AX, AY);
+end;
+
+procedure TMatrixListForm.MatrixElementsPrint(var AX, AY: Integer;
+  AMatrix: TMatrix; Sender: TObject);
+var
+  i, j, TopY, CurrColumnMaxLength: integer;
+  CurrElString, CurrColumnMaxLengthString: string;
+begin
+  TopY := AY;
+
+  for i := 0 to AMatrix.Lines - 1 do
+  begin
+    CurrColumnMaxLength := -MaxInt - 1;
+
+    for j := 0 to AMatrix.Columns - 1 do
+    begin
+      CurrElString := FloatToStr(AMatrix.Elements[i, j]);
+
+      TPaintBox(Sender).Canvas.TextOut(AX, AY, CurrElString);
+
+      if Length(CurrElString) > CurrColumnMaxLength then
+      begin
+        CurrColumnMaxLength := Length(CurrElString);
+        CurrColumnMaxLengthString := CurrElString;
+      end;
+
+      AY := AY + TPaintBox(Sender).Canvas.TextHeight(CurrElString) + LineInterval;
+    end;
+
+    AX := AX + TPaintBox(Sender).Canvas.TextWidth(CurrColumnMaxLengthString)
+      + ColumnInterval;
+    AY := TopY;
+  end;
+
+  AX := AX - ColumnInterval;
+end;
 
 procedure TMatrixListForm.pbMatrixListPaint(Sender: TObject);
 var
   CurrNode: TMatrixList.PNode;
-  CurrMatrixPosX, CurrMatrixPosY: Integer;
+  X, Y, CurrMatrixPosX, CurrMatrixPosY, CurrMatrixHeight, LineHeight: Integer;
 begin
-  pbMatrixList.Canvas.Font.Name := DefaultFontName;
-  pbMatrixList.Canvas.Font.Size := DefaultFontSize;
+  TPaintBox(Sender).Canvas.Font.Name := DefaultFontName;
+  TPaintBox(Sender).Canvas.Font.Size := DefaultFontSize;
 
-  CurrMatrixPosX := 10;
-  CurrMatrixPosY := 10;
+  LineHeight := TPaintBox(Sender).Canvas.TextHeight(ExampleText);
+
+  CurrMatrixPosX := MatrixListStartPosX;
+  CurrMatrixPosY := MatrixListStartPosY;
   CurrNode := DataManager.MatrixList.Head;
-
-  while CurrNode <> nil do
+  while Assigned(CurrNode) do
   begin
-    pbMatrixList.Canvas.TextOut(CurrMatrixPosX, CurrMatrixPosY, 'Пример текста');
+    X := CurrMatrixPosX;
+    Y := CurrMatrixPosY;
+    CurrMatrixHeight := CurrNode^.FValue.Lines * (LineHeight + LineInterval)
+      + LineInterval;
 
-    CurrMatrixPosY := CurrMatrixPosY + 14;
+    MatrixNamePrint(CurrMatrixHeight, X, Y, CurrNode^.FValue.Name, pbMatrixList);
+
+    X := X + TopBottomBraceLinesLength;
+    Y := CurrMatrixPosY;
+    PaintLeftBrace(CurrMatrixHeight, X, Y, pbMatrixList);
+
+    Y := CurrMatrixPosY + LineInterval;
+    MatrixElementsPrint(X, Y, CurrNode^.FValue, pbMatrixList);
+
+    Y := CurrMatrixPosY;
+    PaintRightBrace(CurrMatrixHeight, X, Y, pbMatrixList);
+
+    CurrMatrixPosY := CurrMatrixPosY + CurrMatrixHeight + LineInterval;
     CurrNode := CurrNode^.FNext;
   end;
 end;
