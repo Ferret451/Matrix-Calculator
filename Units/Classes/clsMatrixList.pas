@@ -3,21 +3,30 @@ unit clsMatrixList;
 interface
 
 uses
-  clsMatrix, clsSingleLinkedList;
+  clsMatrix, clsDoubleLinkedList;
 
 type
-  TMatrixList = class(TSingleLinkedList<TMatrix>)
+  TMatrixList = class(TDoubleLinkedList<TMatrix>)
 
   private
 
   public
     destructor Destroy(); override;
+    procedure Clear(); override;
     procedure Sort();
   end;
 
 implementation
 
 destructor TMatrixList.Destroy();
+
+begin
+  Clear();
+
+  inherited;
+end;
+
+procedure TMatrixList.Clear();
 var
   CurrNode, NextNode: PNode;
 begin
@@ -26,9 +35,10 @@ begin
   begin
     NextNode := CurrNode.FNext;
     CurrNode^.FValue.Destroy();
-    Dispose(CurrNode);
     CurrNode := NextNode;
   end;
+
+  inherited;
 end;
 
 procedure TMatrixList.Sort();

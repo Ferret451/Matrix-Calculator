@@ -25,9 +25,9 @@ type
     pbMatrixList: TPaintBox;
     procedure aEditMatrixExecute(Sender: TObject);
     procedure aSortListAtoZExecute(Sender: TObject);
-    procedure aClearListExecute(Sender: TObject);
     procedure pbMatrixListPaint(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure aClearListExecute(Sender: TObject);
 
   private
 
@@ -51,11 +51,10 @@ implementation
 
 {$R *.dfm}
 
-
-
 procedure TMatrixListForm.aClearListExecute(Sender: TObject);
 begin
-//
+  DataManager.MatrixList.Clear();
+  DataManager.CallBack(pbMatrixList);
 end;
 
 procedure TMatrixListForm.aEditMatrixExecute(Sender: TObject);
@@ -205,6 +204,8 @@ var
   CurrNode: TMatrixList.PNode;
   X, Y, CurrMatrixPosX, CurrMatrixPosY, CurrMatrixHeight, LineHeight: Integer;
 begin
+  TPaintBox(pbMatrixList).Canvas.FillRect(TPaintBox(pbMatrixList).ClientRect);
+
   TPaintBox(Sender).Canvas.Font.Name := DefaultFontName;
   TPaintBox(Sender).Canvas.Font.Size := DefaultFontSize;
 

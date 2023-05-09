@@ -103,7 +103,7 @@
         </DCCReference>
         <DCCReference Include="Units\Classes\clsStack.pas"/>
         <DCCReference Include="Units\Classes\clsMatrix.pas"/>
-        <DCCReference Include="Units\Classes\clsSingleLinkedList.pas"/>
+        <DCCReference Include="Units\Classes\clsDoubleLinkedList.pas"/>
         <DCCReference Include="Units\Forms\frmMatrList.pas">
             <Form>MatrixListForm</Form>
         </DCCReference>

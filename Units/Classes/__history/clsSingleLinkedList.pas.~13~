@@ -1,0 +1,120 @@
+unit clsSingleLinkedList;
+
+interface
+
+uses
+  System.SysUtils, System.Generics.Defaults;
+
+type
+
+  TSingleLinkedList<T> = class
+
+  public type
+    PNode = ^TNode;
+    TNode = record
+      FValue: T;
+      FNext: PNode;
+      FPrev: PNode;
+    end;
+
+  protected
+    FHead: PNode;
+    FTail: PNode;
+    FSize: Integer;
+
+  public
+    constructor Create;
+    destructor Destroy(); override;
+
+    procedure Add(const AValue: T);
+    procedure Remove(const AValue: T);
+    procedure Swap(out ARefFirst, ARefSecond: PNode);
+
+    property Head: PNode read FHead;
+  end;
+
+implementation
+
+constructor TSingleLinkedList<T>.Create;
+begin
+  FHead := nil;
+  FTail := nil;
+  FSize := 0;
+end;
+
+destructor TSingleLinkedList<T>.Destroy();
+var
+  Node, NextNode: PNode;
+begin
+  Node := FHead;
+  while Assigned(Node) do
+  begin
+    NextNode := Node.FNext;
+    Dispose(Node);
+    Node := NextNode;
+  end;
+
+  inherited;
+end;
+
+procedure TSingleLinkedList<T>.Add(const AValue: T);
+var
+  NewNode: PNode;
+begin
+
+  New(NewNode);
+
+  with NewNode^ do
+  begin
+    FValue := AValue;
+    FNext := nil;
+    if FSize >= 1 then
+      FPrev := FTail
+    else
+      FPrev := nil;
+  end;
+
+  if Assigned(FTail) then
+    FTail^.FNext := NewNode
+  else
+    FHead := NewNode;
+
+  FTail := NewNode;
+
+  Inc(FSize);
+end;
+
+procedure TSingleLinkedList<T>.Remove(const AValue: T);
+var
+  PrevNode, CurrNode: PNode;
+  Comparer: IEqualityComparer<T>;
+begin
+  Comparer := TEqualityComparer<T>.Default;
+  CurrNode := FHead;
+  PrevNode := nil;
+
+  while Assigned(CurrNode) and not Comparer.Equals(CurrNode^.FValue, AValue) do
+  begin
+    PrevNode := CurrNode;
+    CurrNode := CurrNode^.FNext;
+  end;
+
+  if Assigned(CurrNode) then
+  begin
+
+
+    Dispose(CurrNode);
+    Dec(FSize);
+  end;
+end;
+
+procedure TSingleLinkedList<T>.Swap(out ARefFirst, ARefSecond: PNode);
+var
+  buf: T;
+begin
+  buf := ARefFirst^.FValue;
+  ARefFirst^.FValue := ARefSecond^.FValue;
+  ARefSecond^.FValue := buf;
+end;
+
+end.

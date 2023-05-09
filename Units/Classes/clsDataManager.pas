@@ -53,7 +53,7 @@ procedure TDataManager.CallBack(Sender: TObject);
 begin
   if IsMatrixListChanged then
   begin
-    (Sender as TPaintBox).OnPaint(Sender as TPaintBox);
+    TPaintBox(Sender).OnPaint(TPaintBox(Sender));
 
     IsMatrixListChanged := False;
   end;

@@ -5,7 +5,7 @@ uses
   frmMain in 'Units\Forms\frmMain.pas' {MainForm},
   clsStack in 'Units\Classes\clsStack.pas',
   clsMatrix in 'Units\Classes\clsMatrix.pas',
-  clsSingleLinkedList in 'Units\Classes\clsSingleLinkedList.pas',
+  clsDoubleLinkedList in 'Units\Classes\clsDoubleLinkedList.pas',
   frmMatrList in 'Units\Forms\frmMatrList.pas' {MatrixListForm},
   frmEditMatr in 'Units\Forms\frmEditMatr.pas' {EditMatrixForm},
   clsMatrixList in 'Units\Classes\clsMatrixList.pas',
