@@ -29,8 +29,6 @@ begin
     Dispose(CurrNode);
     CurrNode := NextNode;
   end;
-
-  inherited;
 end;
 
 procedure TMatrixList.Sort();
