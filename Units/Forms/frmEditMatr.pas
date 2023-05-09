@@ -29,6 +29,7 @@ type
     function isCorrectLinesAmount(): Boolean;
     function isCorrectColumnsAmount(): Boolean;
     function isCorrectMatrixElements(): Boolean;
+    procedure sgMatrixElementsClear(Sender: TObject);
   public
     constructor Create(AOwner: TComponent);
 
@@ -209,6 +210,15 @@ begin
   end;
 end;
 
+procedure TEditMatrixForm.sgMatrixElementsClear(Sender: TObject);
+var
+  i, j: Integer;
+begin
+  for i := 0 to sgMatrixElements.RowCount - 1 do
+    for j := 0 to sgMatrixElements.ColCount - 1 do
+      TStringGrid(Sender).Cells[j, i] := '';
+end;
+
 procedure TEditMatrixForm.TryGetMatrix(var AEditingMatrix: TMatrix;
   const AisNewMatrix: Boolean = True);
 var
@@ -220,9 +230,7 @@ begin
     edMatrixLines.Text := '';
     edMatrixColumns.Text := '';
 
-    for i := 0 to sgMatrixElements.RowCount - 1 do
-      for j := 0 to sgMatrixElements.ColCount - 1 do
-        sgMatrixElements.Cells[i, j] := '';
+    sgMatrixElementsClear(sgMatrixElements);
 
     sgMatrixElements.RowCount := 1;
     sgMatrixElements.ColCount := 1;
@@ -251,7 +259,7 @@ begin
     for i := 0 to AEditingMatrix.Lines - 1 do
       for j := 0 to AEditingMatrix.Columns - 1 do
         AEditingMatrix.Elements[i, j] :=
-          StrToFloat(sgMatrixElements.Cells[i, j]);
+          StrToFloat(sgMatrixElements.Cells[j, i]);
   end
   else
     if AisNewMatrix then

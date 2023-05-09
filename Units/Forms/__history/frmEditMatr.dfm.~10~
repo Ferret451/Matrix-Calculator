@@ -21,7 +21,6 @@ object EditMatrixForm: TEditMatrixForm
     Height = 329
     Align = alLeft
     TabOrder = 0
-    ExplicitLeft = -6
     object labMatrixName: TLabel
       Left = 16
       Top = 16

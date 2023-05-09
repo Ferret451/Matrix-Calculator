@@ -122,10 +122,14 @@ procedure TMatrixListForm.MatrixNamePrint(const AMatrixHeight: Integer;
   var AX, AY: Integer; const AMatrixName: string; Sender: TObject);
 var
   TextToOut: string;
+  LineHeight: Integer;
 begin
   TextToOut := AMatrixName + ' = ';
 
-  TPaintBox(Sender).Canvas.TextOut(AX, (AY + AMatrixHeight) div 2, TextToOut);
+  LineHeight := TPaintBox(Sender).Canvas.TextHeight(TextToOut);
+
+  TPaintBox(Sender).Canvas.TextOut(AX, (AY + AY + AMatrixHeight) div 2 -
+    LineHeight, TextToOut);
 
   AX := AX + TPaintBox(Sender).Canvas.TextWidth(TextToOut);
   AY := AY + TPaintBox(Sender).Canvas.TextHeight(TextToOut);
@@ -169,11 +173,11 @@ var
 begin
   TopY := AY;
 
-  for i := 0 to AMatrix.Lines - 1 do
+  for j := 0 to AMatrix.Columns - 1 do
   begin
     CurrColumnMaxLength := -MaxInt - 1;
 
-    for j := 0 to AMatrix.Columns - 1 do
+    for i := 0 to AMatrix.Lines - 1 do
     begin
       CurrElString := FloatToStr(AMatrix.Elements[i, j]);
 
@@ -185,7 +189,7 @@ begin
         CurrColumnMaxLengthString := CurrElString;
       end;
 
-      AY := AY + TPaintBox(Sender).Canvas.TextHeight(CurrElString);
+      AY := AY + TPaintBox(Sender).Canvas.TextHeight(CurrElString) + LineInterval;
     end;
 
     AX := AX + TPaintBox(Sender).Canvas.TextWidth(CurrColumnMaxLengthString)
@@ -213,7 +217,8 @@ begin
   begin
     X := CurrMatrixPosX;
     Y := CurrMatrixPosY;
-    CurrMatrixHeight := CurrNode^.FValue.Lines * ((LineHeight + LineInterval) div 2);
+    CurrMatrixHeight := CurrNode^.FValue.Lines * (LineHeight + LineInterval)
+      + LineInterval;
 
     MatrixNamePrint(CurrMatrixHeight, X, Y, CurrNode^.FValue.Name, pbMatrixList);
 
@@ -221,13 +226,13 @@ begin
     Y := CurrMatrixPosY;
     PaintLeftBrace(CurrMatrixHeight, X, Y, pbMatrixList);
 
-    Y := CurrMatrixPosY + LineInterval div 2;
+    Y := CurrMatrixPosY + LineInterval;
     MatrixElementsPrint(X, Y, CurrNode^.FValue, pbMatrixList);
 
     Y := CurrMatrixPosY;
     PaintRightBrace(CurrMatrixHeight, X, Y, pbMatrixList);
 
-    CurrMatrixPosY := CurrMatrixPosY + LineInterval;
+    CurrMatrixPosY := CurrMatrixPosY + CurrMatrixHeight + LineInterval;
     CurrNode := CurrNode^.FNext;
   end;
 end;

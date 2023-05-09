@@ -122,10 +122,14 @@ procedure TMatrixListForm.MatrixNamePrint(const AMatrixHeight: Integer;
   var AX, AY: Integer; const AMatrixName: string; Sender: TObject);
 var
   TextToOut: string;
+  LineHeight: Integer;
 begin
   TextToOut := AMatrixName + ' = ';
 
-  TPaintBox(Sender).Canvas.TextOut(AX, (AY + AMatrixHeight) div 2, TextToOut);
+  LineHeight := TPaintBox(Sender).Canvas.TextHeight(TextToOut);
+
+  TPaintBox(Sender).Canvas.TextOut(AX, (AY + AY + AMatrixHeight) div 2 -
+    LineHeight div 2, TextToOut);
 
   AX := AX + TPaintBox(Sender).Canvas.TextWidth(TextToOut);
   AY := AY + TPaintBox(Sender).Canvas.TextHeight(TextToOut);
@@ -169,11 +173,11 @@ var
 begin
   TopY := AY;
 
-  for i := 0 to AMatrix.Lines - 1 do
+  for j := 0 to AMatrix.Columns - 1 do
   begin
     CurrColumnMaxLength := -MaxInt - 1;
 
-    for j := 0 to AMatrix.Columns - 1 do
+    for i := 0 to AMatrix.Lines - 1 do
     begin
       CurrElString := FloatToStr(AMatrix.Elements[i, j]);
 

@@ -185,7 +185,7 @@ begin
         CurrColumnMaxLengthString := CurrElString;
       end;
 
-      AY := AY + TPaintBox(Sender).Canvas.TextHeight(CurrElString);
+      AY := AY + TPaintBox(Sender).Canvas.TextHeight(CurrElString) + LineInterval;
     end;
 
     AX := AX + TPaintBox(Sender).Canvas.TextWidth(CurrColumnMaxLengthString)
@@ -213,7 +213,8 @@ begin
   begin
     X := CurrMatrixPosX;
     Y := CurrMatrixPosY;
-    CurrMatrixHeight := CurrNode^.FValue.Lines * LineHeight;
+    CurrMatrixHeight := CurrNode^.FValue.Lines * (LineHeight + LineInterval)
+      + LineInterval;
 
     MatrixNamePrint(CurrMatrixHeight, X, Y, CurrNode^.FValue.Name, pbMatrixList);
 
@@ -221,13 +222,13 @@ begin
     Y := CurrMatrixPosY;
     PaintLeftBrace(CurrMatrixHeight, X, Y, pbMatrixList);
 
-    Y := CurrMatrixPosY + LineInteval div 2;
+    Y := CurrMatrixPosY + LineInterval;
     MatrixElementsPrint(X, Y, CurrNode^.FValue, pbMatrixList);
 
     Y := CurrMatrixPosY;
     PaintRightBrace(CurrMatrixHeight, X, Y, pbMatrixList);
 
-    CurrMatrixPosY := CurrMatrixPosY + LineInteval;
+    CurrMatrixPosY := CurrMatrixPosY + CurrMatrixHeight + LineInterval;
     CurrNode := CurrNode^.FNext;
   end;
 end;
