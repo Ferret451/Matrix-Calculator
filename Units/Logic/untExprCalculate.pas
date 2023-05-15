@@ -3,128 +3,109 @@ unit untExprCalculate;
 interface
 
 uses
-  System.SysUtils, clsStack,clsMatrix;
+  System.SysUtils, clsStack, clsMatrix, untConstants, clsDataManager;
 
 var
-  OperandStack: TStack<string>;
-  OperatorStack: TStack<Char>;
+  ElementsStack: TStack<string>;
 
-  function ExprCalculation(const Expression: string): string;
+  function ExprCalculation(const AExpression: string): string;
 
 implementation
 
-procedure OperandProcessing(var PointerPos: Integer; const Expression: string; var OperandStack: TStack<string>);
-var
-  Operand: string;
-
+function GetNewPriority(const AOperator: Char): ShortInt;
 begin
-  while Expression[PointerPos] in ['0'..'9', ','] do
-  begin
-    Operand := Operand + Expression[PointerPos];
-
-    inc(PointerPos);
+  case AOperator of
+    'A'..'Z', 'a'..'z', '0'..'9':
+      Result := 7;
+    '+', '-':
+      Result := 1;
+    '*', '/':
+      Result := 3;
+    '^':
+      Result := 6;
+    '(':
+      Result := 9;
+    ')':
+      Result := 0;
+    else
+      Result := -1;
   end;
-
-  OperandStack.Push(Operand);
 end;
 
-function GetPriority(const AOper: char): Byte;
-type
-  OperatorsPriority = record
-    FOper: char;
-    FPriority: byte;
+function GetStackPriority(const AOperator: Char): ShortInt;
+begin
+  case AOperator of
+    '_', 'A'..'Z', 'a'..'z', '0'..'9':
+      Result := 8;
+    '+', '-':
+      Result := 2;
+    '*', '/':
+      Result := 4;
+    '^':
+      Result := 5;
+    '(':
+      Result := 0;
+    else
+      Result := -1;
   end;
+end;
 
-const
-  Operators: Array [1..6] of OperatorsPriority = (
-    (FOper: '+'; FPriority: 1),
-    (FOper: '-'; FPriority: 1),
-    (FOper: '*'; FPriority: 2),
-    (FOper: '/'; FPriority: 2),
-    (FOper: '('; FPriority: 0),
-    (FOper: ')'; FPriority: 255)
-  );
-
+function OperandProcessing(var APointerPos: Integer; const AExpression: string; var AElementsStack: TStack<string>): string;
 var
   i: Integer;
-
 begin
+  Result := '';
   i := 1;
-  while AOper <> Operators[i].FOper do
-    inc(i);
-
-  result := Operators[i].FPriority;
+  while (i <= Length(AExpression)) and (AExpression[i] in Symbols) do
+  begin
+    Result := Result + AExpression[i];
+    Inc(i);
+  end;
 end;
 
-procedure OperatorProcessing(var OperandStack: TStack<string>; var OperatorStack: TStack<Char>);
+procedure Calculate(var OperandStack: TStack<string>; var OperatorStack: TStack<Char>);
 var
   FirstOperand, SecondOperand: TMatrix;
-
 begin
-  //днаюбхрэ опнбепйс мю рхош
-  SecondOperand := TMatrix.Create('SecondOper', 1, 1);
-  SecondOperand.Elements[0, 0] := StrToFloat(OperandStack.Top);
-  OperandStack.Pop;
 
-  FirstOperand := TMatrix.Create('FirstOper', 1, 1);
-  FirstOperand.Elements[0, 0] := StrToFloat(OperandStack.Top);
-  OperandStack.Pop;
-
-  case (OperatorStack.Top) of
-    '+':  OperandStack.Push(FloatToStr(FirstOperand.Add(SecondOperand).Elements[0, 0]));
-    '-':  OperandStack.Push(FloatToStr(FirstOperand.Substr(SecondOperand).Elements[0, 0]));
-    '*':  OperandStack.Push(FloatToStr(FirstOperand.MultConst(SecondOperand).Elements[0, 0]));
-  end;
-
-  OperatorStack.Pop();
-
-  FirstOperand.Destroy();
-  SecondOperand.Destroy();
 end;
 
-function ExprCalculation(const Expression: string): string;
-const
-  Symbols = ['0'..'9', ',', 'a'..'z', 'A'..'Z'];
-  Operators = ['+', '-', '*', '/', '(', ')'];
-
+function ExprCalculation(const AExpression: string): string;
 var
   i: Integer;
-
-
+  CurrentElement: string;
+  IsCorrectExpression: Boolean;
 begin
-  OperandStack := TStack<string>.Create;
-  OperatorStack := TStack<Char>.Create;
+  ElementsStack := TStack<string>.Create;
 
+  IsCorrectExpression := True;
   i := 1;
-  while i <= length(Expression) do
+  while (i <= Length(AExpression)) and IsCorrectExpression do
   begin
-    if Expression[i] in Symbols then
-      OperandProcessing(i, Expression, OperandStack);
+    IsCorrectExpression := True;
 
-    if Expression[i] in Operators then
-      if OperatorStack.IsEmpty then
-        OperatorStack.Push(Expression[i])
-      else
+    if AExpression[i] = ' ' then
+      inc(i)
+    else
+    begin
+      if AExpression[i] in Symbols then
       begin
-        while (not OperatorStack.IsEmpty) and
-          (GetPriority(Expression[i]) <= GetPriority(OperatorStack.Top)) do
-          OperatorProcessing(OperandStack, OperatorStack);
-
-        OperatorStack.Push(Expression[i]);
+        CurrentElement := OperandProcessing(i, AExpression, ElementsStack);
+        if CurrentElement[1] in MatrixNameFirstElValidSymbols then
+          IsCorrectExpression := DataManager.MatrixList.IsMatrixExist(CurrentElement);
       end;
 
-    inc(i);
+      if IsCorrectExpression then
+      begin
+        if ElementsStack.IsEmpty then
+
+      end;
+    end;
+
+
   end;
 
-  while not OperatorStack.isEmpty do
-  begin
-    OperatorProcessing(OperandStack, OperatorStack);
-  end;
-
-  Result := OperandStack.Top;
-
-  OperandStack.Destroy;
-  OperatorStack.Destroy;
+  ElementsStack.Destroy;
 end;
 
 

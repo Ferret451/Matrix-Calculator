@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,  Vcl.ExtCtrls, Vcl.Grids,
-  clsMatrix, clsMatrixList, untConstants;
+  clsMatrix, clsMatrixLIst, untConstants;
 
 type
   TEditMatrixForm = class(TForm)
@@ -24,17 +24,18 @@ type
     procedure edMatrixLinesExit(Sender: TObject);
     procedure edMatrixColumnsExit(Sender: TObject);
     procedure sgMatrixElementsEnter(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
-    function isCorrectName(): Boolean;
-    function isCorrectLinesAmount(): Boolean;
-    function isCorrectColumnsAmount(): Boolean;
-    function isCorrectMatrixElements(): Boolean;
+    function IsCorrectName(): Boolean;
+    function IsCorrectLinesAmount(): Boolean;
+    function IsCorrectColumnsAmount(): Boolean;
+    function IsCorrectMatrixElements(): Boolean;
     procedure sgMatrixElementsClear(Sender: TObject);
   public
     constructor Create(AOwner: TComponent);
 
     procedure TryGetMatrix(var AEditingMatrix: TMatrix;
-      const AisNewMatrix: Boolean = True);
+      const AIsNewMatrix: Boolean = True);
 
   end;
 
@@ -52,7 +53,7 @@ var
 begin
   inherited;
 
-  if AOwner is TControl then
+  if AOwner Is TControl then
   begin
     OwnerControl := TControl(AOwner);
     Left := OwnerControl.Left + (OwnerControl.Width - Width) shr 1;
@@ -67,7 +68,7 @@ end;
 
 procedure TEditMatrixForm.edMatrixColumnsExit(Sender: TObject);
 begin
-  if not isCorrectColumnsAmount then
+  if not IsCorrectColumnsAmount then
   begin
     ShowMessage('Entered amount of columns is incorrect');
     edMatrixColumns.SetFocus;
@@ -76,7 +77,7 @@ end;
 
 procedure TEditMatrixForm.edMatrixLinesExit(Sender: TObject);
 begin
-  if not isCorrectLinesAmount then
+  if not IsCorrectLinesAmount then
   begin
     ShowMessage('Entered amount of lines is incorrect');
     edMatrixLines.SetFocus;
@@ -85,39 +86,44 @@ end;
 
 procedure TEditMatrixForm.edMatrixNameExit(Sender: TObject);
 begin
-  if not isCorrectName then
+  if not IsCorrectName then
   begin
     ShowMessage('Entered name is incorrect');
     edMatrixName.SetFocus;
   end;
 end;
 
+procedure TEditMatrixForm.FormShow(Sender: TObject);
+begin
+  edMatrixName.SetFocus();
+end;
+
 procedure TEditMatrixForm.butOKClick(Sender: TObject);
 begin
-  if isCorrectName() and isCorrectLinesAmount() and isCorrectcolumnsAmount() and isCorrectMatrixElements() then
+  if IsCorrectName() and IsCorrectLinesAmount() and IsCorrectcolumnsAmount() and IsCorrectMatrixElements() then
     ModalResult := mrOK;
 end;
 
-function TEditMatrixForm.isCorrectMatrixElements(): Boolean;
+function TEditMatrixForm.IsCorrectMatrixElements(): Boolean;
 var
   i, j: Integer;
   TempValue: Extended;
-  isCorrectElements: Boolean;
+  IsCorrectElements: Boolean;
 begin
-  isCorrectElements := True;
+  IsCorrectElements := True;
   i := 0;
 
-  while (i < StrToInt(edMatrixLines.Text)) and (isCorrectElements) do
+  while (i < StrToInt(edMatrixLines.Text)) and (IsCorrectElements) do
   begin
     j := 0;
 
-    while (j < StrToInt(edMatrixColumns.Text)) and (isCorrectElements) do
+    while (j < StrToInt(edMatrixColumns.Text)) and (IsCorrectElements) do
     begin
       if not TryStrToFloat(sgMatrixElements.Cells[j, i], TempValue) then
       begin
         ShowMessage('Entered elements must be real numbers');
 
-        isCorrectElements := False;
+        IsCorrectElements := False;
         Result := False;
       end;
 
@@ -128,7 +134,7 @@ begin
   end;
 end;
 
-function TEditMatrixForm.isCorrectName(): Boolean;
+function TEditMatrixForm.IsCorrectName(): Boolean;
 var
   i: Integer;
 begin
@@ -154,7 +160,7 @@ begin
   end;
 end;
 
-function TEditMatrixForm.isCorrectLinesAmount(): Boolean;
+function TEditMatrixForm.IsCorrectLinesAmount(): Boolean;
 var
   TempValue: Integer;
 begin
@@ -170,7 +176,7 @@ begin
   end;
 end;
 
-function TEditMatrixForm.isCorrectColumnsAmount(): Boolean;
+function TEditMatrixForm.IsCorrectColumnsAmount(): Boolean;
 var
   TempValue: Integer;
 begin
@@ -190,7 +196,7 @@ procedure TEditMatrixForm.sgMatrixElementsEnter(Sender: TObject);
 var
   i, j: Integer;
 begin
-  if isCorrectName and isCorrectLinesAmount and isCorrectColumnsAmount then
+  if IsCorrectName and IsCorrectLinesAmount and IsCorrectColumnsAmount then
   begin
     if StrToInt(edMatrixLines.Text) < sgMatrixElements.RowCount then
     begin
@@ -220,11 +226,11 @@ begin
 end;
 
 procedure TEditMatrixForm.TryGetMatrix(var AEditingMatrix: TMatrix;
-  const AisNewMatrix: Boolean = True);
+  const AIsNewMatrix: Boolean = True);
 var
   i, j: Integer;
 begin
-  if AisNewMatrix then
+  if AIsNewMatrix then
   begin
     edMatrixName.Text := '';
     edMatrixLines.Text := '';
@@ -246,7 +252,7 @@ begin
 
     for i := 0 to sgMatrixElements.RowCount - 1 do
       for j := 0 to sgMatrixElements.ColCount - 1 do
-        sgMatrixElements.Cells[i, j] :=
+        sgMatrixElements.Cells[j, i] :=
           FloatToStr(AEditingMatrix.Elements[i, j]);
   end;
 
@@ -254,15 +260,28 @@ begin
 
   if ModalResult = mrOK then
   begin
-    AEditingMatrix := TMatrix.Create(edMatrixName.Text,
-      StrToInt(edMatrixLines.Text), StrToInt(edMatrixColumns.Text));
-    for i := 0 to AEditingMatrix.Lines - 1 do
-      for j := 0 to AEditingMatrix.Columns - 1 do
-        AEditingMatrix.Elements[i, j] :=
-          StrToFloat(sgMatrixElements.Cells[j, i]);
+    if AIsNewMatrix then
+    begin
+      AEditingMatrix := TMatrix.Create(edMatrixName.Text,
+        StrToInt(edMatrixLines.Text), StrToInt(edMatrixColumns.Text));
+      for i := 0 to AEditingMatrix.Lines - 1 do
+        for j := 0 to AEditingMatrix.Columns - 1 do
+          AEditingMatrix.Elements[i, j] :=
+            StrToFloat(sgMatrixElements.Cells[j, i]);
+    end
+    else
+    begin
+      AEditingMatrix.Name := edMatrixName.Text;
+      AEditingMatrix.Lines := StrToInt(edMatrixLines.Text);
+      AEditingMatrix.Columns := StrToInt(edMatrixColumns.Text);
+      for i := 0 to AEditingMatrix.Lines - 1 do
+        for j := 0 to AEditingMatrix.Columns - 1 do
+          AEditingMatrix.Elements[i, j] :=
+            StrToFloat(sgMatrixElements.Cells[j, i]);
+    end;
   end
   else
-    if AisNewMatrix then
+    if AIsNewMatrix then
       AEditingMatrix := nil;
 end;
 

@@ -29,6 +29,8 @@ type
 
     procedure Add(const AValue: T);
     procedure Remove(const AValue: T);
+    function GetValue(const AIndex: Integer): T;
+    procedure SetValue(const AIndex: Integer; const AValue: T);
     procedure Clear(); virtual;
 
     property Head: PNode read FHead;
@@ -48,6 +50,56 @@ begin
   Clear();
 
   inherited;
+end;
+
+function TDoubleLinkedList<T>.GetValue(const AIndex: Integer): T;
+var
+  i: Integer;
+  CurrNode: PNode;
+  IsFound: Boolean;
+begin
+  IsFound := False;
+  CurrNode := FHead;
+  i := 0;
+
+  while Assigned(CurrNode) and not IsFound do
+  begin
+    if (i = AIndex) then
+    begin
+      IsFound := True;
+      Result := CurrNode^.FValue;
+    end
+    else
+    begin
+      CurrNode := CurrNode^.FNext;
+      inc(i);
+    end;
+  end;
+end;
+
+procedure TDoubleLinkedList<T>.SetValue(const AIndex: Integer; const AValue: T);
+var
+  i: Integer;
+  CurrNode: PNode;
+  IsFound: Boolean;
+begin
+  IsFound := False;
+  CurrNode := FHead;
+  i := 0;
+
+  while Assigned(CurrNode) and not IsFound do
+  begin
+    if (i = AIndex) then
+    begin
+      IsFound := True;
+      CurrNode^.FValue := AValue;
+    end
+    else
+    begin
+      CurrNode := CurrNode^.FNext;
+      inc(i);
+    end;
+  end;
 end;
 
 procedure TDoubleLinkedList<T>.Clear();

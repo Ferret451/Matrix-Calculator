@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Menus, System.Actions,
   Vcl.ActnList, Vcl.ExtCtrls, System.ImageList, Vcl.ImgList, Vcl.ToolWin, Vcl.ComCtrls,
-  untExprCalculate, clsSingleLinkedList, clsMatrix, clsMatrixList, clsDataManager,
+  untExprCalculate, clsDoubleLinkedList, clsMatrix, clsMatrixList, clsDataManager,
   frmMatrList, frmEditMatr;
 
 type

@@ -1,7 +1,17 @@
 unit untConstants;
 
 interface
+
+type
+  TOperatorsPriority = record
+    FOper: char;
+    FPriority: byte;
+  end;
+
 const
+  Symbols = ['0'..'9', ',', 'a'..'z', 'A'..'Z'];
+  Operators = ['+', '-', '*', '/', '(', ')'];
+
   MatrixNameFirstElValidSymbols = ['a'..'z', 'A'..'Z', '_'];
   MatrixNameValidSymbols = ['a'..'z', 'A'..'Z', '_', '0'..'9'];
 
@@ -15,6 +25,7 @@ const
   ColumnInterval = 15;
   EqualsLeftBraceInterval = 7;
   TopBottomBraceLinesLength = 5;
+
 
 implementation
 

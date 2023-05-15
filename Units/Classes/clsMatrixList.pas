@@ -13,7 +13,9 @@ type
   public
     destructor Destroy(); override;
     procedure Clear(); override;
+
     procedure Sort();
+    function IsMatrixExist(const AMatrixName: string): Boolean;
   end;
 
 implementation
@@ -66,7 +68,20 @@ begin
 
     BarrierNode := LastSwapNode;
   end;
+end;
 
+function TMatrixList.IsMatrixExist(const AMatrixName: string): Boolean;
+var
+  CurrNode: PNode;
+begin
+  CurrNode := FHead;
+  Result := False;
+
+  while (Assigned(CurrNode)) and not Result do
+  begin
+    if CurrNode^.FValue.Name = AMatrixName then
+      Result := True;
+  end;
 end;
 
 end.

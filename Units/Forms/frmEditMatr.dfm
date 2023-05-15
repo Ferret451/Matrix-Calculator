@@ -12,6 +12,7 @@ object EditMatrixForm: TEditMatrixForm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object panMatrixMainInfo: TPanel
@@ -21,7 +22,6 @@ object EditMatrixForm: TEditMatrixForm
     Height = 329
     Align = alLeft
     TabOrder = 0
-    ExplicitLeft = -6
     object labMatrixName: TLabel
       Left = 16
       Top = 16

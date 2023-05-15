@@ -11,7 +11,6 @@ object MatrixListForm: TMatrixListForm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object tbMatrixList: TToolBar
@@ -27,7 +26,7 @@ object MatrixListForm: TMatrixListForm
     object tbNewMatrix: TToolButton
       Left = 0
       Top = 0
-      Action = aEditMatrix
+      Action = aNewMatrix
     end
     object ToolButton1: TToolButton
       Left = 49
@@ -58,6 +57,8 @@ object MatrixListForm: TMatrixListForm
       Width = 446
       Height = 272
       Align = alClient
+      OnDblClick = pbMatrixListDblClick
+      OnMouseMove = pbMatrixListMouseMove
       OnPaint = pbMatrixListPaint
       ExplicitLeft = -2
       ExplicitTop = -2
@@ -69,10 +70,10 @@ object MatrixListForm: TMatrixListForm
     Images = ilMatrixList
     Left = 392
     Top = 8
-    object aEditMatrix: TAction
+    object aNewMatrix: TAction
       Caption = 'Edit Matrix...'
       ImageIndex = 0
-      OnExecute = aEditMatrixExecute
+      OnExecute = aNewMatrixExecute
     end
     object aSortListAtoZ: TAction
       Caption = 'Sort List A to Z...'
