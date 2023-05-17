@@ -3,24 +3,29 @@ unit clsDataManager;
 interface
 
 uses
-  Vcl.ExtCtrls, clsMatrixList, clsMatrix;
+  Vcl.ExtCtrls, clsMatrixList, clsMatrix, untTypes;
 
 type
   TDataManager = class
   private
+    FCurrentExpression: TExpression;
     FMatrixList: TMatrixList;
 
-    IsMatrixListChanged: Boolean;
-
-
-    function GetMatrixList(): TMatrixList;
+    function GetCurrentExpressionString(): string;
+    procedure SetCurrentExpressionString(const ACurrentExpressionString: string);
+    function GetCurrentExpressionAnswer(): TOperand;
+    procedure SetCurrentExpressionAnswer(const ACurrentExpressionAnswer: TOperand);
   public
     constructor Create();
     destructor Destroy(); override;
 
     procedure CallBack(Sender: TObject);
 
-    property MatrixList: TMatrixList read GetMatrixList;
+    property MatrixList: TMatrixList read FMatrixList;
+    property CurrentExpressionString: string read GetCurrentExpressionString
+      write SetCurrentExpressionString;
+    property CurrentExspressionAnswer: TOperand read GetCurrentExpressionAnswer
+      write SetCurrentExpressionAnswer;
   end;
 
 var
@@ -31,8 +36,6 @@ implementation
 constructor TDataManager.Create();
 begin
   FMatrixList := TMatrixList.Create();
-
-  IsMatrixListChanged := False;
 end;
 
 destructor TDataManager.Destroy();
@@ -42,21 +45,29 @@ begin
   inherited;
 end;
 
-function TDataManager.GetMatrixList(): TMatrixList;
+function TDataManager.GetCurrentExpressionString(): string;
 begin
-  Result := FMatrixList;
+  Result := FCurrentExpression.FExpressionString;
+end;
 
-  IsMatrixListChanged := True;
+procedure TDataManager.SetCurrentExpressionString(const ACurrentExpressionString: string);
+begin
+  FCurrentExpression.FExpressionString := ACurrentExpressionString;
+end;
+
+function TDataManager.GetCurrentExpressionAnswer(): TOperand;
+begin
+  Result := FCurrentExpression.FAnswer;
+end;
+
+procedure TDataManager.SetCurrentExpressionAnswer(const ACurrentExpressionAnswer: TOperand);
+begin
+  FCurrentExpression.FAnswer := ACurrentExpressionAnswer;
 end;
 
 procedure TDataManager.CallBack(Sender: TObject);
 begin
-  if IsMatrixListChanged then
-  begin
-    TPaintBox(Sender).OnPaint(TPaintBox(Sender));
-
-    IsMatrixListChanged := False;
-  end;
+  TPaintBox(Sender).OnPaint(TPaintBox(Sender));
 end;
 
 end.

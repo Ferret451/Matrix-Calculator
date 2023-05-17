@@ -62,6 +62,9 @@ begin
   CurrNode := FHead;
   i := 0;
 
+  if (AIndex < 0) or (AIndex > FSize - 1) then
+    raise Exception.Create('Index out of bound');
+
   while Assigned(CurrNode) and not IsFound do
   begin
     if (i = AIndex) then
@@ -86,6 +89,9 @@ begin
   IsFound := False;
   CurrNode := FHead;
   i := 0;
+
+  if (AIndex < 0) or (AIndex > FSize - 1) then
+    raise Exception.Create('Index out of bound');
 
   while Assigned(CurrNode) and not IsFound do
   begin

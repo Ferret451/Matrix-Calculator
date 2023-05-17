@@ -11,7 +11,9 @@ uses
   clsMatrixList in 'Units\Classes\clsMatrixList.pas',
   untConstants in 'Units\Additional\untConstants.pas',
   untExprCalculate in 'Units\Logic\untExprCalculate.pas',
-  clsDataManager in 'Units\Classes\clsDataManager.pas';
+  clsDataManager in 'Units\Classes\clsDataManager.pas',
+  clsOperandStack in 'Units\Classes\clsOperandStack.pas',
+  untTypes in 'Units\Additional\untTypes.pas';
 
 {$R *.res}
 

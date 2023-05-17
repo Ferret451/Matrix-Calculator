@@ -15,7 +15,8 @@ type
     procedure Clear(); override;
 
     procedure Sort();
-    function IsMatrixExist(const AMatrixName: string): Boolean;
+    function TryGetMatrix(const AMatrixName: string): Boolean; overload;
+    function TryGetMatrix(const AMatrixName: string; const AMatrix: TMatrix): Boolean; overload;
   end;
 
 implementation
@@ -70,7 +71,7 @@ begin
   end;
 end;
 
-function TMatrixList.IsMatrixExist(const AMatrixName: string): Boolean;
+function TMatrixList.TryGetMatrix(const AMatrixName: string): Boolean;
 var
   CurrNode: PNode;
 begin
@@ -81,6 +82,23 @@ begin
   begin
     if CurrNode^.FValue.Name = AMatrixName then
       Result := True;
+  end;
+end;
+
+function TMatrixList.TryGetMatrix(const AMatrixName: string; const AMatrix: TMatrix): Boolean;
+var
+  CurrNode: PNode;
+begin
+  CurrNode := FHead;
+  Result := False;
+
+  while (Assigned(CurrNode)) and not Result do
+  begin
+    if CurrNode^.FValue.Name = AMatrixName then
+    begin
+      Result := True;
+      CurrNode^.FValue.AssignTo(AMatrix);
+    end;
   end;
 end;
 

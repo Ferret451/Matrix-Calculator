@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Menus, System.Actions,
   Vcl.ActnList, Vcl.ExtCtrls, System.ImageList, Vcl.ImgList, Vcl.ToolWin, Vcl.ComCtrls,
   untExprCalculate, clsDoubleLinkedList, clsMatrix, clsMatrixList, clsDataManager,
-  frmMatrList, frmEditMatr;
+  frmMatrList, frmEditMatr, Vcl.NumberBox, untConstants, untTypes;
 
 type
   TMainForm = class(TForm)
@@ -16,28 +16,6 @@ type
     Open1: TMenuItem;
     Close1: TMenuItem;
     SaveAs1: TMenuItem;
-    edMatrixExpression: TEdit;
-    Panel1: TPanel;
-    butTwo: TButton;
-    butFive: TButton;
-    butThree: TButton;
-    butSix: TButton;
-    butOne: TButton;
-    butFour: TButton;
-    butEight: TButton;
-    butSeven: TButton;
-    butNine: TButton;
-    butZero: TButton;
-    butComma: TButton;
-    butDelete: TButton;
-    butCalculate: TButton;
-    butPlus: TButton;
-    butMinus: TButton;
-    butMultiplication: TButton;
-    butDivision: TButton;
-    butOpenBrace: TButton;
-    butCloseBrace: TButton;
-    butClear: TButton;
     ToolBar: TToolBar;
     alToolBar: TActionList;
     ilToolBar: TImageList;
@@ -59,9 +37,37 @@ type
     tbViewMatrixList: TToolButton;
     Clearlist1: TMenuItem;
     tbSeparator1: TToolButton;
-    shHistoryBorder: TShape;
+    sbHistory: TScrollBox;
+    pbHistory: TPaintBox;
+    panCalculationsPart: TPanel;
+    sbExpression: TScrollBox;
+    pbExpression: TPaintBox;
+    panCalculatorButtons: TPanel;
+    butTwo: TButton;
+    butFive: TButton;
+    butThree: TButton;
+    butSix: TButton;
+    butOne: TButton;
+    butFour: TButton;
+    butEight: TButton;
+    butSeven: TButton;
+    butNine: TButton;
+    butZero: TButton;
+    butComma: TButton;
+    butDelete: TButton;
+    butCalculate: TButton;
+    butPlus: TButton;
+    butMinus: TButton;
+    butMultiplication: TButton;
+    butDivision: TButton;
+    butOpenBrace: TButton;
+    butCloseBrace: TButton;
+    butClear: TButton;
+    splMain: TSplitter;
+    butExponentaition: TButton;
+    edExpression: TEdit;
 
-    procedure edMatrixExpressionExit(Sender: TObject);
+    procedure edExpressionExit(Sender: TObject);
     procedure butCalculateClick(Sender: TObject);
     procedure butInputClick(Sender: TObject);
     procedure butDeleteClick(Sender: TObject);
@@ -75,8 +81,13 @@ type
     procedure aClearMatrixListExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure pbExpressionPaint(Sender: TObject);
+    procedure edExpressionChange(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
   private
-    CursPos: Integer;
+    FCarriagePos: Integer;
+    FBlockPaint: Boolean;
   public
 
   end;
@@ -89,15 +100,12 @@ implementation
 
 {$R *.dfm}
 
-procedure TMainForm.edMatrixExpressionExit(Sender: TObject);
-begin
-  CursPos := edMatrixExpression.SelStart;
-end;
+
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   DataManager := TDataManager.Create();
-  CursPos := 1;
+  FCarriagePos := 1;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -105,16 +113,14 @@ begin
   DataManager.Destroy();
 end;
 
-procedure TMainForm.butDeleteClick(Sender: TObject);
+procedure TMainForm.FormShow(Sender: TObject);
 begin
-  if CursPos >= 1 then
-  begin
-    edMatrixExpression.Text := Copy(EdMatrixExpression.Text, 1, CursPos - 1) + Copy(EdMatrixExpression.Text, CursPos + 1);
-    dec(CursPos);
-  end;
+  FBlockPaint := True;
+end;
 
-  EdMatrixExpression.SetFocus;
-  EdMatrixExpression.SelStart := CursPos;
+procedure TMainForm.FormActivate(Sender: TObject);
+begin
+  FBlockPaint := False;
 end;
 
 procedure TMainForm.aClearMatrixListExecute(Sender: TObject);
@@ -153,27 +159,74 @@ begin
   MatrixListForm.Show;
 end;
 
-procedure TMainForm.butCalculateClick(Sender: TObject);
+procedure TMainForm.pbExpressionPaint(Sender: TObject);
+var
+  X, Y: Integer;
 begin
-  EdMatrixExpression.Text := ExprCalculation(EdMatrixExpression.Text);
+  if not FBlockPaint then
+  begin
+    pbExpression.Canvas.FillRect(pbExpression.ClientRect);
+    X := StartPosX;
+    Y := StartPosY;
+
+    if DataManager.CurrentExspressionAnswer.FIsMatrix then
+      MatrixListForm.MatrixPaint(X, Y,
+        DataManager.CurrentExspressionAnswer.FMatrix, pbExpression)
+    else
+      TPaintBox(Sender).Canvas.TextOut(X, Y,
+        FloatToStr(DataManager.CurrentExspressionAnswer.FNumber));
+  end;
+end;
+
+procedure TMainForm.edExpressionChange(Sender: TObject);
+begin
+  DataManager.CurrentExpressionString := edExpression.Text;
+end;
+
+procedure TMainForm.edExpressionExit(Sender: TObject);
+begin
+  FCarriagePos := edExpression.SelStart;
+end;
+
+procedure TMainForm.butCalculateClick(Sender: TObject);
+var
+  Answer: TOperand;
+begin
+  if ExprCalculation(edExpression.Text, Answer) then
+  begin
+    DataManager.CurrentExspressionAnswer := Answer;
+    DataManager.CallBack(pbExpression);
+  end;
 end;
 
 procedure TMainForm.butClearClick(Sender: TObject);
 begin
-  EdMatrixExpression.Text := '';
-  CursPos := 1;
+  edExpression.Text := '';
+  FCarriagePos := 1;
 
-  EdMatrixExpression.SetFocus;
-  EdMatrixExpression.SelStart := CursPos;
+  edExpression.SetFocus;
+  edExpression.SelStart := FCarriagePos;
 end;
 
 procedure TMainForm.butInputClick(Sender: TObject);
 begin
-  EdMatrixExpression.Text := Copy(EdMatrixExpression.Text, 1, CursPos) + (Sender as TButton).Caption + Copy(EdMatrixExpression.Text, CursPos + 1);
-  inc(CursPos);
+  edExpression.Text := Copy(edExpression.Text, 1, FCarriagePos) + (Sender as TButton).Caption + Copy(edExpression.Text, FCarriagePos + 1);
+  inc(FCarriagePos);
 
-  EdMatrixExpression.SetFocus;
-  EdMatrixExpression.SelStart := CursPos;
+  edExpression.SetFocus;
+  edExpression.SelStart := FCarriagePos;
+end;
+
+procedure TMainForm.butDeleteClick(Sender: TObject);
+begin
+  if FCarriagePos >= 1 then
+  begin
+    edExpression.Text := Copy(edExpression.Text, 1, FCarriagePos - 1) + Copy(edExpression.Text, FCarriagePos + 1);
+    dec(FCarriagePos);
+  end;
+
+  edExpression.SetFocus;
+  edExpression.SelStart := FCarriagePos;
 end;
 
 end.

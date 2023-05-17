@@ -1,0 +1,13 @@
+unit clsOperandStack;
+
+interface
+
+uses
+  clsStack, clsMatrix;
+
+type
+  TOperandStack :=
+
+implementation
+
+end.

@@ -25,7 +25,6 @@ Type
     function Pop: T;
     function Size: Integer;
     function IsEmpty: Boolean;
-
   end;
 
 implementation
