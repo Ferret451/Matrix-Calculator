@@ -13,6 +13,7 @@ object MainForm: TMainForm
   Font.Style = []
   Menu = MainMenu
   OldCreateOrder = False
+  WindowState = wsMaximized
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
@@ -369,8 +370,8 @@ object MainForm: TMainForm
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
-      ExplicitWidth = 183
-      ExplicitHeight = 334
+      ExplicitLeft = -1
+      ExplicitTop = 4
     end
   end
   object MainMenu: TMainMenu

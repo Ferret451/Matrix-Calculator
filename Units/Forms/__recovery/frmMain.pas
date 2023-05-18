@@ -91,7 +91,6 @@ type
 
 var
   MainForm: TMainForm;
-  MatrixListForm: TMatrixListForm;
 
 implementation
 
@@ -142,7 +141,7 @@ end;
 
 procedure TMainForm.aViewMatrixListExecute(Sender: TObject);
 begin
-  MatrixListForm := TMatrixListForm.Create(Self);
+  //MatrixListForm := TMatrixListForm.Create(Self);
   MatrixListForm.Show;
 end;
 

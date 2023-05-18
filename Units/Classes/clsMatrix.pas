@@ -29,8 +29,8 @@ type
       function DivConst(const ANumb: Extended): TMatrix;
       function MultMatr(const AMatr: TMatrix): TMatrix;
 
-      property Lines: Integer read GetLinesAmount write SetLinesAmount;
-      property Columns: Integer read FColumnsAmount write FColumnsAmount;
+      property LinesAmount: Integer read GetLinesAmount write SetLinesAmount;
+      property ColumnsAmount: Integer read FColumnsAmount write FColumnsAmount;
       property Name: string read FName write FName;
       property Elements[X, Y: Integer]: Extended read GetElement write SetElement;
   end;
@@ -83,11 +83,16 @@ begin
 end;
 
 procedure TMatrix.AssignTo(const AMatrix: TMatrix);
+var
+  i, j: Integer;
 begin
   Self.Name := AMatrix.Name;
-  Self.Lines := AMatrix.Lines;
-  Self.Columns := AMatrix.Columns;
-  Self.MartixSetLength(AMatrix.Lines, AMatrix.Columns);
+  Self.FLinesAmount := AMatrix.LinesAmount;
+  Self.FColumnsAmount := AMatrix.ColumnsAmount;
+  Self.MartixSetLength(FLinesAmount, FColumnsAmount);
+  for i := 0 to Self.FLinesAmount - 1 do
+    for j := 0 to Self.FColumnsAmount -1 do
+      Self.Elements[i, j] := AMatrix.Elements[i, j];
 end;
 
 function TMatrix.GetElement(X, Y: Integer): Extended;
@@ -116,8 +121,6 @@ var
   i, j: Integer;
   //i, j - iterators for cycles
 begin
-  if Assigned(Result) then
-    Result.Destroy();
   Result := TMatrix.Create(Self.FLinesAmount, Self.FColumnsAmount);
 
   //Summing the matrixes
@@ -132,8 +135,6 @@ var
   i, j: Integer;
   //i, j - iterators for cycles
 begin
-  if Assigned(Result) then
-    Result.Destroy();
   Result := TMatrix.Create(Self.FLinesAmount, Self.FColumnsAmount);
 
   //Substract the matrixes
@@ -148,8 +149,6 @@ var
   i, j: Integer;
   //i, j - iterators for cycles
 begin
-  if Assigned(Result) then
-    Result.Destroy();
   Result := TMatrix.Create(Self.FLinesAmount, Self.FColumnsAmount);
 
   //Myltiplying number on matrix
@@ -164,8 +163,6 @@ var
   i, j: Integer;
   //i, j - iterators for cycles
 begin
-  if Assigned(Result) then
-    Result.Destroy();
   Result := TMatrix.Create(Self.FLinesAmount, Self.FColumnsAmount);
 
   //Myltiplying number on matrix
@@ -180,8 +177,6 @@ var
   i, j, k: Integer;
   //i, j, k - iterators for cycles
 begin
-  if Assigned(Result) then
-    Result.Destroy();
   Result := TMatrix.Create(Self.FLinesAmount, AMatr.FColumnsAmount);
 
   //Myltiplying the matrixes

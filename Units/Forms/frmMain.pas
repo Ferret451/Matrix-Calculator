@@ -83,11 +83,8 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure pbExpressionPaint(Sender: TObject);
     procedure edExpressionChange(Sender: TObject);
-    procedure FormShow(Sender: TObject);
-    procedure FormActivate(Sender: TObject);
   private
     FCarriagePos: Integer;
-    FBlockPaint: Boolean;
   public
 
   end;
@@ -111,16 +108,6 @@ end;
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   DataManager.Destroy();
-end;
-
-procedure TMainForm.FormShow(Sender: TObject);
-begin
-  FBlockPaint := True;
-end;
-
-procedure TMainForm.FormActivate(Sender: TObject);
-begin
-  FBlockPaint := False;
 end;
 
 procedure TMainForm.aClearMatrixListExecute(Sender: TObject);
@@ -163,19 +150,16 @@ procedure TMainForm.pbExpressionPaint(Sender: TObject);
 var
   X, Y: Integer;
 begin
-  if not FBlockPaint then
-  begin
-    pbExpression.Canvas.FillRect(pbExpression.ClientRect);
-    X := StartPosX;
-    Y := StartPosY;
+  pbExpression.Canvas.FillRect(pbExpression.ClientRect);
+  X := StartPosX;
+  Y := StartPosY;
 
-    if DataManager.CurrentExspressionAnswer.FIsMatrix then
-      MatrixListForm.MatrixPaint(X, Y,
-        DataManager.CurrentExspressionAnswer.FMatrix, pbExpression)
-    else
-      TPaintBox(Sender).Canvas.TextOut(X, Y,
-        FloatToStr(DataManager.CurrentExspressionAnswer.FNumber));
-  end;
+  if DataManager.CurrentExspressionAnswer.FIsMatrix then
+    MatrixListForm.MatrixPaint(X, Y,
+      DataManager.CurrentExspressionAnswer.FMatrix, pbExpression)
+  else
+    TPaintBox(Sender).Canvas.TextOut(X, Y,
+      FloatToStr(DataManager.CurrentExspressionAnswer.FNumber));
 end;
 
 procedure TMainForm.edExpressionChange(Sender: TObject);

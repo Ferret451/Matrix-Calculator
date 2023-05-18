@@ -198,11 +198,11 @@ var
 begin
   TopY := AY;
 
-  for j := 0 to AMatrix.Columns - 1 do
+  for j := 0 to AMatrix.ColumnsAmount - 1 do
   begin
     CurrColumnMaxLength := -MaxInt - 1;
 
-    for i := 0 to AMatrix.Lines - 1 do
+    for i := 0 to AMatrix.LinesAmount - 1 do
     begin
       CurrElString := FloatToStr(AMatrix.Elements[i, j]);
 
@@ -231,31 +231,32 @@ var
   LineHeight: Integer;
 begin
   LineHeight := TPaintBox(Sender).Canvas.TextHeight(ExampleText);
-  Result := AMatrix.Lines * (LineHeight + LineInterval)
+  Result := AMatrix.LinesAmount * (LineHeight + LineInterval)
     + LineInterval;
 end;
 
 procedure TMatrixListForm.MatrixPaint(var AX, AY: Integer; const AMatrix: TMatrix;
   Sender: TObject);
 var
-  CurrMatrixHeight, StartX, StartY: Integer;
+  MatrixHeight, StartX, StartY: Integer;
 begin
   StartX := AX;
   StartY := AY;
 
-  CurrMatrixHeight := GetMatrixHeight(AMatrix, Sender);
+  MatrixHeight := GetMatrixHeight(AMatrix, Sender);
 
-  MatrixNamePrint(CurrMatrixHeight, AX, AY, AMatrix.Name, pbMatrixList);
+  if AMatrix.Name <> '' then
+    MatrixNamePrint(MatrixHeight, AX, AY, AMatrix.Name, pbMatrixList);
 
   AX := AX + TopBottomBraceLinesLength;
   AY := StartY;
-  PaintLeftBrace(CurrMatrixHeight,AX, AY, pbMatrixList);
+  PaintLeftBrace(MatrixHeight,AX, AY, pbMatrixList);
 
   AY := StartY + LineInterval;
   MatrixElementsPrint(AX, AY, AMatrix, pbMatrixList);
 
   AY := StartY;
-  PaintRightBrace(CurrMatrixHeight, AX, AY, pbMatrixList);
+  PaintRightBrace(MatrixHeight, AX, AY, pbMatrixList);
 end;
 
 procedure TMatrixListForm.pbMatrixListPaint(Sender: TObject);

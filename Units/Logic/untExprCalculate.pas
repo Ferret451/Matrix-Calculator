@@ -46,12 +46,12 @@ begin
     Inc(APointerPos);
   end;
 
-  if (OperandString[APointerPos] in MatrixNameFirstElValidSymbols) then
+  if (OperandString[1] in MatrixNameFirstElValidSymbols) then
   begin
     Operand.FIsMatrix := True;
     Operand.FMatrix := TMatrix.Create;
 
-    if DataManager.MatrixList.TryGetMatrix(OperandString, Operand.FMatrix) then
+    if not DataManager.MatrixList.TryGetMatrix(OperandString, Operand.FMatrix) then
     begin
       ShowMessage('Matrix name was not found in the matrix list');
       Result := False;
@@ -95,165 +95,168 @@ begin
       Mask := Ord(FirstOperand.FIsMatrix) shl 1 or
               Ord(SecondOperand.FIsMatrix);
 
-      case Mask Of
-        $0:
-        begin
-          ResultOperand.FIsMatrix := False;
+      try
+        case Mask Of
+          $0:
+          begin
+            ResultOperand.FIsMatrix := False;
 
-          try
+
+              case AOperatorStack.Top of
+                '+':
+                  ResultOperand.FNumber := FirstOperand.FNumber + SecondOperand.FNumber;
+                '-':
+                  ResultOperand.FNumber := FirstOperand.FNumber - SecondOperand.FNumber;
+                '*':
+                  ResultOperand.FNumber := FirstOperand.FNumber * SecondOperand.FNumber;
+                '/':
+                  ResultOperand.FNumber := FirstOperand.FNumber / SecondOperand.FNumber;
+                '^':
+                  ResultOperand.FNumber := Power(FirstOperand.FNumber, SecondOperand.FNumber);
+              end;
+          end;
+
+          $1:
+          begin
+            ResultOperand.FIsMatrix := True;
+
             case AOperatorStack.Top of
               '+':
-                ResultOperand.FNumber := FirstOperand.FNumber + SecondOperand.FNumber;
+              begin
+                ShowMessage('Summing of number and matrix was found');
+                Result := False;
+              end;
+
               '-':
-                ResultOperand.FNumber := FirstOperand.FNumber - SecondOperand.FNumber;
+              begin
+                ShowMessage('Difference of number and matrix was found');
+                Result := False;
+              end;
+
               '*':
-                ResultOperand.FNumber := FirstOperand.FNumber * SecondOperand.FNumber;
+              begin
+                ResultOperand.FMatrix :=
+                  SecondOperand.FMatrix.MultConst(FirstOperand.FNumber);
+              end;
+
+
               '/':
-                ResultOperand.FNumber := FirstOperand.FNumber / SecondOperand.FNumber;
+              begin
+                ShowMessage('Division of number on matrix was found');
+                Result := False;
+              end;
+
               '^':
-                ResultOperand.FNumber := Power(FirstOperand.FNumber, SecondOperand.FNumber);
-            end;
-          except
-            on EInvalidOp do
-            begin
-              ShowMessage('Final or interim result is too high or too low');
-              Result := False;
-            end;
-            on EDivByZero do
-            begin
-              ShowMessage('Division on zero was found');
-              Result := False;
-            end;
-          end;
-
-        end;
-
-        $1:
-        begin
-          ResultOperand.FIsMatrix := True;
-
-          case AOperatorStack.Top of
-            '+':
-            begin
-              ShowMessage('Summing of number and matrix was found');
-              Result := False;
-            end;
-
-            '-':
-            begin
-              ShowMessage('Difference of number and matrix was found');
-              Result := False;
-            end;
-
-            '*':
-              ResultOperand.FMatrix.AssignTo(
-                SecondOperand.FMatrix.MultConst(FirstOperand.FNumber));
-
-            '/':
-            begin
-              ShowMessage('Division of number on matrix was found');
-              Result := False;
-            end;
-
-            '^':
-            begin
-              ShowMessage('Exponentiation of number to matrix was found');
-              Result := False;
-            end;
-          end;
-        end;
-
-        $2:
-        begin
-          ResultOperand.FIsMatrix := True;
-
-          case AOperatorStack.Top of
-            '+':
-            begin
-              ShowMessage('Summing of number and matrix was found');
-              Result := False;
-            end;
-
-            '-':
-            begin
-              ShowMessage('Subtracting of number and matrix was found');
-              Result := False;
-            end;
-
-            '*':
-              ResultOperand.FMatrix.AssignTo(
-                FirstOperand.FMatrix.MultConst(SecondOperand.FNumber));
-
-            '/':
-            begin
-              ShowMessage('Division of number on matrix was found');
-              Result := False;
-            end;
-
-            '^':
-            begin
-              ShowMessage('Exponentiation of number to matrix was found');
-              Result := False;
-            end;
-          end;
-        end;
-
-        $3:
-        begin
-          ResultOperand.FIsMatrix := True;
-
-          case AOperatorStack.Top of
-            '+':
-            begin
-              if (FirstOperand.FMatrix.Lines <> SecondOperand.FMatrix.Lines) or
-                (FirstOperand.FMatrix.Columns <> SecondOperand.FMatrix.Columns) then
               begin
-                ShowMessage('Matrixes dimensions does not match when summing');
+                ShowMessage('Exponentiation of number to matrix was found');
                 Result := False;
-              end
-              else
-                ResultOperand.FMatrix.AssignTo(
-                  FirstOperand.FMatrix.Add(SecondOperand.FMatrix));
-            end;
-
-            '-':
-            begin
-              if (FirstOperand.FMatrix.Lines <> SecondOperand.FMatrix.Lines) or
-                (FirstOperand.FMatrix.Columns <> SecondOperand.FMatrix.Columns) then
-              begin
-                ShowMessage('Matrixes dimensions does not match when subtracting');
-                Result := False;
-              end
-              else
-                ResultOperand.FMatrix.AssignTo(
-                  FirstOperand.FMatrix.Substr(SecondOperand.FMatrix));
-            end;
-
-            '*':
-            begin
-              if (FirstOperand.FMatrix.Columns <> SecondOperand.FMatrix.Lines) then
-              begin
-                ShowMessage('First matrix columns does not equal to second' +
-                  'matrix lines when multiplying matrixes');
-                Result := False;
-              end
-              else
-                ResultOperand.FMatrix.AssignTo(
-                  FirstOperand.FMatrix.MultMatr(SecondOperand.FMatrix));
-            end;
-
-            '/':
-            begin
-              ShowMessage('Division of matrixes was found');
-              Result := False;
-            end;
-
-            '^':
-            begin
-              ShowMessage('Exponentiation of matrixes was found');
-              Result := False;
+              end;
             end;
           end;
+
+          $2:
+          begin
+            ResultOperand.FIsMatrix := True;
+
+            case AOperatorStack.Top of
+              '+':
+              begin
+                ShowMessage('Summing of number and matrix was found');
+                Result := False;
+              end;
+
+              '-':
+              begin
+                ShowMessage('Subtracting of number and matrix was found');
+                Result := False;
+              end;
+
+              '*':
+                ResultOperand.FMatrix.AssignTo(
+                  FirstOperand.FMatrix.MultConst(SecondOperand.FNumber));
+
+              '/':
+              begin
+                ShowMessage('Division of number on matrix was found');
+                Result := False;
+              end;
+
+              '^':
+              begin
+                ShowMessage('Exponentiation of number to matrix was found');
+                Result := False;
+              end;
+            end;
+          end;
+
+          $3:
+          begin
+            ResultOperand.FIsMatrix := True;
+
+            case AOperatorStack.Top of
+              '+':
+              begin
+                if (FirstOperand.FMatrix.LinesAmount <> SecondOperand.FMatrix.LinesAmount) or
+                  (FirstOperand.FMatrix.ColumnsAmount <> SecondOperand.FMatrix.ColumnsAmount) then
+                begin
+                  ShowMessage('Matrixes dimensions does not match when summing');
+                  Result := False;
+                end
+                else
+                  ResultOperand.FMatrix.AssignTo(
+                    FirstOperand.FMatrix.Add(SecondOperand.FMatrix));
+              end;
+
+              '-':
+              begin
+                if (FirstOperand.FMatrix.LinesAmount <> SecondOperand.FMatrix.LinesAmount) or
+                  (FirstOperand.FMatrix.ColumnsAmount <> SecondOperand.FMatrix.ColumnsAmount) then
+                begin
+                  ShowMessage('Matrixes dimensions does not match when subtracting');
+                  Result := False;
+                end
+                else
+                  ResultOperand.FMatrix.AssignTo(
+                    FirstOperand.FMatrix.Substr(SecondOperand.FMatrix));
+              end;
+
+              '*':
+              begin
+                if (FirstOperand.FMatrix.ColumnsAmount <> SecondOperand.FMatrix.LinesAmount) then
+                begin
+                  ShowMessage('First matrix columns does not equal to second' +
+                    'matrix lines when multiplying matrixes');
+                  Result := False;
+                end
+                else
+                  ResultOperand.FMatrix.AssignTo(
+                    FirstOperand.FMatrix.MultMatr(SecondOperand.FMatrix));
+              end;
+
+              '/':
+              begin
+                ShowMessage('Division of matrixes was found');
+                Result := False;
+              end;
+
+              '^':
+              begin
+                ShowMessage('Exponentiation of matrixes was found');
+                Result := False;
+              end;
+            end;
+          end;
+        end;
+      except
+        on EInvalidOp do
+        begin
+          ShowMessage('Final or interim result is too high or too low');
+          Result := False;
+        end;
+        on EDivByZero do
+        begin
+          ShowMessage('Division on zero was found');
+          Result := False;
         end;
       end;
 
@@ -266,7 +269,7 @@ begin
     end
     else
     begin
-      ShowMessage('Expression is incorrect');
+      ShowMessage('Incorrect expression');
       Result := False;
     end;
   end;
@@ -314,7 +317,15 @@ begin
   end;
 
   if Result then
-    AAnswer := OperandStack.Top;
+  begin
+    if not OperandStack.IsEmpty then
+      AAnswer := OperandStack.Top
+    else
+    begin
+      ShowMessage('Incorrect expression');
+      Result := False;
+    end;
+  end;
 
   OperandStack.Destroy;
   OperatorStack.Destroy;

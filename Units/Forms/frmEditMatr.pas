@@ -244,8 +244,8 @@ begin
   else
   begin
     edMatrixName.Text := AEditingMatrix.Name;
-    edMatrixLines.Text := IntToStr(AEditingMatrix.Lines);
-    edMatrixColumns.Text := IntToStr(AEditingMatrix.Columns);
+    edMatrixLines.Text := IntToStr(AEditingMatrix.LinesAmount);
+    edMatrixColumns.Text := IntToStr(AEditingMatrix.ColumnsAmount);
 
     sgMatrixElements.RowCount := StrToInt(edMatrixLines.Text);
     sgMatrixElements.ColCount := StrToInt(edMatrixColumns.Text);
@@ -264,18 +264,18 @@ begin
     begin
       AEditingMatrix := TMatrix.Create(edMatrixName.Text,
         StrToInt(edMatrixLines.Text), StrToInt(edMatrixColumns.Text));
-      for i := 0 to AEditingMatrix.Lines - 1 do
-        for j := 0 to AEditingMatrix.Columns - 1 do
+      for i := 0 to AEditingMatrix.LinesAmount - 1 do
+        for j := 0 to AEditingMatrix.ColumnsAmount - 1 do
           AEditingMatrix.Elements[i, j] :=
             StrToFloat(sgMatrixElements.Cells[j, i]);
     end
     else
     begin
       AEditingMatrix.Name := edMatrixName.Text;
-      AEditingMatrix.Lines := StrToInt(edMatrixLines.Text);
-      AEditingMatrix.Columns := StrToInt(edMatrixColumns.Text);
-      for i := 0 to AEditingMatrix.Lines - 1 do
-        for j := 0 to AEditingMatrix.Columns - 1 do
+      AEditingMatrix.LinesAmount := StrToInt(edMatrixLines.Text);
+      AEditingMatrix.ColumnsAmount := StrToInt(edMatrixColumns.Text);
+      for i := 0 to AEditingMatrix.LinesAmount - 1 do
+        for j := 0 to AEditingMatrix.ColumnsAmount - 1 do
           AEditingMatrix.Elements[i, j] :=
             StrToFloat(sgMatrixElements.Cells[j, i]);
     end;
