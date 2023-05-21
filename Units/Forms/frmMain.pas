@@ -7,7 +7,8 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Menus, System.Actions,
   Vcl.ActnList, Vcl.ExtCtrls, System.ImageList, Vcl.ImgList, Vcl.ToolWin, Vcl.ComCtrls,
   untExprCalculate, clsDoubleLinkedList, clsMatrix, clsMatrixList, clsDataManager,
-  frmMatrList, frmEditMatr, Vcl.NumberBox, untConstants, untTypes;
+  frmMatrList, frmEditMatr, Vcl.NumberBox, untConstants, untTypes, Vcl.Grids,
+  frmHTML;
 
 type
   TMainForm = class(TForm)
@@ -41,7 +42,6 @@ type
     pbHistory: TPaintBox;
     panCalculationsPart: TPanel;
     sbExpression: TScrollBox;
-    pbExpression: TPaintBox;
     panCalculatorButtons: TPanel;
     butTwo: TButton;
     butFive: TButton;
@@ -66,6 +66,27 @@ type
     splMain: TSplitter;
     butExponentaition: TButton;
     edExpression: TEdit;
+    sgInputMatrix: TStringGrid;
+    panCalcChoose: TPanel;
+    butExpressionChoose: TButton;
+    butDeterminantChoose: TButton;
+    butInverseChoose: TButton;
+    butRankChoose: TButton;
+    Button5: TButton;
+    Button6: TButton;
+    Button7: TButton;
+    pbExpression: TPaintBox;
+    butAddDimension: TButton;
+    butRemoveDimension: TButton;
+    labLines: TLabel;
+    labColumns: TLabel;
+    edLinesAmount: TEdit;
+    edColumnsAmount: TEdit;
+    Help1: TMenuItem;
+    Help2: TMenuItem;
+    About1: TMenuItem;
+    aOpenHelp: TAction;
+    aOpenAbout: TAction;
 
     procedure edExpressionExit(Sender: TObject);
     procedure butCalculateClick(Sender: TObject);
@@ -83,21 +104,27 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure pbExpressionPaint(Sender: TObject);
     procedure edExpressionChange(Sender: TObject);
+    procedure sgResize(Sender: TObject);
+    procedure butAddDimensionClick(Sender: TObject);
+    procedure butRemoveDimensionClick(Sender: TObject);
+    procedure butChooseClick(Sender: TObject);
+    procedure edDimensionsChange(Sender: TObject);
+    procedure aExecuteInfo(Sender: TObject);
+    procedure edDimensionsExit(Sender: TObject);
   private
     FCarriagePos: Integer;
+
+    function TryStrToNatural(const ANumberSting: string; var ANumber: Integer): Boolean;
   public
 
   end;
 
 var
   MainForm: TMainForm;
-  MatrixListForm: TMatrixListForm;
 
 implementation
 
 {$R *.dfm}
-
-
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
@@ -140,9 +167,19 @@ begin
 //
 end;
 
+procedure TMainForm.aExecuteInfo(Sender: TObject);
+begin
+  case TComponent(Sender).Tag of
+    1:
+      HTMLForm.Execute('Help');
+    2:
+      HTMLForm.Execute('About Program');
+  end;
+end;
+
 procedure TMainForm.aViewMatrixListExecute(Sender: TObject);
 begin
-  MatrixListForm := TMatrixListForm.Create(Self);
+  //MatrixListForm := TMatrixListForm.Create(Self);
   MatrixListForm.Show;
 end;
 
@@ -211,6 +248,112 @@ begin
 
   edExpression.SetFocus;
   edExpression.SelStart := FCarriagePos;
+end;
+
+procedure TMainForm.butChooseClick(Sender: TObject);
+begin
+  edExpression.Visible := False;
+  sgInputMatrix.Visible := False;
+  butAddDimension.Visible := False;
+  butRemoveDimension.Visible := False;
+  edLinesAmount.Visible := False;
+  edColumnsAmount.Visible := False;
+  labLines.Visible := False;
+  labColumns.Visible := False;
+  if TButton(Sender).Name = butExpressionChoose.Name then
+  begin
+    edExpression.Visible := True;
+
+  end
+  else if (TButton(Sender).Name = butDeterminantChoose.Name) then
+  begin
+    sgInputMatrix.Visible := True;
+    butAddDimension.Visible := True;
+    butRemoveDimension.Visible := True;
+  end
+  else if (TButton(Sender).Name = butInverseChoose.Name) then
+  begin
+    sgInputMatrix.Visible := True;
+    edLinesAmount.Visible := True;
+    edColumnsAmount.Visible := True;
+    labLines.Visible := True;
+    labColumns.Visible := True;
+  end
+  else if (TButton(Sender).Name = butRankChoose.Name) then
+  begin
+    sgInputMatrix.Visible := True;
+    edLinesAmount.Visible := True;
+    edColumnsAmount.Visible := True;
+    labLines.Visible := True;
+    labColumns.Visible := True;
+  end;
+end;
+
+procedure TMainForm.butAddDimensionClick(Sender: TObject);
+begin
+  sgInputMatrix.RowCount := sgInputMatrix.RowCount + 1;
+  sgInputMatrix.ColCount := sgInputMatrix.ColCount + 1;
+  sgResize(sgInputMatrix);
+end;
+
+procedure TMainForm.butRemoveDimensionClick(Sender: TObject);
+begin
+  if sgInputMatrix.RowCount > 1 then
+  begin
+    sgInputMatrix.RowCount := sgInputMatrix.RowCount - 1;
+    sgInputMatrix.ColCount := sgInputMatrix.ColCount - 1;
+    sgResize(sgInputMatrix);
+  end;
+end;
+
+procedure TMainForm.sgResize(Sender: TObject);
+begin
+  TStringGrid(Sender).Height := (TStringGrid(Sender).DefaultRowHeight +
+    sgSizeFixingNumber) * TStringGrid(Sender).RowCount;
+  TStringGrid(Sender).Width := (TStringGrid(Sender).DefaultColWidth +
+    sgSizeFixingNumber * TStringGrid(Sender).ColCount);
+end;
+
+function TMainForm.TryStrToNatural(const ANumberSting: string; var ANumber: Integer): Boolean;
+var
+  Temp: Integer;
+begin
+  Result := TryStrToInt(ANumberSting, Temp);
+
+  if Result then
+  begin
+    Result := Temp > 0;
+    if Result then
+      ANumber := StrToInt(ANumberSting);
+  end;
+end;
+
+procedure TMainForm.edDimensionsChange(Sender: TObject);
+var
+  Amount: Integer;
+begin
+  if TryStrToNatural(TEdit(Sender).Text, Amount) then
+    if TEdit(Sender).Name = edLinesAmount.Name then
+    begin
+      sgInputMatrix.RowCount := Amount;
+      sgResize(sgInputMatrix);
+    end
+    else if TEdit(Sender).Name = edColumnsAmount.Name then
+    begin
+      sgInputMatrix.ColCount := Amount;
+      sgResize(sgInputMatrix);
+    end
+end;
+
+procedure TMainForm.edDimensionsExit(Sender: TObject);
+var
+  Temp: Integer;
+begin
+  if not TryStrToNatural(TEdit(Sender).Text, Temp) then
+  begin
+    ShowMessage('Invorrect dimension');
+    TEdit(Sender).SetFocus;
+  end;
 end;
 
 end.

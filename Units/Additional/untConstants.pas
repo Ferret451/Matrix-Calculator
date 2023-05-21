@@ -25,7 +25,7 @@ const
   EqualsLeftBraceInterval = 7;
   TopBottomBraceLinesLength = 5;
 
-
+  sgSizeFixingNumber = 6;
 implementation
 
 end.

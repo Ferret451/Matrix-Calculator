@@ -98,6 +98,9 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <RcCompile Include="HTML.rc">
+            <Form>HTML.res</Form>
+        </RcCompile>
         <DCCReference Include="Units\Forms\frmMain.pas">
             <Form>MainForm</Form>
         </DCCReference>
@@ -116,6 +119,11 @@
         <DCCReference Include="Units\Classes\clsDataManager.pas"/>
         <DCCReference Include="Units\Classes\clsOperandStack.pas"/>
         <DCCReference Include="Units\Additional\untTypes.pas"/>
+        <DCCReference Include="Units\Logic\untPainting.pas"/>
+        <DCCReference Include="Units\Forms\frmHTML.pas">
+            <Form>HTMLForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

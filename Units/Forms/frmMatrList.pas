@@ -31,6 +31,7 @@ type
     procedure pbMatrixListDblClick(Sender: TObject);
     procedure pbMatrixListMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
+    procedure FormShow(Sender: TObject);
 
   private type
     TMatrixBorders = record
@@ -44,7 +45,6 @@ type
     FMatrixesBorders: array of TMatrixBorders;
     FCursorPos: TPos;
   public
-    constructor Create(AOwner: TComponent); override;
     destructor Destroy(); override;
 
     procedure MatrixPaint(var AX, AY: Integer; const AMatrix: TMatrix; Sender: TObject);
@@ -66,31 +66,17 @@ implementation
 
 {$R *.dfm}
 
-constructor TMatrixListForm.Create(AOwner: TComponent);
-var
-  OwnerControl: TControl;
-begin
-  inherited;
-
-  if AOwner is TControl then
-  begin
-    OwnerControl := TControl(AOwner);
-    Left := OwnerControl.Left + (OwnerControl.Width - Width) shr 1;
-    Top := OwnerControl.Top + (OwnerControl.Height - Height) shr 1;
-  end
-  else
-  begin
-    Left := (Screen.Width - Width) shr 1;
-    Top := (Screen.Height - Height) shr 1;
-  end;
-
-end;
-
 destructor TMatrixListForm.Destroy();
 begin
   SetLength(FMatrixesBorders, 0);
 
   inherited;
+end;
+
+procedure TMatrixListForm.FormShow(Sender: TObject);
+begin
+  Left:= (Screen.Width - Width) shr 1;
+  Top:= (Screen.Height - Width) shr 1;
 end;
 
 procedure TMatrixListForm.aClearListExecute(Sender: TObject);
@@ -246,17 +232,17 @@ begin
   MatrixHeight := GetMatrixHeight(AMatrix, Sender);
 
   if AMatrix.Name <> '' then
-    MatrixNamePrint(MatrixHeight, AX, AY, AMatrix.Name, pbMatrixList);
+    MatrixNamePrint(MatrixHeight, AX, AY, AMatrix.Name, Sender);
 
   AX := AX + TopBottomBraceLinesLength;
   AY := StartY;
-  PaintLeftBrace(MatrixHeight,AX, AY, pbMatrixList);
+  PaintLeftBrace(MatrixHeight,AX, AY, Sender);
 
   AY := StartY + LineInterval;
-  MatrixElementsPrint(AX, AY, AMatrix, pbMatrixList);
+  MatrixElementsPrint(AX, AY, AMatrix, Sender);
 
   AY := StartY;
-  PaintRightBrace(MatrixHeight, AX, AY, pbMatrixList);
+  PaintRightBrace(MatrixHeight, AX, AY, Sender);
 end;
 
 procedure TMatrixListForm.pbMatrixListPaint(Sender: TObject);

@@ -1,0 +1,16 @@
+unit clsOperandStack;
+
+interface
+
+uses
+  clsStack, clsMatrix, untTypes;
+
+type
+  TOperandStack = class(TStack<TOperand>)
+  public
+    destructor Destroy(); override;
+  end;
+
+implementation
+
+end.

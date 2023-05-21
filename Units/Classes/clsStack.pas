@@ -5,14 +5,14 @@ interface
 Type
   TStack<T> = class
 
-  private type
+  protected type
     PStackSegment = ^TStackSegment;
     TStackSegment = record
       FValue: T;
       FNext: PStackSegment;
     end;
 
-  private
+  protected
     FTop: PStackSegment;
     FSize: Integer;
 
@@ -22,7 +22,7 @@ Type
 
     procedure Push(const AValue: T);
     function Top: T;
-    function Pop: T;
+    function Pop: T; virtual;
     function Size: Integer;
     function IsEmpty: Boolean;
   end;

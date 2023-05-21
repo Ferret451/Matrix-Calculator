@@ -1,5 +1,7 @@
 program Project;
 
+{$R 'HTML.res' 'HTML.rc'}
+
 uses
   Vcl.Forms,
   frmMain in 'Units\Forms\frmMain.pas' {MainForm},
@@ -13,7 +15,9 @@ uses
   untExprCalculate in 'Units\Logic\untExprCalculate.pas',
   clsDataManager in 'Units\Classes\clsDataManager.pas',
   clsOperandStack in 'Units\Classes\clsOperandStack.pas',
-  untTypes in 'Units\Additional\untTypes.pas';
+  untTypes in 'Units\Additional\untTypes.pas',
+  untPainting in 'Units\Logic\untPainting.pas',
+  frmHTML in 'Units\Forms\frmHTML.pas' {HTMLForm};
 
 {$R *.res}
 
@@ -23,5 +27,6 @@ begin
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TMatrixListForm, MatrixListForm);
   Application.CreateForm(TEditMatrixForm, EditMatrixForm);
+  Application.CreateForm(THTMLForm, HTMLForm);
   Application.Run;
 end.

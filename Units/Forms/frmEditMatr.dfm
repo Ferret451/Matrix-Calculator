@@ -22,6 +22,7 @@ object EditMatrixForm: TEditMatrixForm
     Height = 329
     Align = alLeft
     TabOrder = 0
+    ExplicitLeft = -6
     object labMatrixName: TLabel
       Left = 16
       Top = 16
@@ -67,7 +68,6 @@ object EditMatrixForm: TEditMatrixForm
       Width = 135
       Height = 21
       TabOrder = 0
-      OnExit = edMatrixNameExit
     end
     object edMatrixLines: TEdit
       Left = 16
@@ -75,7 +75,7 @@ object EditMatrixForm: TEditMatrixForm
       Width = 57
       Height = 21
       TabOrder = 1
-      OnExit = edMatrixLinesExit
+      OnChange = edMatrixLinesChange
     end
     object edMatrixColumns: TEdit
       Left = 94
@@ -83,7 +83,7 @@ object EditMatrixForm: TEditMatrixForm
       Width = 57
       Height = 21
       TabOrder = 2
-      OnExit = edMatrixColumnsExit
+      OnChange = edMatrixColumnsChange
     end
     object butOK: TButton
       Left = 1
@@ -92,8 +92,11 @@ object EditMatrixForm: TEditMatrixForm
       Height = 24
       Align = alBottom
       Caption = 'OK'
+      Default = True
       TabOrder = 3
       OnClick = butOKClick
+      ExplicitLeft = -4
+      ExplicitTop = 276
     end
     object butCancel: TButton
       Left = 1
@@ -113,21 +116,25 @@ object EditMatrixForm: TEditMatrixForm
     Width = 392
     Height = 329
     Align = alClient
+    Color = clSkyBlue
     ColCount = 1
     DrawingStyle = gdsGradient
+    FixedColor = clWindow
     FixedCols = 0
     RowCount = 1
     FixedRows = 0
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
+    Font.Color = clMenuText
     Font.Height = -14
     Font.Name = 'Times New Roman'
     Font.Style = []
-    GradientEndColor = clCream
+    GradientEndColor = clWindow
+    GradientStartColor = clWindow
     GridLineWidth = 3
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goFixedRowDefAlign]
     ParentFont = False
     TabOrder = 1
     OnEnter = sgMatrixElementsEnter
+    ExplicitLeft = 174
   end
 end

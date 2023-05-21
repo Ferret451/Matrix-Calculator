@@ -51,7 +51,7 @@ begin
     Operand.FIsMatrix := True;
     Operand.FMatrix := TMatrix.Create;
 
-    if not DataManager.MatrixList.TryGetMatrix(OperandString, Operand.FMatrix) then
+    if not DataManager.MatrixList.TryGetMatrixFromList(OperandString, Operand.FMatrix) then
     begin
       ShowMessage('Matrix name was not found in the matrix list');
       Result := False;
@@ -172,8 +172,8 @@ begin
               end;
 
               '*':
-                ResultOperand.FMatrix.AssignTo(
-                  FirstOperand.FMatrix.MultConst(SecondOperand.FNumber));
+                ResultOperand.FMatrix :=
+                  FirstOperand.FMatrix.MultConst(SecondOperand.FNumber);
 
               '/':
               begin
@@ -203,8 +203,8 @@ begin
                   Result := False;
                 end
                 else
-                  ResultOperand.FMatrix.AssignTo(
-                    FirstOperand.FMatrix.Add(SecondOperand.FMatrix));
+                  ResultOperand.FMatrix :=
+                    FirstOperand.FMatrix.Add(SecondOperand.FMatrix);
               end;
 
               '-':
@@ -216,8 +216,8 @@ begin
                   Result := False;
                 end
                 else
-                  ResultOperand.FMatrix.AssignTo(
-                    FirstOperand.FMatrix.Substr(SecondOperand.FMatrix));
+                  ResultOperand.FMatrix :=
+                    FirstOperand.FMatrix.Substr(SecondOperand.FMatrix);
               end;
 
               '*':
@@ -229,8 +229,8 @@ begin
                   Result := False;
                 end
                 else
-                  ResultOperand.FMatrix.AssignTo(
-                    FirstOperand.FMatrix.MultMatr(SecondOperand.FMatrix));
+                  ResultOperand.FMatrix :=
+                    FirstOperand.FMatrix.MultMatr(SecondOperand.FMatrix);
               end;
 
               '/':

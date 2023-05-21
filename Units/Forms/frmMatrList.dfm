@@ -11,6 +11,7 @@ object MatrixListForm: TMatrixListForm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object tbMatrixList: TToolBar
@@ -49,6 +50,8 @@ object MatrixListForm: TMatrixListForm
     Top = 49
     Width = 450
     Height = 276
+    HorzScrollBar.Tracking = True
+    VertScrollBar.Tracking = True
     Align = alClient
     TabOrder = 1
     object pbMatrixList: TPaintBox
