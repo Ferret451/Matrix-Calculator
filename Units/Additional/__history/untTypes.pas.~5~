@@ -1,0 +1,29 @@
+unit untTypes;
+
+interface
+
+uses
+  clsMatrix;
+
+type
+  TOperand = record
+    FMatrix: TMatrix;
+    FNumber: Extended;
+    FIsMatrix: Boolean;
+  end;
+
+  TExpression = record
+    FExpressionString: string;
+    FAnswer: TOperand;
+  end;
+
+  TOperationStatement = (
+    ostatExpression = 0,
+    ostatDeterminant = 1,
+    ostatInverse = 2,
+    ostatRank = 3
+  );
+
+implementation
+
+end.

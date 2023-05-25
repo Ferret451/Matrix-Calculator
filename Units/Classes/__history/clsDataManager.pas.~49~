@@ -1,0 +1,76 @@
+unit clsDataManager;
+
+interface
+
+uses
+  Vcl.ExtCtrls, clsMatrixList, clsMatrix, untTypes;
+
+type
+  TPaintProc = procedure(Sender: TObject);
+
+  TDataManager = class
+  private
+    FCurrentExpression: TFullOperation;
+    FCurrentDeterminant: TFullOperation;
+    FCurrentInverse: TFullOperation;
+    FCurrentRank: TFullOperation;
+    FOperationStatement: TOperationStatement;
+
+    FMatrixList: TMatrixList;
+
+
+
+  public
+    constructor Create();
+    destructor Destroy(); override;
+
+    procedure CallBack(Sender: TObject);
+    procedure SetProblemString(const AProblemString: string;
+      const AOperation: TFullOperation);
+    procedure SetProblemMatrix(const AProblemString: TMatrix;
+      const AOperation: TFullOperation);
+    procedure SetAnswer(const AAnswer: TAnswer;
+      const AOperation: TFullOperation);
+
+    property MatrixList: TMatrixList read FMatrixList;
+    property CurrentExpression: TFullOperation read FCurrentExpression;
+    property CurrentDeterminant: TFullOperation read FCurrentDeterminant;
+    property CurrentInverse: TFullOperation read FCurrentInverse;
+    property CurrentRank: TFullOperation read FCurrentRank;
+    property OperationStatement: TOperationStatement read FOperationStatement
+      write FOperationStatement;
+  end;
+
+var
+  DataManager: TDataManager;
+
+implementation
+
+constructor TDataManager.Create();
+begin
+  FMatrixList := TMatrixList.Create();
+end;
+
+destructor TDataManager.Destroy();
+begin
+  FMatrixList.Destroy();
+
+  inherited;
+end;
+
+procedure TDataManager.CallBack(Sender: TObject);
+begin
+  TPaintBox(Sender).OnPaint(TPaintBox(Sender));;
+end;
+
+procedure TDataManager.SetProblemString(const AProblemString: string);
+begin
+  FCurrentExpression.FProblemString := AProblemString;
+end;
+
+procedure TDataManager.SetAnswer(const AAnswer: TAnswer);
+begin
+  FCurrentExpression.FAnswer := AAnswer;
+end;
+
+end.

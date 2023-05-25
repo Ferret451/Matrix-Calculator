@@ -22,7 +22,6 @@ object EditMatrixForm: TEditMatrixForm
     Height = 329
     Align = alLeft
     TabOrder = 0
-    ExplicitLeft = -6
     object labMatrixName: TLabel
       Left = 16
       Top = 16
@@ -95,8 +94,6 @@ object EditMatrixForm: TEditMatrixForm
       Default = True
       TabOrder = 3
       OnClick = butOKClick
-      ExplicitLeft = -4
-      ExplicitTop = 276
     end
     object butCancel: TButton
       Left = 1
@@ -135,6 +132,5 @@ object EditMatrixForm: TEditMatrixForm
     ParentFont = False
     TabOrder = 1
     OnEnter = sgMatrixElementsEnter
-    ExplicitLeft = 174
   end
 end

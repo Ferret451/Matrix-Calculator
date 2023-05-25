@@ -1,0 +1,29 @@
+unit untTypes;
+
+interface
+
+uses
+  clsMatrix;
+
+type
+  TOperand = record
+    FMatrix: TMatrix;
+    FNumber: Extended;
+    FIsMatrix: Boolean;
+  end;
+
+  TExpression = record
+    FExpressionString: string;
+    FAnswer: TOperand;
+  end;
+
+  TViewStatement = (
+    vstatExpression = 0,
+    vstatDeterminant = 1,
+    vstatInverse = 2,
+    vstatRank = 3
+  );
+
+implementation
+
+end.

@@ -88,8 +88,10 @@ procedure TEditMatrixForm.sgMatrixElementsEnter(Sender: TObject);
 var
   i, j: Integer;
 begin
-  if not (IsCorrectLinesAmount(True) and IsCorrectColumnsAmount(True)) then
-    edMatrixLines.SetFocus;
+  if not IsCorrectLinesAmount(True) then
+    edMatrixLines.SetFocus
+  else if not IsCorrectColumnsAmount(True) then
+    edMatrixColumns.SetFocus
 end;
 
 procedure TEditMatrixForm.sgMatrixElementsClear(Sender: TObject);

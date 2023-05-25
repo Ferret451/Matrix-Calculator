@@ -1,0 +1,28 @@
+unit clsOperandStack;
+
+interface
+
+uses
+  clsStack, clsMatrix, untTypes;
+
+type
+  TOperandStack = class(TStack<TAnswer>)
+  public
+    function Pop: TAnswer; override;
+  end;
+
+implementation
+
+function TOperandStack.Pop: TAnswer;
+Var
+  Segment: PStackSegment;
+begin
+  Segment := FTop;
+  Result := Segment.FValue;
+  Segment.FValue.FMatrix.Destroy();
+  FTop := Segment.FNext;
+  Dispose(Segment);
+  Dec(FSize);
+end;
+
+end.

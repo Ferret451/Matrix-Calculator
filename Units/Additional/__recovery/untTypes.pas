@@ -1,0 +1,30 @@
+unit untTypes;
+
+interface
+
+uses
+  clsMatrix;
+
+type
+  TAnswer = record
+    FMatrix: TMatrix;
+    FNumber: Extended;
+    FIsMatrix: Boolean;
+  end;
+
+  TFullOperation = record
+    FProblemString: string;
+    FProblemMatrix: TMatrix;
+    FAnswer: TAnswer;
+  end;
+
+  TOperationStatement = (
+    ostatExpression = 0,
+    ostatDeterminant = 1,
+    ostatInverse = 2,
+    ostatRank = 3
+  );
+
+implementation
+
+end.

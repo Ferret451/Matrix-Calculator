@@ -19,13 +19,13 @@ const
   ExampleText = '1234567890';
   DefaulePenWidth = 3;
   StartPosX = 10;
-  StartPosY = 20;
+  StartPosY = 10;
   LineInterval = 10;
   ColumnInterval = 15;
   EqualsLeftBraceInterval = 7;
   TopBottomBraceLinesLength = 5;
 
-  sgSizeFixingNumber = 6;
+  sgSizeFixingNumber = 3;
 implementation
 
 end.

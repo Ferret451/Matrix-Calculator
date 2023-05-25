@@ -12,10 +12,18 @@ type
     FIsMatrix: Boolean;
   end;
 
-  TExpression = record
-    FExpressionString: string;
+  TFullExpression = record
+    FProblemString: string;
+    FProbelemMatrix: TMatrix;
     FAnswer: TOperand;
   end;
+
+  TOperationStatement = (
+    ostatExpression = 0,
+    ostatDeterminant = 1,
+    ostatInverse = 2,
+    ostatRank = 3
+  );
 
 implementation
 

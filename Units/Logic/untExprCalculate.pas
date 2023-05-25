@@ -4,13 +4,13 @@ interface
 
 uses
   System.SysUtils, Math, clsStack, clsMatrix, clsMatrixList, untConstants,
-  Vcl.Dialogs, clsDataManager, untTypes;
+  Vcl.Dialogs, clsDataManager, clsOperandStack, untTypes;
 
 var
-  OperandStack: TStack<TOperand>;
+  OperandStack: TOperandStack;
   OperatorStack: TStack<char>;
 
-  function ExprCalculation(AExpressionString: string; var AAnswer: TOperand): Boolean;
+  function ExprCalculation(AExpressionString: string; var AAnswer: TAnswer): Boolean;
 
 implementation
 
@@ -31,10 +31,10 @@ begin
 end;
 
 function OperandProcessing(var APointerPos: Integer; const AExpressionString: string;
-  const AOperandStack: TStack<TOperand>): Boolean;
+  const AOperandStack: TOperandStack): Boolean;
 var
   OperandString: string;
-  Operand: TOperand;
+  Operand: TAnswer;
 begin
   Result := True;
   OperandString := '';
@@ -46,10 +46,10 @@ begin
     Inc(APointerPos);
   end;
 
+  Operand.FMatrix := TMatrix.Create;
   if (OperandString[1] in MatrixNameFirstElValidSymbols) then
   begin
     Operand.FIsMatrix := True;
-    Operand.FMatrix := TMatrix.Create;
 
     if not DataManager.MatrixList.TryGetMatrixFromList(OperandString, Operand.FMatrix) then
     begin
@@ -72,9 +72,9 @@ begin
 end;
 
 function OperatorProcessing(const NewOperator: Char;
-  const AOperandStack: TStack<TOperand>; const AOperatorStack: TStack<Char>): Boolean;
+  const AOperandStack: TOperandStack; const AOperatorStack: TStack<Char>): Boolean;
 var
-  FirstOperand, SecondOperand, ResultOperand: TOperand;
+  FirsTAnswer, SecondOperand, ResulTAnswer: TAnswer;
   Mask : Integer;
 begin
   Result := True;
@@ -87,38 +87,38 @@ begin
     begin
       SecondOperand := AOperandStack.Top;
       AOperandStack.Pop;
-      FirstOperand := AOperandStack.Top;
+      FirsTAnswer := AOperandStack.Top;
       AOperandStack.Pop;
 
       {0 - two numbers, 1 - SecondElement is matrix
        2 - FirstElement is matrix, 3 - two numbers}
-      Mask := Ord(FirstOperand.FIsMatrix) shl 1 or
+      Mask := Ord(FirsTAnswer.FIsMatrix) shl 1 or
               Ord(SecondOperand.FIsMatrix);
 
       try
         case Mask Of
           $0:
           begin
-            ResultOperand.FIsMatrix := False;
+            ResulTAnswer.FIsMatrix := False;
 
 
               case AOperatorStack.Top of
                 '+':
-                  ResultOperand.FNumber := FirstOperand.FNumber + SecondOperand.FNumber;
+                  ResulTAnswer.FNumber := FirsTAnswer.FNumber + SecondOperand.FNumber;
                 '-':
-                  ResultOperand.FNumber := FirstOperand.FNumber - SecondOperand.FNumber;
+                  ResulTAnswer.FNumber := FirsTAnswer.FNumber - SecondOperand.FNumber;
                 '*':
-                  ResultOperand.FNumber := FirstOperand.FNumber * SecondOperand.FNumber;
+                  ResulTAnswer.FNumber := FirsTAnswer.FNumber * SecondOperand.FNumber;
                 '/':
-                  ResultOperand.FNumber := FirstOperand.FNumber / SecondOperand.FNumber;
+                  ResulTAnswer.FNumber := FirsTAnswer.FNumber / SecondOperand.FNumber;
                 '^':
-                  ResultOperand.FNumber := Power(FirstOperand.FNumber, SecondOperand.FNumber);
+                  ResulTAnswer.FNumber := Power(FirsTAnswer.FNumber, SecondOperand.FNumber);
               end;
           end;
 
           $1:
           begin
-            ResultOperand.FIsMatrix := True;
+            ResulTAnswer.FIsMatrix := True;
 
             case AOperatorStack.Top of
               '+':
@@ -135,8 +135,8 @@ begin
 
               '*':
               begin
-                ResultOperand.FMatrix :=
-                  SecondOperand.FMatrix.MultConst(FirstOperand.FNumber);
+                ResulTAnswer.FMatrix :=
+                  SecondOperand.FMatrix.MultConst(FirsTAnswer.FNumber);
               end;
 
 
@@ -156,7 +156,7 @@ begin
 
           $2:
           begin
-            ResultOperand.FIsMatrix := True;
+            ResulTAnswer.FIsMatrix := True;
 
             case AOperatorStack.Top of
               '+':
@@ -172,8 +172,8 @@ begin
               end;
 
               '*':
-                ResultOperand.FMatrix :=
-                  FirstOperand.FMatrix.MultConst(SecondOperand.FNumber);
+                ResulTAnswer.FMatrix :=
+                  FirsTAnswer.FMatrix.MultConst(SecondOperand.FNumber);
 
               '/':
               begin
@@ -191,46 +191,46 @@ begin
 
           $3:
           begin
-            ResultOperand.FIsMatrix := True;
+            ResulTAnswer.FIsMatrix := True;
 
             case AOperatorStack.Top of
               '+':
               begin
-                if (FirstOperand.FMatrix.LinesAmount <> SecondOperand.FMatrix.LinesAmount) or
-                  (FirstOperand.FMatrix.ColumnsAmount <> SecondOperand.FMatrix.ColumnsAmount) then
+                if (FirsTAnswer.FMatrix.LinesAmount <> SecondOperand.FMatrix.LinesAmount) or
+                  (FirsTAnswer.FMatrix.ColumnsAmount <> SecondOperand.FMatrix.ColumnsAmount) then
                 begin
                   ShowMessage('Matrixes dimensions does not match when summing');
                   Result := False;
                 end
                 else
-                  ResultOperand.FMatrix :=
-                    FirstOperand.FMatrix.Add(SecondOperand.FMatrix);
+                  ResulTAnswer.FMatrix :=
+                    FirsTAnswer.FMatrix.Add(SecondOperand.FMatrix);
               end;
 
               '-':
               begin
-                if (FirstOperand.FMatrix.LinesAmount <> SecondOperand.FMatrix.LinesAmount) or
-                  (FirstOperand.FMatrix.ColumnsAmount <> SecondOperand.FMatrix.ColumnsAmount) then
+                if (FirsTAnswer.FMatrix.LinesAmount <> SecondOperand.FMatrix.LinesAmount) or
+                  (FirsTAnswer.FMatrix.ColumnsAmount <> SecondOperand.FMatrix.ColumnsAmount) then
                 begin
                   ShowMessage('Matrixes dimensions does not match when subtracting');
                   Result := False;
                 end
                 else
-                  ResultOperand.FMatrix :=
-                    FirstOperand.FMatrix.Substr(SecondOperand.FMatrix);
+                  ResulTAnswer.FMatrix :=
+                    FirsTAnswer.FMatrix.Substr(SecondOperand.FMatrix);
               end;
 
               '*':
               begin
-                if (FirstOperand.FMatrix.ColumnsAmount <> SecondOperand.FMatrix.LinesAmount) then
+                if (FirsTAnswer.FMatrix.ColumnsAmount <> SecondOperand.FMatrix.LinesAmount) then
                 begin
                   ShowMessage('First matrix columns does not equal to second' +
                     'matrix lines when multiplying matrixes');
                   Result := False;
                 end
                 else
-                  ResultOperand.FMatrix :=
-                    FirstOperand.FMatrix.MultMatr(SecondOperand.FMatrix);
+                  ResulTAnswer.FMatrix :=
+                    FirsTAnswer.FMatrix.MultMatr(SecondOperand.FMatrix);
               end;
 
               '/':
@@ -258,12 +258,17 @@ begin
           ShowMessage('Division on zero was found');
           Result := False;
         end;
+        on E: Exception do
+        begin
+          // Обработка исключения
+          ShowMessage('Исключение: ' + E.Message);
+        end;
       end;
 
       if Result then
       begin
         OperatorStack.Pop;
-        OperandStack.Push(ResultOperand);
+        OperandStack.Push(ResulTAnswer);
       end;
 
     end
@@ -280,12 +285,12 @@ begin
     OperatorStack.Push(NewOperator);
 end;
 
-function ExprCalculation(AExpressionString: string; var AAnswer: TOperand): Boolean;
+function ExprCalculation(AExpressionString: string; var AAnswer: TAnswer): Boolean;
 var
   i: Integer;
-  CurrentOperand: string;
+  CurrenTAnswer: string;
 begin
-  OperandStack := TStack<TOperand>.Create;
+  OperandStack := TOperandStack.Create;
   OperatorStack := TStack<char>.Create;
 
   AExpressionString := '(' + AExpressionString + ')';

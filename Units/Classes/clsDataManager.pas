@@ -6,26 +6,37 @@ uses
   Vcl.ExtCtrls, clsMatrixList, clsMatrix, untTypes;
 
 type
+  TPaintProc = procedure(Sender: TObject);
+
   TDataManager = class
   private
-    FCurrentExpression: TExpression;
-    FMatrixList: TMatrixList;
+    FCurrentExpression: TFullOperation;
+    FCurrentDeterminant: TFullOperation;
+    FCurrentInverse: TFullOperation;
+    FCurrentRank: TFullOperation;
+    FOperationStatement: TOperationStatement;
 
-    function GetCurrentExpressionString(): string;
-    procedure SetCurrentExpressionString(const ACurrentExpressionString: string);
-    function GetCurrentExpressionAnswer(): TOperand;
-    procedure SetCurrentExpressionAnswer(const ACurrentExpressionAnswer: TOperand);
+    FMatrixList: TMatrixList;
   public
     constructor Create();
     destructor Destroy(); override;
 
     procedure CallBack(Sender: TObject);
+    function GetCurrentOperation(): TFullOperation;
+    procedure SetProblemString(const AProblemString: string;
+      const AOperation: TFullOperation);
+    procedure SetProblemMatrix(const AProblemMatrix: TMatrix;
+      const AOperation: TFullOperation);
+    procedure SetAnswer(const AAnswer: TAnswer;
+      const AOperation: TFullOperation);
 
     property MatrixList: TMatrixList read FMatrixList;
-    property CurrentExpressionString: string read GetCurrentExpressionString
-      write SetCurrentExpressionString;
-    property CurrentExspressionAnswer: TOperand read GetCurrentExpressionAnswer
-      write SetCurrentExpressionAnswer;
+    property CurrentExpression: TFullOperation read FCurrentExpression;
+    property CurrentDeterminant: TFullOperation read FCurrentDeterminant;
+    property CurrentInverse: TFullOperation read FCurrentInverse;
+    property CurrentRank: TFullOperation read FCurrentRank;
+    property OperationStatement: TOperationStatement read FOperationStatement
+      write FOperationStatement;
   end;
 
 var
@@ -45,29 +56,37 @@ begin
   inherited;
 end;
 
-function TDataManager.GetCurrentExpressionString(): string;
+function TDataManager.GetCurrentOperation(): TFullOperation;
 begin
-  Result := FCurrentExpression.FExpressionString;
-end;
-
-procedure TDataManager.SetCurrentExpressionString(const ACurrentExpressionString: string);
-begin
-  FCurrentExpression.FExpressionString := ACurrentExpressionString;
-end;
-
-function TDataManager.GetCurrentExpressionAnswer(): TOperand;
-begin
-  Result := FCurrentExpression.FAnswer;
-end;
-
-procedure TDataManager.SetCurrentExpressionAnswer(const ACurrentExpressionAnswer: TOperand);
-begin
-  FCurrentExpression.FAnswer := ACurrentExpressionAnswer;
+  case FOperationStatement of
+    ostatExpression: Result := CurrentExpression;
+    ostatDeterminant: Result := CurrentDeterminant;
+    ostatInverse: Result := CurrentInverse;
+    ostatRank: Result := CurrentRank;
+  end;
 end;
 
 procedure TDataManager.CallBack(Sender: TObject);
 begin
-  TPaintBox(Sender).OnPaint(TPaintBox(Sender));
+  TPaintBox(Sender).OnPaint(TPaintBox(Sender));;
+end;
+
+procedure TDataManager.SetProblemString(const AProblemString: string;
+  const AOperation: TFullOperation);
+begin
+  FCurrentExpression.FProblemString := AProblemString;
+end;
+
+procedure TDataManager.SetProblemMatrix(const AProblemMatrix: TMatrix;
+  const AOperation: TFullOperation);
+begin
+  FCurrentExpression.FProblemMatrix := AProblemMatrix;
+end;
+
+procedure TDataManager.SetAnswer(const AAnswer: TAnswer;
+  const AOperation: TFullOperation);
+begin
+  FCurrentExpression.FAnswer := AAnswer;
 end;
 
 end.

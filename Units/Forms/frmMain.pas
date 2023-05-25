@@ -3,12 +3,12 @@ unit frmMain;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Menus, System.Actions,
-  Vcl.ActnList, Vcl.ExtCtrls, System.ImageList, Vcl.ImgList, Vcl.ToolWin, Vcl.ComCtrls,
-  untExprCalculate, clsDoubleLinkedList, clsMatrix, clsMatrixList, clsDataManager,
-  frmMatrList, frmEditMatr, Vcl.NumberBox, untConstants, untTypes, Vcl.Grids,
-  frmHTML;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Menus,
+  System.Actions, Vcl.ActnList, Vcl.ExtCtrls, System.ImageList, Vcl.ImgList, Vcl.ToolWin,
+  Vcl.ComCtrls, untExprCalculate, clsDoubleLinkedList, clsMatrix, clsMatrixList,
+  clsDataManager, frmMatrList, frmEditMatr, Vcl.NumberBox, untConstants, untTypes,
+  Vcl.Grids, frmHTML, untPainting;
 
 type
   TMainForm = class(TForm)
@@ -78,8 +78,6 @@ type
     pbExpression: TPaintBox;
     butAddDimension: TButton;
     butRemoveDimension: TButton;
-    labLines: TLabel;
-    labColumns: TLabel;
     edLinesAmount: TEdit;
     edColumnsAmount: TEdit;
     Help1: TMenuItem;
@@ -111,10 +109,13 @@ type
     procedure edDimensionsChange(Sender: TObject);
     procedure aExecuteInfo(Sender: TObject);
     procedure edDimensionsExit(Sender: TObject);
+    procedure sgInputMatrixSetEditText(Sender: TObject; ACol, ARow: Integer;
+      const Value: string);
   private
     FCarriagePos: Integer;
 
     function TryStrToNatural(const ANumberSting: string; var ANumber: Integer): Boolean;
+    procedure SelectSpecificCell(ACol, ARow: Integer);
   public
 
   end;
@@ -179,7 +180,6 @@ end;
 
 procedure TMainForm.aViewMatrixListExecute(Sender: TObject);
 begin
-  //MatrixListForm := TMatrixListForm.Create(Self);
   MatrixListForm.Show;
 end;
 
@@ -188,20 +188,57 @@ var
   X, Y: Integer;
 begin
   pbExpression.Canvas.FillRect(pbExpression.ClientRect);
-  X := StartPosX;
-  Y := StartPosY;
 
-  if DataManager.CurrentExspressionAnswer.FIsMatrix then
-    MatrixListForm.MatrixPaint(X, Y,
-      DataManager.CurrentExspressionAnswer.FMatrix, pbExpression)
-  else
-    TPaintBox(Sender).Canvas.TextOut(X, Y,
-      FloatToStr(DataManager.CurrentExspressionAnswer.FNumber));
+  case DataManager.OperationStatement of
+    ostatExpression:
+    begin
+      X := StartPosX;
+      Y := StartPosY;
+
+      if DataManager.CurrentExpression.FAnswer.FIsMatrix then
+        MatrixPaint(X, Y, DataManager.CurrentExpression.FAnswer.FMatrix, BraceOutline,
+          pbExpression)
+      else
+        if DataManager.CurrentExpression.FAnswer.FNumber = 1 / 0 then
+          pbExpression.Canvas.TextOut(X, Y, '+ ?')
+        else if DataManager.CurrentExpression.FAnswer.FNumber = -1 / 0 then
+          pbExpression.Canvas.TextOut(X, Y, '- ?')
+        else
+          pbExpression.Canvas.TextOut(X, Y,
+            FloatToStr(DataManager.CurrentExpression.FAnswer.FNumber));
+    end;
+
+    ostatDeterminant:
+    begin
+      DetOutline(sgInputMatrix.Left, sgInputMatrix.Top, sgInputMatrix.Height,
+        sgInputMatrix.Width, pbExpression);
+    end;
+
+    ostatInverse:
+    begin
+      pbExpression.Canvas.TextOut(StartPosX, StartPosY, 'Lines:');
+      pbExpression.Canvas.TextOut(StartPosX +
+        pbExpression.Canvas.TextWidth('Lines:') + edLinesAmount.Width + 42, StartPosY,
+        'Columns:');
+      BraceOutline(sgInputMatrix.Left, sgInputMatrix.Top, sgInputMatrix.Height,
+        sgInputMatrix.Width, pbExpression);
+    end;
+
+    ostatRank:
+    begin
+      pbExpression.Canvas.TextOut(StartPosX, StartPosY, 'Lines:');
+      pbExpression.Canvas.TextOut(StartPosX +
+        pbExpression.Canvas.TextWidth('Lines:') + edLinesAmount.Width + 42, StartPosY,
+        'Columns:');
+      BraceOutline(sgInputMatrix.Left, sgInputMatrix.Top, sgInputMatrix.Height,
+        sgInputMatrix.Width, pbExpression);
+    end;
+  end;
 end;
 
 procedure TMainForm.edExpressionChange(Sender: TObject);
 begin
-  DataManager.CurrentExpressionString := edExpression.Text;
+  DataManager.SetStringProblem(edExpression.Text, DataManager.CurrentExpression);
 end;
 
 procedure TMainForm.edExpressionExit(Sender: TObject);
@@ -211,11 +248,11 @@ end;
 
 procedure TMainForm.butCalculateClick(Sender: TObject);
 var
-  Answer: TOperand;
+  Answer: TAnswer;
 begin
   if ExprCalculation(edExpression.Text, Answer) then
   begin
-    DataManager.CurrentExspressionAnswer := Answer;
+    DataManager.SetAnswer(Answer, DataManager.GetCurrentOperation);
     DataManager.CallBack(pbExpression);
   end;
 end;
@@ -258,34 +295,35 @@ begin
   butRemoveDimension.Visible := False;
   edLinesAmount.Visible := False;
   edColumnsAmount.Visible := False;
-  labLines.Visible := False;
-  labColumns.Visible := False;
   if TButton(Sender).Name = butExpressionChoose.Name then
   begin
+    DataManager.OperationStatement := ostatExpression;
     edExpression.Visible := True;
-
+    DataManager.CallBack(pbExpression);
   end
   else if (TButton(Sender).Name = butDeterminantChoose.Name) then
   begin
+    DataManager.OperationStatement := ostatDeterminant;
     sgInputMatrix.Visible := True;
     butAddDimension.Visible := True;
     butRemoveDimension.Visible := True;
+    DataManager.CallBack(pbExpression);
   end
   else if (TButton(Sender).Name = butInverseChoose.Name) then
   begin
+    DataManager.OperationStatement := ostatInverse;
     sgInputMatrix.Visible := True;
     edLinesAmount.Visible := True;
     edColumnsAmount.Visible := True;
-    labLines.Visible := True;
-    labColumns.Visible := True;
+    DataManager.CallBack(pbExpression);
   end
   else if (TButton(Sender).Name = butRankChoose.Name) then
   begin
+    DataManager.OperationStatement := ostatRank;
     sgInputMatrix.Visible := True;
     edLinesAmount.Visible := True;
     edColumnsAmount.Visible := True;
-    labLines.Visible := True;
-    labColumns.Visible := True;
+    DataManager.CallBack(pbExpression);
   end;
 end;
 
@@ -306,15 +344,35 @@ begin
   end;
 end;
 
-procedure TMainForm.sgResize(Sender: TObject);
+procedure TMainForm.sgInputMatrixSetEditText(Sender: TObject; ACol,
+  ARow: Integer; const Value: string);
+var
+  Temp: Extended;
 begin
-  TStringGrid(Sender).Height := (TStringGrid(Sender).DefaultRowHeight +
-    sgSizeFixingNumber) * TStringGrid(Sender).RowCount;
-  TStringGrid(Sender).Width := (TStringGrid(Sender).DefaultColWidth +
-    sgSizeFixingNumber * TStringGrid(Sender).ColCount);
+//
 end;
 
-function TMainForm.TryStrToNatural(const ANumberSting: string; var ANumber: Integer): Boolean;
+procedure TMainForm.SelectSpecificCell(ACol, ARow: Integer);
+begin
+  sgInputMatrix.Selection := TGridRect(Rect(ACol, ARow, ACol, ARow));
+end;
+
+procedure TMainForm.sgResize(Sender: TObject);
+var
+  LineWidth: Integer;
+begin
+  LineWidth := GetSystemMetrics(SM_CXEDGE);
+
+  TStringGrid(Sender).Height := (TStringGrid(Sender).DefaultRowHeight +
+    LineWidth) * TStringGrid(Sender).RowCount + LineWidth div 2;
+  TStringGrid(Sender).Width := (TStringGrid(Sender).DefaultColWidth +
+    LineWidth) * TStringGrid(Sender).ColCount + LineWidth div 2;
+
+  DataManager.CallBack(pbExpression);
+end;
+
+function TMainForm.TryStrToNatural(const ANumberSting: string;
+  var ANumber: Integer): Boolean;
 var
   Temp: Integer;
 begin
@@ -351,7 +409,7 @@ var
 begin
   if not TryStrToNatural(TEdit(Sender).Text, Temp) then
   begin
-    ShowMessage('Invorrect dimension');
+    ShowMessage('Inñorrect dimension');
     TEdit(Sender).SetFocus;
   end;
 end;
