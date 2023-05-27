@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,  Vcl.ExtCtrls, Vcl.Grids,
-  clsMatrix, clsMatrixLIst, untConstants;
+  clsMatrix, clsMatrixLIst, untConstants, clsDataManager;
 
 type
   TEditMatrixForm = class(TForm)
@@ -25,6 +25,8 @@ type
     procedure edMatrixLinesChange(Sender: TObject);
     procedure edMatrixColumnsChange(Sender: TObject);
   private
+    IsNewMatrix: Boolean;
+
     function IsCorrectName(const IsShowMessageNeeded: Boolean = false): Boolean;
     function IsCorrectLinesAmount(const IsShowMessageNeeded: Boolean = false): Boolean;
     function IsCorrectColumnsAmount(const IsShowMessageNeeded: Boolean = false): Boolean;
@@ -32,7 +34,7 @@ type
     procedure sgMatrixElementsClear(Sender: TObject);
   public
 
-    procedure TryGetMatrix(var AEditingMatrix: TMatrix;
+    procedure TryGetMatrix(var AEditingMatrix: TMatrix<Extended>;
       const AIsNewMatrix: Boolean = True);
 
   end;
@@ -129,8 +131,29 @@ begin
     end;
   end;
 
-  if (not Result) and (IsShowMessageNeeded = true) then
-    ShowMessage('Intered name is incorrect');
+  i := Low(MatrixInvalidNames);
+  while (i <= High(MatrixInvalidNames)) and Result do
+  begin
+    if edMatrixName.Text = MatrixInvalidNames[i] then
+      Result := False;
+    inc(i);
+  end;
+
+  if (not Result) then
+  begin
+    if IsShowMessageNeeded then
+      ShowMessage('Intered name is incorrect');
+  end
+  else
+  begin
+    if DataManager.MatrixList.TryGetMatrixFromList(edMatrixName.Text)
+      and IsNewMatrix then
+    begin
+      Result := False;
+      if IsShowMessageNeeded then
+        ShowMessage('Matrix with such name is already in the list');
+    end;
+  end;
 end;
 
 function TEditMatrixForm.IsCorrectLinesAmount(
@@ -208,12 +231,14 @@ begin
       ModalResult := mrOK;
 end;
 
-procedure TEditMatrixForm.TryGetMatrix(var AEditingMatrix: TMatrix;
+procedure TEditMatrixForm.TryGetMatrix(var AEditingMatrix: TMatrix<Extended>;
   const AIsNewMatrix: Boolean = True);
 var
   i, j: Integer;
 begin
-  if AIsNewMatrix then
+  IsNewMatrix := AIsNewMatrix;
+
+  if IsNewMatrix then
   begin
     edMatrixName.Text := '';
     edMatrixLines.Text := '';
@@ -245,7 +270,7 @@ begin
   begin
     if AIsNewMatrix then
     begin
-      AEditingMatrix := TMatrix.Create(edMatrixName.Text,
+      AEditingMatrix := TMatrix<Extended>.Create(edMatrixName.Text,
         StrToInt(edMatrixLines.Text), StrToInt(edMatrixColumns.Text));
       for i := 0 to AEditingMatrix.LinesAmount - 1 do
         for j := 0 to AEditingMatrix.ColumnsAmount - 1 do

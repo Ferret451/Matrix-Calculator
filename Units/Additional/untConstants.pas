@@ -9,12 +9,19 @@ type
   end;
 
 const
+  Infinity = 1.0 / 0.0;
+
+  DefaultMatrixLength = 2;
+  DefaultMatrixHeight = 2;
+  DefaultMatrixStringElement = '0';
+
   Symbols = ['0'..'9', ',', '_', 'a'..'z', 'A'..'Z'];
   Operators = ['+', '-', '*', '/', '(', ')'];
   Numbers = ['0'..'9'];
 
   MatrixNameFirstElValidSymbols = ['a'..'z', 'A'..'Z', '_'];
   MatrixNameValidSymbols = ['a'..'z', 'A'..'Z', '_', '0'..'9'];
+  MatrixInvalidNames: array of string = ['T'];
 
   ExampleText = '1234567890';
   DefaulePenWidth = 3;

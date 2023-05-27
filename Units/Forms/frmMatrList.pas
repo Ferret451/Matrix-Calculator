@@ -77,7 +77,7 @@ end;
 
 procedure TMatrixListForm.aNewMatrixExecute(Sender: TObject);
 var
-  EditingMatrix: TMatrix;
+  EditingMatrix: TMatrix<Extended>;
 begin
   EditMatrixForm.TryGetMatrix(EditingMatrix);
 
@@ -91,7 +91,7 @@ end;
 procedure TMatrixListForm.pbMatrixListDblClick(Sender: TObject);
 var
   i: Integer;
-  EditingMatrix: TMatrix;
+  EditingMatrix: TMatrix<Extended>;
 begin
   for i := Low(FMatrixesBorders) to High(FMatrixesBorders) do
     if (FCursorPos.FX >= FMatrixesBorders[i].FLeft) and
@@ -120,7 +120,7 @@ end;
 
 procedure TMatrixListForm.pbMatrixListPaint(Sender: TObject);
 var
-  CurrNode: TMatrixList.PNode;
+  CurrNode: TMatrixList<Extended>.PNode;
   X, Y, CurrMatrixPosX, CurrMatrixPosY, CurrMatrixHeight: Integer;
 begin
   TPaintBox(pbMatrixList).Canvas.FillRect(TPaintBox(pbMatrixList).ClientRect);
@@ -128,11 +128,10 @@ begin
   CurrMatrixPosX := StartPosX;
   CurrMatrixPosY := StartPosY;
 
-  SetLength(FMatrixesBorders, 0);
+  SetLength(FMatrixesBorders, DataManager.MatrixList.Size);
   CurrNode := DataManager.MatrixList.Head;
   while Assigned(CurrNode) do
   begin
-    SetLength(FMatrixesBorders, Length(FMatrixesBorders) + 1);
     X := CurrMatrixPosX;
     Y := CurrMatrixPosY;
     FMatrixesBorders[Length(FMatrixesBorders) - 1].FLeft := X;
@@ -145,9 +144,11 @@ begin
     Y := CurrMatrixPosY;
     MatrixPaint(X, Y, CurrNode^.FValue, BraceOutline, Sender);
 
+    X := X + 2 * ColumnInterval;
+    Y := Y + 2 * LineInterval;
     FMatrixesBorders[Length(FMatrixesBorders) - 1].FRight := X;
     FMatrixesBorders[Length(FMatrixesBorders) - 1].FBottom := Y;
-    CurrMatrixPosY := CurrMatrixPosY + Y + LineInterval;
+    CurrMatrixPosY := Y + LineInterval;
     CurrNode := CurrNode^.FNext;
   end;
 end;

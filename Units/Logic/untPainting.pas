@@ -10,9 +10,10 @@ type
   TOutline = procedure(const ALeft, ATop, AHeight, AWidth: Integer;
     Sender: TObject);
 
-function GetMatrixHeight(const AMatrix: TMatrix; Sender: TObject): Integer;
-procedure MatrixNamePrint(var AX, AY: Integer; AMatrix: TMatrix; Sender: TObject);
-procedure MatrixPaint(var AX, AY: Integer; const AMatrix: TMatrix;
+function GetMatrixHeight(const AMatrix: TMatrix<Extended>;
+  Sender: TObject): Integer;
+procedure MatrixNamePrint(var AX, AY: Integer; AMatrix: TMatrix<Extended>; Sender: TObject);
+procedure MatrixPaint(var AX, AY: Integer; const AMatrix: TMatrix<Extended>;
   AOutline: TOutline; Sender: TObject);
 procedure BraceOutline(const ALeft, ATop, AHeight, AWidth: Integer;
   Sender: TObject);
@@ -21,7 +22,7 @@ procedure DetOutline(const ALeft, ATop, AHeight, AWidth: Integer;
 
 implementation
 
-function GetMatrixHeight(const AMatrix: TMatrix; Sender: TObject): Integer;
+function GetMatrixHeight(const AMatrix: TMatrix<Extended>; Sender: TObject): Integer;
 var
   LineHeight: Integer;
 begin
@@ -30,7 +31,7 @@ begin
     - LineInterval;
 end;
 
-procedure MatrixNamePrint(var AX, AY: Integer; AMatrix: TMatrix; Sender: TObject);
+procedure MatrixNamePrint(var AX, AY: Integer; AMatrix: TMatrix<Extended>; Sender: TObject);
 var
   TextToOut: string;
   LineHeight, MatrixHeight: Integer;
@@ -40,10 +41,11 @@ begin
 
   LineHeight := TPaintBox(Sender).Canvas.TextHeight(TextToOut);
 
-  TPaintBox(Sender).Canvas.TextOut(AX, (AY + AY + MatrixHeight + 2 * LineInterval
-    - LineHeight) div 2, TextToOut);
+  TPaintBox(Sender).Canvas.TextOut(AX, (AY + AY + MatrixHeight + 2 *
+    LineInterval) div 2 - LineHeight div 2, TextToOut);
 
   AX := AX + TPaintBox(Sender).Canvas.TextWidth(TextToOut);
+  AY := (AY + AY + MatrixHeight + 2 * LineInterval) div 2 + LineHeight div 2;
 end;
 
 function Left(A, B: Integer): Integer;
@@ -100,14 +102,14 @@ begin
   DetBracePaint(ALeft + AWidth, ATop, AHeight, Right, Sender);
 end;
 
-procedure MatrixElementsPrint(var AX, AY, AMatrixWidth: Integer; AMatrix: TMatrix;
-  Sender: TObject);
+function MatrixElementsPaint(const AX, AY: Integer; AMatrix: TMatrix<Extended>;
+  Sender: TObject): Integer;
 var
-  i, j, TopY, CurrColumnMaxLength, Buf: integer;
+  i, j, X, Y, CurrColumnMaxLength: integer;
   CurrElString, CurrColumnMaxLengthString: string;
 begin
-  Buf := AX;
-  TopY := AY;
+  X := AX;
+  Y := AY;
 
   for j := 0 to AMatrix.ColumnsAmount - 1 do
   begin
@@ -117,7 +119,7 @@ begin
     begin
       CurrElString := FloatToStr(AMatrix.Elements[i, j]);
 
-      TPaintBox(Sender).Canvas.TextOut(AX, AY, CurrElString);
+      TPaintBox(Sender).Canvas.TextOut(X, Y, CurrElString);
 
       if Length(CurrElString) > CurrColumnMaxLength then
       begin
@@ -125,34 +127,32 @@ begin
         CurrColumnMaxLengthString := CurrElString;
       end;
 
-      AY := AY + TPaintBox(Sender).Canvas.TextHeight(CurrElString) + LineInterval;
+      Y := Y + TPaintBox(Sender).Canvas.TextHeight(CurrElString) + LineInterval;
     end;
 
-    AX := AX + TPaintBox(Sender).Canvas.TextWidth(CurrColumnMaxLengthString)
+    X := X + TPaintBox(Sender).Canvas.TextWidth(CurrColumnMaxLengthString)
       + ColumnInterval;
-    AY := TopY;
+    Y := AY;
   end;
-
-  AX := AX - ColumnInterval;
-  AMatrixWidth := AX - Buf;
+  X := X - ColumnInterval;
+  Result := X - AX;
 end;
 
-procedure MatrixPaint(var AX, AY: Integer; const AMatrix: TMatrix;
+procedure MatrixPaint(var AX, AY: Integer; const AMatrix: TMatrix<Extended>;
   AOutline: TOutline; Sender: TObject);
 var
-  X, Y, MatrixHeight, MatrixWidth: Integer;
+  MatrixHeight, MatrixWidth: Integer;
 begin
   MatrixHeight := GetMatrixHeight(AMatrix, Sender);
 
-  X := AX + ColumnInterval;
-  Y := AY + LineInterval;
-  MatrixElementsPrint(X, Y, MatrixWidth, AMatrix, Sender);
+  AX := AX + ColumnInterval;
+  AY := AY + LineInterval;
+  MatrixWidth := MatrixElementsPaint(AX, AY, AMatrix, Sender);
 
-  AOutline(AX + ColumnInterval, AY + LineInterval,
-    MatrixHeight, MatrixWidth, Sender);
+  AOutline(AX, AY, MatrixHeight, MatrixWidth, Sender);
 
-  AX := AX + MatrixWidth + 2 * ColumnInterval;
-  AY := AY + MatrixHeight + 2 * LineInterval;
+  AX := AX + MatrixWidth;
+  AY := AY + MatrixHeight;
 end;
 
 end.

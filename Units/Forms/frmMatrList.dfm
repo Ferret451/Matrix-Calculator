@@ -55,10 +55,14 @@ object MatrixListForm: TMatrixListForm
     Align = alClient
     TabOrder = 1
     object pbMatrixList: TPaintBox
+      AlignWithMargins = True
       Left = 0
-      Top = 0
+      Top = 3
       Width = 446
-      Height = 272
+      Height = 269
+      Margins.Left = 0
+      Margins.Right = 0
+      Margins.Bottom = 0
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText

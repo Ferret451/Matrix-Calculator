@@ -4,7 +4,7 @@ interface
 
 uses
   System.SysUtils, Math, clsStack, clsMatrix, clsMatrixList, untConstants,
-  Vcl.Dialogs, clsDataManager, clsOperandStack, untTypes;
+  Vcl.Dialogs, clsDataManager, clsOperandStack, untTypes, untMatrixCalc;
 
 var
   OperandStack: TOperandStack;
@@ -46,7 +46,7 @@ begin
     Inc(APointerPos);
   end;
 
-  Operand.FMatrix := TMatrix.Create;
+  Operand.FMatrix := TMatrix<Extended>.Create;
   if (OperandString[1] in MatrixNameFirstElValidSymbols) then
   begin
     Operand.FIsMatrix := True;
@@ -74,7 +74,7 @@ end;
 function OperatorProcessing(const NewOperator: Char;
   const AOperandStack: TOperandStack; const AOperatorStack: TStack<Char>): Boolean;
 var
-  FirsTAnswer, SecondOperand, ResulTAnswer: TAnswer;
+  FirstOperand, SecondOperand, ResultAnswer: TAnswer;
   Mask : Integer;
 begin
   Result := True;
@@ -86,39 +86,47 @@ begin
     if AOperandStack.Size >= 2 then
     begin
       SecondOperand := AOperandStack.Top;
+      SecondOperand.FMatrix.AssignTo(AOperandStack.Top.FMatrix);
       AOperandStack.Pop;
-      FirsTAnswer := AOperandStack.Top;
+      FirstOperand := AOperandStack.Top;
+      FirstOperand.FMatrix.AssignTo(AOperandStack.Top.FMatrix);
       AOperandStack.Pop;
 
       {0 - two numbers, 1 - SecondElement is matrix
        2 - FirstElement is matrix, 3 - two numbers}
-      Mask := Ord(FirsTAnswer.FIsMatrix) shl 1 or
+      Mask := Ord(FirstOperand.FIsMatrix) shl 1 or
               Ord(SecondOperand.FIsMatrix);
 
       try
         case Mask Of
           $0:
           begin
-            ResulTAnswer.FIsMatrix := False;
+            ResultAnswer.FIsMatrix := False;
 
 
               case AOperatorStack.Top of
                 '+':
-                  ResulTAnswer.FNumber := FirsTAnswer.FNumber + SecondOperand.FNumber;
+                  ResultAnswer.FNumber := FirstOperand.FNumber + SecondOperand.FNumber;
                 '-':
-                  ResulTAnswer.FNumber := FirsTAnswer.FNumber - SecondOperand.FNumber;
+                  ResultAnswer.FNumber := FirstOperand.FNumber - SecondOperand.FNumber;
                 '*':
-                  ResulTAnswer.FNumber := FirsTAnswer.FNumber * SecondOperand.FNumber;
+                  ResultAnswer.FNumber := FirstOperand.FNumber * SecondOperand.FNumber;
                 '/':
-                  ResulTAnswer.FNumber := FirsTAnswer.FNumber / SecondOperand.FNumber;
+                  if SecondOperand.FNumber = 0 then
+                  begin
+                    ShowMessage('Division by zero was found');
+                    Result := False;
+                  end
+                  else
+                    ResultAnswer.FNumber := FirstOperand.FNumber / SecondOperand.FNumber;
                 '^':
-                  ResulTAnswer.FNumber := Power(FirsTAnswer.FNumber, SecondOperand.FNumber);
+                  ResultAnswer.FNumber := Power(FirstOperand.FNumber, SecondOperand.FNumber);
               end;
           end;
 
           $1:
           begin
-            ResulTAnswer.FIsMatrix := True;
+            ResultAnswer.FIsMatrix := True;
 
             case AOperatorStack.Top of
               '+':
@@ -135,8 +143,8 @@ begin
 
               '*':
               begin
-                ResulTAnswer.FMatrix :=
-                  SecondOperand.FMatrix.MultConst(FirsTAnswer.FNumber);
+                ResultAnswer.FMatrix :=
+                  MultMatrixConst(SecondOperand.FMatrix, FirstOperand.FNumber);
               end;
 
 
@@ -156,7 +164,7 @@ begin
 
           $2:
           begin
-            ResulTAnswer.FIsMatrix := True;
+            ResultAnswer.FIsMatrix := True;
 
             case AOperatorStack.Top of
               '+':
@@ -172,14 +180,18 @@ begin
               end;
 
               '*':
-                ResulTAnswer.FMatrix :=
-                  FirsTAnswer.FMatrix.MultConst(SecondOperand.FNumber);
+                ResultAnswer.FMatrix :=
+                  MultMatrixConst(FirstOperand.FMatrix, SecondOperand.FNumber);
 
               '/':
-              begin
-                ShowMessage('Division of number on matrix was found');
-                Result := False;
-              end;
+                if SecondOperand.FNumber = 0 then
+                begin
+                  ShowMessage('Division by zero was found');
+                  Result := False;
+                end
+                else
+                  ResultAnswer.FMatrix :=
+                    DivMatrixConst(FirstOperand.FMatrix, SecondOperand.FNumber);
 
               '^':
               begin
@@ -191,46 +203,46 @@ begin
 
           $3:
           begin
-            ResulTAnswer.FIsMatrix := True;
+            ResultAnswer.FIsMatrix := True;
 
             case AOperatorStack.Top of
               '+':
               begin
-                if (FirsTAnswer.FMatrix.LinesAmount <> SecondOperand.FMatrix.LinesAmount) or
-                  (FirsTAnswer.FMatrix.ColumnsAmount <> SecondOperand.FMatrix.ColumnsAmount) then
+                if (FirstOperand.FMatrix.LinesAmount <> SecondOperand.FMatrix.LinesAmount) or
+                  (FirstOperand.FMatrix.ColumnsAmount <> SecondOperand.FMatrix.ColumnsAmount) then
                 begin
                   ShowMessage('Matrixes dimensions does not match when summing');
                   Result := False;
                 end
                 else
-                  ResulTAnswer.FMatrix :=
-                    FirsTAnswer.FMatrix.Add(SecondOperand.FMatrix);
+                  ResultAnswer.FMatrix :=
+                    SumMatrixes(FirstOperand.FMatrix, SecondOperand.FMatrix);
               end;
 
               '-':
               begin
-                if (FirsTAnswer.FMatrix.LinesAmount <> SecondOperand.FMatrix.LinesAmount) or
-                  (FirsTAnswer.FMatrix.ColumnsAmount <> SecondOperand.FMatrix.ColumnsAmount) then
+                if (FirstOperand.FMatrix.LinesAmount <> SecondOperand.FMatrix.LinesAmount) or
+                  (FirstOperand.FMatrix.ColumnsAmount <> SecondOperand.FMatrix.ColumnsAmount) then
                 begin
                   ShowMessage('Matrixes dimensions does not match when subtracting');
                   Result := False;
                 end
                 else
-                  ResulTAnswer.FMatrix :=
-                    FirsTAnswer.FMatrix.Substr(SecondOperand.FMatrix);
+                  ResultAnswer.FMatrix :=
+                    SubstrMatrixes(FirstOperand.FMatrix, SecondOperand.FMatrix);
               end;
 
               '*':
               begin
-                if (FirsTAnswer.FMatrix.ColumnsAmount <> SecondOperand.FMatrix.LinesAmount) then
+                if (FirstOperand.FMatrix.ColumnsAmount <> SecondOperand.FMatrix.LinesAmount) then
                 begin
                   ShowMessage('First matrix columns does not equal to second' +
                     'matrix lines when multiplying matrixes');
                   Result := False;
                 end
                 else
-                  ResulTAnswer.FMatrix :=
-                    FirsTAnswer.FMatrix.MultMatr(SecondOperand.FMatrix);
+                  ResultAnswer.FMatrix :=
+                    MultMatrixes(FirstOperand.FMatrix, SecondOperand.FMatrix);
               end;
 
               '/':
@@ -253,22 +265,12 @@ begin
           ShowMessage('Final or interim result is too high or too low');
           Result := False;
         end;
-        on EDivByZero do
-        begin
-          ShowMessage('Division on zero was found');
-          Result := False;
-        end;
-        on E: Exception do
-        begin
-          // Обработка исключения
-          ShowMessage('Исключение: ' + E.Message);
-        end;
       end;
 
       if Result then
       begin
         OperatorStack.Pop;
-        OperandStack.Push(ResulTAnswer);
+        OperandStack.Push(ResultAnswer);
       end;
 
     end
@@ -324,7 +326,11 @@ begin
   if Result then
   begin
     if not OperandStack.IsEmpty then
-      AAnswer := OperandStack.Top
+    begin
+      AAnswer.FMatrix.AssignTo(OperandStack.Top.FMatrix);
+      AAnswer.FNumber := OperandStack.Top.FNumber;
+      AAnswer.FIsMatrix := OperandStack.Top.FIsMatrix;
+    end
     else
     begin
       ShowMessage('Incorrect expression');

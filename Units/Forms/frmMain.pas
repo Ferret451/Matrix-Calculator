@@ -1,4 +1,4 @@
-unit frmMain;
+﻿unit frmMain;
 
 interface
 
@@ -66,7 +66,7 @@ type
     splMain: TSplitter;
     butExponentaition: TButton;
     edExpression: TEdit;
-    sgInputMatrix: TStringGrid;
+    sgDeterminant: TStringGrid;
     panCalcChoose: TPanel;
     butExpressionChoose: TButton;
     butDeterminantChoose: TButton;
@@ -78,13 +78,15 @@ type
     pbExpression: TPaintBox;
     butAddDimension: TButton;
     butRemoveDimension: TButton;
-    edLinesAmount: TEdit;
-    edColumnsAmount: TEdit;
     Help1: TMenuItem;
     Help2: TMenuItem;
     About1: TMenuItem;
     aOpenHelp: TAction;
     aOpenAbout: TAction;
+    sgInverse: TStringGrid;
+    sgRank: TStringGrid;
+    edColumnsAmount: TEdit;
+    edLinesAmount: TEdit;
 
     procedure edExpressionExit(Sender: TObject);
     procedure butCalculateClick(Sender: TObject);
@@ -106,16 +108,19 @@ type
     procedure butAddDimensionClick(Sender: TObject);
     procedure butRemoveDimensionClick(Sender: TObject);
     procedure butChooseClick(Sender: TObject);
-    procedure edDimensionsChange(Sender: TObject);
     procedure aExecuteInfo(Sender: TObject);
     procedure edDimensionsExit(Sender: TObject);
+    procedure sgInputMatrixAssign(Sender: TObject; const AMatrix: TMatrix<string>);
     procedure sgInputMatrixSetEditText(Sender: TObject; ACol, ARow: Integer;
       const Value: string);
+    procedure sgSelectSpecificCell(ACol, ARow: Integer;
+      AStringGrid: TStringGrid);
   private
     FCarriagePos: Integer;
 
     function TryStrToNatural(const ANumberSting: string; var ANumber: Integer): Boolean;
-    procedure SelectSpecificCell(ACol, ARow: Integer);
+    function sgGetCurrent(): TStringGrid;
+
   public
 
   end;
@@ -187,31 +192,31 @@ procedure TMainForm.pbExpressionPaint(Sender: TObject);
 var
   X, Y: Integer;
 begin
-  pbExpression.Canvas.FillRect(pbExpression.ClientRect);
+ // pbExpression.Canvas.FillRect(pbExpression.ClientRect);
 
   case DataManager.OperationStatement of
     ostatExpression:
     begin
       X := StartPosX;
-      Y := StartPosY;
+      Y := StartPosY + 42 div 2;
 
       if DataManager.CurrentExpression.FAnswer.FIsMatrix then
-        MatrixPaint(X, Y, DataManager.CurrentExpression.FAnswer.FMatrix, BraceOutline,
-          pbExpression)
+      begin
+        MatrixPaint(X, Y, DataManager.CurrentExpression.FAnswer.FMatrix,
+          BraceOutline, pbExpression);
+      end
       else
-        if DataManager.CurrentExpression.FAnswer.FNumber = 1 / 0 then
-          pbExpression.Canvas.TextOut(X, Y, '+ ?')
-        else if DataManager.CurrentExpression.FAnswer.FNumber = -1 / 0 then
-          pbExpression.Canvas.TextOut(X, Y, '- ?')
-        else
-          pbExpression.Canvas.TextOut(X, Y,
-            FloatToStr(DataManager.CurrentExpression.FAnswer.FNumber));
+      begin
+        pbExpression.Canvas.TextOut(X, Y,
+          FloatToStr(DataManager.CurrentExpression.FAnswer.FNumber));
+      end;
     end;
 
     ostatDeterminant:
     begin
-      DetOutline(sgInputMatrix.Left, sgInputMatrix.Top, sgInputMatrix.Height,
-        sgInputMatrix.Width, pbExpression);
+      DetOutline(sgDeterminant.Left, sgDeterminant.Top, sgDeterminant.Height,
+        sgDeterminant.Width, pbExpression);
+      X := pbExpression.Left;
     end;
 
     ostatInverse:
@@ -220,8 +225,8 @@ begin
       pbExpression.Canvas.TextOut(StartPosX +
         pbExpression.Canvas.TextWidth('Lines:') + edLinesAmount.Width + 42, StartPosY,
         'Columns:');
-      BraceOutline(sgInputMatrix.Left, sgInputMatrix.Top, sgInputMatrix.Height,
-        sgInputMatrix.Width, pbExpression);
+      BraceOutline(sgInverse.Left, sgInverse.Top, sgInverse.Height,
+        sgInverse.Width, pbExpression);
     end;
 
     ostatRank:
@@ -230,8 +235,8 @@ begin
       pbExpression.Canvas.TextOut(StartPosX +
         pbExpression.Canvas.TextWidth('Lines:') + edLinesAmount.Width + 42, StartPosY,
         'Columns:');
-      BraceOutline(sgInputMatrix.Left, sgInputMatrix.Top, sgInputMatrix.Height,
-        sgInputMatrix.Width, pbExpression);
+      BraceOutline(sgRank.Left, sgRank.Top, sgRank.Height, sgRank.Width,
+        pbExpression);
     end;
   end;
 end;
@@ -250,10 +255,11 @@ procedure TMainForm.butCalculateClick(Sender: TObject);
 var
   Answer: TAnswer;
 begin
+  Answer := DataManager.CurrentAnswer;
   if ExprCalculation(edExpression.Text, Answer) then
   begin
-    DataManager.SetAnswer(Answer, DataManager.GetCurrentOperation);
-    DataManager.CallBack(pbExpression);
+    DataManager.CurrentAnswer := Answer;
+    DataManager.CallBack(pbExpression)
   end;
 end;
 
@@ -290,79 +296,176 @@ end;
 procedure TMainForm.butChooseClick(Sender: TObject);
 begin
   edExpression.Visible := False;
-  sgInputMatrix.Visible := False;
+  sgDeterminant.Visible := False;
+  sgInverse.Visible := False;
+  sgRank.Visible := False;
   butAddDimension.Visible := False;
   butRemoveDimension.Visible := False;
   edLinesAmount.Visible := False;
   edColumnsAmount.Visible := False;
-  if TButton(Sender).Name = butExpressionChoose.Name then
+  if TButton(Sender).Tag = butExpressionChoose.Tag then
   begin
     DataManager.OperationStatement := ostatExpression;
+
     edExpression.Visible := True;
+    edExpression.Text := DataManager.GetCurrentOperation.FProblemString;
+
     DataManager.CallBack(pbExpression);
   end
-  else if (TButton(Sender).Name = butDeterminantChoose.Name) then
+  else if (TButton(Sender).Tag = butDeterminantChoose.Tag) then
   begin
     DataManager.OperationStatement := ostatDeterminant;
-    sgInputMatrix.Visible := True;
+
+    sgDeterminant.Visible := True;
     butAddDimension.Visible := True;
     butRemoveDimension.Visible := True;
+    sgInputMatrixAssign(sgGetCurrent, DataManager.GetCurrentOperation.FProblemMatrix);
+
     DataManager.CallBack(pbExpression);
   end
-  else if (TButton(Sender).Name = butInverseChoose.Name) then
+  else if (TButton(Sender).Tag = butInverseChoose.Tag) then
   begin
     DataManager.OperationStatement := ostatInverse;
-    sgInputMatrix.Visible := True;
+
+    sgInverse.Visible := True;
     edLinesAmount.Visible := True;
     edColumnsAmount.Visible := True;
+    edLinesAmount.Text :=
+      IntToStr(DataManager.GetCurrentOperation.FProblemMatrix.LinesAmount);
+    edColumnsAmount.Text :=
+      IntToStr(DataManager.GetCurrentOperation.FProblemMatrix.ColumnsAmount);
+    sgInputMatrixAssign(sgGetCurrent, DataManager.GetCurrentOperation.FProblemMatrix);
+
     DataManager.CallBack(pbExpression);
   end
-  else if (TButton(Sender).Name = butRankChoose.Name) then
+  else if (TButton(Sender).Tag = butRankChoose.Tag) then
   begin
     DataManager.OperationStatement := ostatRank;
-    sgInputMatrix.Visible := True;
+
+    sgRank.Visible := True;
     edLinesAmount.Visible := True;
     edColumnsAmount.Visible := True;
+    edLinesAmount.Text :=
+      IntToStr(DataManager.GetCurrentOperation.FProblemMatrix.LinesAmount);
+    edColumnsAmount.Text :=
+      IntToStr(DataManager.GetCurrentOperation.FProblemMatrix.ColumnsAmount);
+    sgInputMatrixAssign(sgGetCurrent, DataManager.GetCurrentOperation.FProblemMatrix);
+
     DataManager.CallBack(pbExpression);
   end;
 end;
 
 procedure TMainForm.butAddDimensionClick(Sender: TObject);
 begin
-  sgInputMatrix.RowCount := sgInputMatrix.RowCount + 1;
-  sgInputMatrix.ColCount := sgInputMatrix.ColCount + 1;
-  sgResize(sgInputMatrix);
+  DataManager.GetCurrentOperation.FProblemMatrix.LinesAmount :=
+    DataManager.GetCurrentOperation.FProblemMatrix.LinesAmount + 1;
+  DataManager.GetCurrentOperation.FProblemMatrix.ColumnsAmount :=
+    DataManager.GetCurrentOperation.FProblemMatrix.ColumnsAmount + 1;
+  DataManager.GetCurrentOperation.FProblemMatrix.MartixUpdate();
+  sgResize(sgGetCurrent);
 end;
 
 procedure TMainForm.butRemoveDimensionClick(Sender: TObject);
 begin
-  if sgInputMatrix.RowCount > 1 then
+  if sgGetCurrent.RowCount > 1 then
   begin
-    sgInputMatrix.RowCount := sgInputMatrix.RowCount - 1;
-    sgInputMatrix.ColCount := sgInputMatrix.ColCount - 1;
-    sgResize(sgInputMatrix);
+    DataManager.GetCurrentOperation.FProblemMatrix.LinesAmount :=
+      DataManager.GetCurrentOperation.FProblemMatrix.LinesAmount - 1;
+    DataManager.GetCurrentOperation.FProblemMatrix.ColumnsAmount :=
+      DataManager.GetCurrentOperation.FProblemMatrix.ColumnsAmount - 1;
+    DataManager.GetCurrentOperation.FProblemMatrix.MartixUpdate();
+    sgResize(sgGetCurrent);
   end;
 end;
 
-procedure TMainForm.sgInputMatrixSetEditText(Sender: TObject; ACol,
-  ARow: Integer; const Value: string);
-var
-  Temp: Extended;
+function TMainForm.sgGetCurrent(): TStringGrid;
 begin
-//
+  case DataManager.OperationStatement of
+    ostatDeterminant: Result := sgDeterminant;
+    ostatInverse: Result := sgInverse;
+    ostatRank: Result := sgRank;
+  end;
 end;
 
-procedure TMainForm.SelectSpecificCell(ACol, ARow: Integer);
+{
+procedure TMainForm.sgInputMatrixExit(Sender: TObject);
+var
+  i, j: Integer;
+  Temp: Extended;
+  IsCorrectElements: Boolean;
+  MatrixElements: TMatrix.TMatrixElements;
 begin
-  sgInputMatrix.Selection := TGridRect(Rect(ACol, ARow, ACol, ARow));
+  SetLength(MatrixElements, TStringGrid(Sender).RowCount);
+  for i := 0 to TStringGrid(Sender).RowCount do
+    SetLength(MatrixElements[i], TStringGrid(Sender).ColCount);
+
+  IsCorrectElements := True;
+  i := 0;
+  while (i < TStringGrid(Sender).RowCount) and IsCorrectElements do
+  begin
+    j := 0;
+    while (j < TStringGrid(Sender).ColCount) and IsCorrectElements do
+    begin
+      if not TryStrToFloat(TStringGrid(Sender).Cells[j, i], Temp) then
+      begin
+        ShowMessage('Incorrect matrix element found');
+        SelectSpecificCell(i, j, TStringGrid(Sender));
+        IsCorrectElements := False;
+      end
+      else
+        MatrixElements[i, j] := Temp;
+
+      inc(j);
+    end;
+
+    inc(i);
+  end;
+
+  if not IsCorrectElements then
+  begin
+    Matrix.Destroy();
+    TStringGrid(Sender).SetFocus;
+  end
+  else
+    DataManager.GetCurrentOperation.FProblemMatrix.SetElementsTo(MatrixElements);
+
+  SetLength(MatrixElements, 0);
+end}
+
+procedure TMainForm.sgInputMatrixSetEditText(Sender: TObject; ACol,
+  ARow: Integer; const Value: string);
+begin
+  DataManager.GetCurrentOperation.FProblemMatrix.Elements[ARow, ACol] :=
+    TStringGrid(Sender).Cells[ACol, ARow];
+end;
+
+procedure TMainForm.sgSelectSpecificCell(ACol, ARow: Integer;
+  AStringGrid: TStringGrid);
+begin
+  AStringGrid.Selection := TGridRect(Rect(ACol, ARow, ACol, ARow));
+end;
+
+procedure TMainForm.sgInputMatrixAssign(Sender: TObject;
+  const AMatrix: TMatrix<string>);
+var
+  i, j: Integer;
+begin
+  TStringGrid(Sender).RowCount := AMatrix.LinesAmount;
+  TStringGrid(Sender).ColCount := AMatrix.ColumnsAmount;
+  for i := 0 to TStringGrid(Sender).RowCount - 1 do
+    for j := 0 to TStringGrid(Sender).ColCount - 1 do
+      TStringGrid(Sender).Cells[j, i] := AMatrix.Elements[i, j];
 end;
 
 procedure TMainForm.sgResize(Sender: TObject);
 var
   LineWidth: Integer;
 begin
-  LineWidth := GetSystemMetrics(SM_CXEDGE);
+  sgGetCurrent.RowCount := DataManager.GetCurrentOperation.FProblemMatrix.LinesAmount;
+  sgGetCurrent.ColCount := DataManager.GetCurrentOperation.FProblemMatrix.ColumnsAmount;
+  sgInputMatrixAssign(sgGetCurrent, DataManager.GetCurrentOperation.FProblemMatrix);
 
+  LineWidth := GetSystemMetrics(SM_CXEDGE);
   TStringGrid(Sender).Height := (TStringGrid(Sender).DefaultRowHeight +
     LineWidth) * TStringGrid(Sender).RowCount + LineWidth div 2;
   TStringGrid(Sender).Width := (TStringGrid(Sender).DefaultColWidth +
@@ -386,30 +489,29 @@ begin
   end;
 end;
 
-procedure TMainForm.edDimensionsChange(Sender: TObject);
+procedure TMainForm.edDimensionsExit(Sender: TObject);
 var
   Amount: Integer;
 begin
   if TryStrToNatural(TEdit(Sender).Text, Amount) then
-    if TEdit(Sender).Name = edLinesAmount.Name then
+    if TEdit(Sender).Tag = edLinesAmount.Tag then
     begin
-      sgInputMatrix.RowCount := Amount;
-      sgResize(sgInputMatrix);
+      DataManager.GetCurrentOperation.FProblemMatrix.LinesAmount := Amount;
+      DataManager.GetCurrentOperation.FProblemMatrix.MartixUpdate();
+      sgResize(sgGetCurrent);
     end
-    else if TEdit(Sender).Name = edColumnsAmount.Name then
+    else
     begin
-      sgInputMatrix.ColCount := Amount;
-      sgResize(sgInputMatrix);
+      if TEdit(Sender).Tag = edColumnsAmount.Tag then
+      begin
+        DataManager.GetCurrentOperation.FProblemMatrix.ColumnsAmount := Amount;
+        DataManager.GetCurrentOperation.FProblemMatrix.MartixUpdate();
+        sgResize(sgGetCurrent);
+      end;
     end
-end;
-
-procedure TMainForm.edDimensionsExit(Sender: TObject);
-var
-  Temp: Integer;
-begin
-  if not TryStrToNatural(TEdit(Sender).Text, Temp) then
+  else
   begin
-    ShowMessage('In�orrect dimension');
+    ShowMessage('Inсorrect dimension');
     TEdit(Sender).SetFocus;
   end;
 end;

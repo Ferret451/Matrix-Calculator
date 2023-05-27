@@ -41,11 +41,10 @@ object MainForm: TMainForm
       Align = alClient
       TabOrder = 0
       object pbExpression: TPaintBox
-        Left = 0
-        Top = 21
-        Width = 591
-        Height = 144
-        Align = alClient
+        Left = 3
+        Top = 3
+        Width = 2000
+        Height = 2000
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -19
@@ -53,13 +52,11 @@ object MainForm: TMainForm
         Font.Style = [fsBold]
         ParentFont = False
         OnPaint = pbExpressionPaint
-        ExplicitLeft = 48
-        ExplicitTop = 53
       end
       object edExpression: TEdit
         Left = 0
         Top = 0
-        Width = 591
+        Width = 2003
         Height = 21
         Align = alTop
         Color = clBtnFace
@@ -67,7 +64,7 @@ object MainForm: TMainForm
         OnChange = edExpressionChange
         OnExit = edExpressionExit
       end
-      object sgInputMatrix: TStringGrid
+      object sgDeterminant: TStringGrid
         Left = 26
         Top = 56
         Width = 135
@@ -82,26 +79,55 @@ object MainForm: TMainForm
         Visible = False
         OnSetEditText = sgInputMatrixSetEditText
       end
-      object edLinesAmount: TEdit
-        Left = 76
-        Top = 11
-        Width = 48
-        Height = 21
+      object sgInverse: TStringGrid
+        Left = 26
+        Top = 56
+        Width = 135
+        Height = 55
+        ColCount = 2
+        FixedCols = 0
+        RowCount = 2
+        FixedRows = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goFixedRowDefAlign]
+        ScrollBars = ssNone
         TabOrder = 2
-        Text = '2'
         Visible = False
-        OnChange = edDimensionsChange
-        OnExit = edDimensionsExit
+        OnSetEditText = sgInputMatrixSetEditText
+      end
+      object sgRank: TStringGrid
+        Left = 26
+        Top = 56
+        Width = 135
+        Height = 55
+        ColCount = 2
+        FixedCols = 0
+        RowCount = 2
+        FixedRows = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goFixedRowDefAlign]
+        ScrollBars = ssNone
+        TabOrder = 3
+        Visible = False
+        OnSetEditText = sgInputMatrixSetEditText
       end
       object edColumnsAmount: TEdit
+        Tag = 1
         Left = 242
         Top = 11
         Width = 48
         Height = 21
-        TabOrder = 3
+        TabOrder = 4
         Text = '2'
         Visible = False
-        OnChange = edDimensionsChange
+        OnExit = edDimensionsExit
+      end
+      object edLinesAmount: TEdit
+        Left = 74
+        Top = 11
+        Width = 48
+        Height = 21
+        TabOrder = 5
+        Text = '2'
+        Visible = False
         OnExit = edDimensionsExit
       end
     end
@@ -419,6 +445,7 @@ object MainForm: TMainForm
           OnClick = butChooseClick
         end
         object butDeterminantChoose: TButton
+          Tag = 1
           Left = 1
           Top = 69
           Width = 78
@@ -429,6 +456,7 @@ object MainForm: TMainForm
           OnClick = butChooseClick
         end
         object butInverseChoose: TButton
+          Tag = 2
           Left = 1
           Top = 137
           Width = 78
@@ -439,6 +467,7 @@ object MainForm: TMainForm
           OnClick = butChooseClick
         end
         object butRankChoose: TButton
+          Tag = 3
           Left = 1
           Top = 205
           Width = 78

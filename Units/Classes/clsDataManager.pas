@@ -3,9 +3,11 @@ unit clsDataManager;
 interface
 
 uses
-  Vcl.ExtCtrls, clsMatrixList, clsMatrix, untTypes;
+  Vcl.Grids, Vcl.ExtCtrls, clsMatrixList, clsMatrix, untTypes, untConstants;
 
 type
+  TProc = procedure(Sender: TObject);
+
   TPaintProc = procedure(Sender: TObject);
 
   TDataManager = class
@@ -16,25 +18,32 @@ type
     FCurrentRank: TFullOperation;
     FOperationStatement: TOperationStatement;
 
-    FMatrixList: TMatrixList;
+    FMatrixList: TMatrixList<Extended>;
   public
     constructor Create();
     destructor Destroy(); override;
+    procedure OperationDestroy(const AOpearation: TFullOperation);
 
-    procedure CallBack(Sender: TObject);
+    procedure CallBack(Sender: TObject); overload;
+    procedure CallBack(const AProc: TProc; const AStringGrid: TStringGrid); overload;
+
+    procedure SetStringProblem(const AProblemString: string;
+      const AOperation: TFullOperation);
+
     function GetCurrentOperation(): TFullOperation;
-    procedure SetProblemString(const AProblemString: string;
-      const AOperation: TFullOperation);
-    procedure SetProblemMatrix(const AProblemMatrix: TMatrix;
-      const AOperation: TFullOperation);
-    procedure SetAnswer(const AAnswer: TAnswer;
-      const AOperation: TFullOperation);
+    procedure SetCurrentOperation(const AOperation: TFullOperation);
+    function GetCurrentAnswer(): TAnswer;
+    procedure SetCurrentAnswer(const AAnswer: TAnswer);
 
-    property MatrixList: TMatrixList read FMatrixList;
+    property MatrixList: TMatrixList<Extended> read FMatrixList;
     property CurrentExpression: TFullOperation read FCurrentExpression;
     property CurrentDeterminant: TFullOperation read FCurrentDeterminant;
     property CurrentInverse: TFullOperation read FCurrentInverse;
     property CurrentRank: TFullOperation read FCurrentRank;
+    property CurrentOperation: TFullOperation read GetCurrentOperation
+      write SetCurrentOperation;
+    property CurrentAnswer: TAnswer read GetCurrentAnswer
+      write SetCurrentAnswer;
     property OperationStatement: TOperationStatement read FOperationStatement
       write FOperationStatement;
   end;
@@ -46,47 +55,100 @@ implementation
 
 constructor TDataManager.Create();
 begin
-  FMatrixList := TMatrixList.Create();
+  FMatrixList := TMatrixList<Extended>.Create();
+
+  FCurrentExpression.FProblemMatrix := TMatrix<string>.Create(
+    DefaultMatrixLength, DefaultMatrixHeight);
+  FCurrentExpression.FAnswer.FMatrix := TMatrix<Extended>.Create(
+    DefaultMatrixLength, DefaultMatrixHeight);
+
+  FCurrentDeterminant.FProblemMatrix := TMatrix<string>.Create(
+    DefaultMatrixLength, DefaultMatrixHeight);
+  FCurrentDeterminant.FAnswer.FMatrix := TMatrix<Extended>.Create(
+    DefaultMatrixLength, DefaultMatrixHeight);
+
+  FCurrentInverse.FProblemMatrix := TMatrix<string>.Create(
+    DefaultMatrixLength, DefaultMatrixHeight);
+  FCurrentInverse.FAnswer.FMatrix := TMatrix<Extended>.Create(
+    DefaultMatrixLength, DefaultMatrixHeight);
+
+  FCurrentRank.FProblemMatrix := TMatrix<string>.Create(
+    DefaultMatrixLength, DefaultMatrixHeight);
+  FCurrentRank.FAnswer.FMatrix := TMatrix<Extended>.Create(
+    DefaultMatrixLength, DefaultMatrixHeight);
+
+  FOperationStatement := ostatExpression;
+
+  inherited;
 end;
 
 destructor TDataManager.Destroy();
 begin
   FMatrixList.Destroy();
 
+  OperationDestroy(FCurrentExpression);
+  OperationDestroy(FCurrentDeterminant);
+  OperationDestroy(FCurrentInverse);
+  OperationDestroy(FCurrentRank);
+
   inherited;
+end;
+
+procedure TDataManager.OperationDestroy(const AOpearation: TFullOperation);
+begin
+  AOpearation.FProblemMatrix.Destroy;
+  AOpearation.FAnswer.FMatrix.Destroy;
+end;
+
+procedure TDataManager.CallBack(Sender: TObject);
+begin
+  TPaintBox(Sender).Invalidate;
+end;
+
+procedure TDataManager.CallBack(const AProc: TProc; const AStringGrid: TStringGrid);
+begin
+  AProc(AStringGrid);
 end;
 
 function TDataManager.GetCurrentOperation(): TFullOperation;
 begin
   case FOperationStatement of
-    ostatExpression: Result := CurrentExpression;
-    ostatDeterminant: Result := CurrentDeterminant;
-    ostatInverse: Result := CurrentInverse;
-    ostatRank: Result := CurrentRank;
+    ostatExpression: Result := FCurrentExpression;
+    ostatDeterminant: Result := FCurrentDeterminant;
+    ostatInverse: Result := FCurrentInverse;
+    ostatRank: Result := FCurrentRank;
   end;
 end;
 
-procedure TDataManager.CallBack(Sender: TObject);
+procedure TDataManager.SetCurrentOperation(const AOperation: TFullOperation);
 begin
-  TPaintBox(Sender).OnPaint(TPaintBox(Sender));;
+  case FOperationStatement of
+    ostatExpression: FCurrentExpression := AOperation;
+    ostatDeterminant: FCurrentDeterminant := AOperation;
+    ostatInverse: FCurrentInverse := AOperation;
+    ostatRank: FCurrentRank := AOperation;
+  end;
 end;
 
-procedure TDataManager.SetProblemString(const AProblemString: string;
+procedure TDataManager.SetStringProblem(const AProblemString: string;
   const AOperation: TFullOperation);
 begin
   FCurrentExpression.FProblemString := AProblemString;
 end;
 
-procedure TDataManager.SetProblemMatrix(const AProblemMatrix: TMatrix;
-  const AOperation: TFullOperation);
+function TDataManager.GetCurrentAnswer(): TAnswer;
 begin
-  FCurrentExpression.FProblemMatrix := AProblemMatrix;
+  Result := GetCurrentOperation.FAnswer;
 end;
 
-procedure TDataManager.SetAnswer(const AAnswer: TAnswer;
-  const AOperation: TFullOperation);
+procedure TDataManager.SetCurrentAnswer(const AAnswer: TAnswer);
 begin
-  FCurrentExpression.FAnswer := AAnswer;
+  case FOperationStatement of
+    ostatExpression: FCurrentExpression.FAnswer := AAnswer;
+    ostatDeterminant: FCurrentDeterminant.FAnswer := AAnswer;
+    ostatInverse: FCurrentInverse.FAnswer := AAnswer;
+    ostatRank: FCurrentRank.FAnswer := AAnswer;
+  end;
 end;
 
 end.

@@ -6,16 +6,16 @@ uses
   clsMatrix;
 
 type
-  TOperand = record
-    FMatrix: TMatrix;
+  TAnswer = record
+    FMatrix: TMatrix<Extended>;
     FNumber: Extended;
     FIsMatrix: Boolean;
   end;
 
-  TFullExpression = record
+  TFullOperation = record
     FProblemString: string;
-    FProbelemMatrix: TMatrix;
-    FAnswer: TOperand;
+    FProblemMatrix: TMatrix<string>;
+    FAnswer: TAnswer;
   end;
 
   TOperationStatement = (

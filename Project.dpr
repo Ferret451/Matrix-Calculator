@@ -17,7 +17,8 @@ uses
   clsOperandStack in 'Units\Classes\clsOperandStack.pas',
   untTypes in 'Units\Additional\untTypes.pas',
   untPainting in 'Units\Logic\untPainting.pas',
-  frmHTML in 'Units\Forms\frmHTML.pas' {HTMLForm};
+  frmHTML in 'Units\Forms\frmHTML.pas' {HTMLForm},
+  untMatrixCalc in 'Units\Logic\untMatrixCalc.pas';
 
 {$R *.res}
 

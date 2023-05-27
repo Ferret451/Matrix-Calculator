@@ -6,7 +6,7 @@ uses
   clsMatrix, clsDoubleLinkedList;
 
 type
-  TMatrixList = class(TDoubleLinkedList<TMatrix>)
+  TMatrixList<T> = class(TDoubleLinkedList<TMatrix<T>>)
 
   private
 
@@ -16,12 +16,13 @@ type
 
     procedure Sort();
     function TryGetMatrixFromList(const AMatrixName: string): Boolean; overload;
-    function TryGetMatrixFromList(const AMatrixName: string; const AMatrix: TMatrix): Boolean; overload;
+    function TryGetMatrixFromList(const AMatrixName: string;
+      const AMatrix: TMatrix<T>): Boolean; overload;
   end;
 
 implementation
 
-destructor TMatrixList.Destroy();
+destructor TMatrixList<T>.Destroy();
 
 begin
   Clear();
@@ -29,7 +30,7 @@ begin
   inherited;
 end;
 
-procedure TMatrixList.Clear();
+procedure TMatrixList<T>.Clear();
 var
   CurrNode, NextNode: PNode;
 begin
@@ -44,7 +45,7 @@ begin
   inherited;
 end;
 
-procedure TMatrixList.Sort();
+procedure TMatrixList<T>.Sort();
 var
   CurrNode, LastSwapNode, BarrierNode: PNode;
 begin
@@ -71,7 +72,7 @@ begin
   end;
 end;
 
-function TMatrixList.TryGetMatrixFromList(const AMatrixName: string): Boolean;
+function TMatrixList<T>.TryGetMatrixFromList(const AMatrixName: string): Boolean;
 var
   CurrNode: PNode;
 begin
@@ -82,10 +83,12 @@ begin
   begin
     if CurrNode^.FValue.Name = AMatrixName then
       Result := True;
+    CurrNode := CurrNode^.FNext;
   end;
 end;
 
-function TMatrixList.TryGetMatrixFromList(const AMatrixName: string; const AMatrix: TMatrix): Boolean;
+function TMatrixList<T>.TryGetMatrixFromList(const AMatrixName: string;
+  const AMatrix: TMatrix<T>): Boolean;
 var
   CurrNode: PNode;
 begin
@@ -99,6 +102,7 @@ begin
       Result := True;
       AMatrix.AssignTo(CurrNode^.FValue);
     end;
+    CurrNode := CurrNode^.FNext;
   end;
 end;
 
