@@ -32,6 +32,8 @@ type
     procedure pbMatrixListMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
     procedure FormShow(Sender: TObject);
+    procedure sbMatrixListMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 
   private type
     TMatrixBorders = record
@@ -121,14 +123,13 @@ end;
 procedure TMatrixListForm.pbMatrixListPaint(Sender: TObject);
 var
   CurrNode: TMatrixList<Extended>.PNode;
-  X, Y, CurrMatrixPosX, CurrMatrixPosY, CurrMatrixHeight: Integer;
+  X, Y, CurrMatrixPosX, CurrMatrixPosY, CurrMatrixHeight, MaxMatrixWidth: Integer;
 begin
-  TPaintBox(pbMatrixList).Canvas.FillRect(TPaintBox(pbMatrixList).ClientRect);
-
   CurrMatrixPosX := StartPosX;
   CurrMatrixPosY := StartPosY;
 
   SetLength(FMatrixesBorders, DataManager.MatrixList.Size);
+  MaxMatrixWidth := 0;
   CurrNode := DataManager.MatrixList.Head;
   while Assigned(CurrNode) do
   begin
@@ -139,7 +140,9 @@ begin
 
     CurrMatrixHeight := GetMatrixHeight(CurrNode^.FValue, Sender);
 
-    MatrixNamePrint(X, Y, CurrNode^.FValue, Sender);
+    Y := Y + LineInterval;
+    MidMatrixTextPrint(X, Y, CurrMatrixHeight, CurrNode^.FValue.Name +
+      ' = ', Sender);
 
     Y := CurrMatrixPosY;
     MatrixPaint(X, Y, CurrNode^.FValue, BraceOutline, Sender);
@@ -149,7 +152,37 @@ begin
     FMatrixesBorders[Length(FMatrixesBorders) - 1].FRight := X;
     FMatrixesBorders[Length(FMatrixesBorders) - 1].FBottom := Y;
     CurrMatrixPosY := Y + LineInterval;
+
+    if X > MaxMatrixWidth then
+      MaxMatrixWidth := X;
+
     CurrNode := CurrNode^.FNext;
+  end;
+
+  pbMatrixList.Height := CurrMatrixPosY;
+  pbMatrixList.Width := MaxMatrixWidth + ColumnInterval;
+end;
+
+procedure TMatrixListForm.sbMatrixListMouseWheel(Sender: TObject;
+  Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint;
+  var Handled: Boolean);
+begin
+  // Check if Shift key is pressed
+  if ssShift in Shift then
+  begin
+    // Scroll horizontally based on the WheelDelta value
+    if WheelDelta > 0 then
+      sbMatrixList.HorzScrollBar.Position := sbMatrixList.HorzScrollBar.Position - ScrollStep
+    else
+      sbMatrixList.HorzScrollBar.Position := sbMatrixList.HorzScrollBar.Position + ScrollStep;
+  end
+  else
+  begin
+    // Scroll vertically based on the WheelDelta value
+    if WheelDelta > 0 then
+      sbMatrixList.VertScrollBar.Position := sbMatrixList.VertScrollBar.Position - ScrollStep
+    else
+      sbMatrixList.VertScrollBar.Position := sbMatrixList.VertScrollBar.Position + ScrollStep;
   end;
 end;
 

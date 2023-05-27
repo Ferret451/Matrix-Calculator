@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.696,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.298,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.313,D:\Уник\Курсач\Matrix-Calculator\Unit1.pas=D:\Уник\Курсач\Matrix-Calculator\clsDataManager.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.202,D:\Уник\Курсач\Matrix-Calculator\Unit1.pas=D:\Уник\Курсач\Matrix-Calculator\clsOperandStack.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.082,D:\Уник\Курсач\Matrix-Calculator\Unit1.pas=D:\Уник\Курсач\Matrix-Calculator\frmHTML.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.156,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.737,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.842,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.446,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.241,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.059,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.568,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.875,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.290,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.929,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.209,D:\Уник\Курсач\Matrix-Calculator\Unit1.pas=D:\Уник\Курсач\Matrix-Calculator\untTypes.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.086,=D:\Уник\Курсач\Matrix-Calculator\HTML.rc</Transaction>
     <Transaction>1899.12.30 00:00:00.000.859,D:\Уник\Курсач\Matrix-Calculator\ClMatrix.pas=D:\Уник\Курсач\Matrix-Calculator\Matrix.pas</Transaction>
@@ -18,9 +18,9 @@
     <Transaction>1899.12.30 00:00:00.000.283,D:\Уник\Курсач\Matrix-Calculator\Unit1.pas=D:\Уник\Курсач\Matrix-Calculator\MatrixList.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.138,D:\Уник\Курсач\Matrix-Calculator\Unit1.pas=D:\Уник\Курсач\Matrix-Calculator\fMatrList.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.281,D:\Уник\Курсач\Matrix-Calculator\Unit1.pas=D:\Уник\Курсач\Matrix-Calculator\MatrList.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.701,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.997,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.967,D:\Уник\Курсач\Matrix-Calculator\Unit1.pas=D:\Уник\Курсач\Matrix-Calculator\untMatrixCalc.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.524,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.552,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.126,D:\Уник\Курсач\Matrix-Calculator\ExprCalculate.pas=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.043,D:\Уник\Курсач\Matrix-Calculator\Units\Logic\Painting.pas=D:\Уник\Курсач\Matrix-Calculator\Painting.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.145,=D:\Уник\Курсач\Matrix-Calculator\Calculations.pas</Transaction>
@@ -31,15 +31,15 @@
     <Transaction>1899.12.30 00:00:00.000.971,D:\Уник\Курсач\Matrix-Calculator\Matrix.pas=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.995,D:\Уник\Курсач\Matrix-Calculator\Units\Forms\formMain.dfm=D:\Уник\Курсач\Matrix-Calculator\Units\Forms\Main.dfm</Transaction>
     <Transaction>1899.12.30 00:00:00.000.500,D:\Уник\Курсач\Matrix-Calculator\SingleLinkedList.pas=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.059,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.298,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.929,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.552,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.568,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.696,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.156,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.737,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.842,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.446,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.089,D:\Уник\Курсач\Matrix-Calculator\untMatrixCalc.pas=D:\Уник\Курсач\Matrix-Calculator\Units\Logic\untMatrixCalc.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.875,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.290,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.997,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.241,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.701,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.524,=D:\Уник\Курсач\Matrix-Calculator\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.566,D:\Уник\Курсач\Matrix-Calculator\ClDataManager.pas=</Transaction>
     <Transaction>1899.12.30 00:00:00.000.998,D:\Уник\Курсач\Matrix-Calculator\Main.dfm=C:\Users\stasg\OneDrive\Документы\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
     <Transaction>1899.12.30 00:00:00.000.348,D:\Уник\Курсач\Matrix-Calculator\ClSingleLinkedList.pas=D:\Уник\Курсач\Matrix-Calculator\SingleLinkedList.pas</Transaction>

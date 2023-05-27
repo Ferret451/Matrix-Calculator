@@ -30,7 +30,8 @@ type
       property LinesAmount: Integer read GetLinesAmount write SetLinesAmount;
       property ColumnsAmount: Integer read FColumnsAmount write FColumnsAmount;
       property Name: string read FName write FName;
-      property Elements[X, Y: Integer]: T read GetElement write SetElement;
+      property Elements: TMatrixElements read FElements;
+      property Element[X, Y: Integer]: T read GetElement write SetElement;
   end;
 
 implementation
@@ -84,7 +85,7 @@ begin
   Self.MartixUpdate();
   for i := 0 to Self.FLinesAmount - 1 do
     for j := 0 to Self.FColumnsAmount -1 do
-      Self.Elements[i, j] := AMatrix.Elements[i, j];
+      Self.Element[i, j] := AMatrix.Element[i, j];
 end;
 
 procedure TMatrix<T>.SetElementsTo(const AElements: TMatrixElements);

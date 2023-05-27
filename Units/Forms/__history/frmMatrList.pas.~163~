@@ -1,0 +1,182 @@
+unit frmMatrList;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls,
+  System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList, Vcl.ComCtrls, Vcl.ExtCtrls,
+  clsMatrixList, clsMatrix, clsDataManager, untConstants, frmEditMatr, untPainting;
+
+type
+  TMatrixListForm = class(TForm)
+
+    alMatrixList: TActionList;
+    ilMatrixList: TImageList;
+    aNewMatrix: TAction;
+    aSortListAtoZ: TAction;
+    tbMatrixList: TToolBar;
+    tbNewMatrix: TToolButton;
+    ToolButton1: TToolButton;
+    aClearList: TAction;
+    tbClearList: TToolButton;
+    aSortListZtoA: TAction;
+    tbClear: TToolButton;
+    sbMatrixList: TScrollBox;
+    pbMatrixList: TPaintBox;
+    procedure aNewMatrixExecute(Sender: TObject);
+    procedure aSortListAtoZExecute(Sender: TObject);
+    procedure pbMatrixListPaint(Sender: TObject);
+    procedure aClearListExecute(Sender: TObject);
+    procedure pbMatrixListDblClick(Sender: TObject);
+    procedure pbMatrixListMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
+    procedure FormShow(Sender: TObject);
+    procedure sbMatrixListMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+
+  private type
+    TMatrixBorders = record
+      FTop, FBottom, FLeft, FRight: Integer;
+    end;
+    TPos = record
+      FX, FY: Integer;
+    end;
+
+  private
+    FMatrixesBorders: array of TMatrixBorders;
+    FCursorPos: TPos;
+  public
+    destructor Destroy(); override;
+  end;
+
+var
+  MatrixListForm: TMatrixListForm;
+
+implementation
+
+{$R *.dfm}
+
+destructor TMatrixListForm.Destroy();
+begin
+  SetLength(FMatrixesBorders, 0);
+
+  inherited;
+end;
+
+procedure TMatrixListForm.FormShow(Sender: TObject);
+begin
+  Left:= (Screen.Width - Width) shr 1;
+  Top:= (Screen.Height - Width) shr 1;
+end;
+
+procedure TMatrixListForm.aClearListExecute(Sender: TObject);
+begin
+  SetLength(FMatrixesBorders, 0);
+  DataManager.MatrixList.Clear();
+  DataManager.CallBack(pbMatrixList);
+end;
+
+procedure TMatrixListForm.aNewMatrixExecute(Sender: TObject);
+var
+  EditingMatrix: TMatrix<Extended>;
+begin
+  EditMatrixForm.TryGetMatrix(EditingMatrix);
+
+  if Assigned(EditingMatrix) then
+  begin
+    DataManager.MatrixList.Add(EditingMatrix);
+    DataManager.CallBack(pbMatrixList);
+  end;
+end;
+
+procedure TMatrixListForm.pbMatrixListDblClick(Sender: TObject);
+var
+  i: Integer;
+  EditingMatrix: TMatrix<Extended>;
+begin
+  for i := Low(FMatrixesBorders) to High(FMatrixesBorders) do
+    if (FCursorPos.FX >= FMatrixesBorders[i].FLeft) and
+      (FCursorPos.FX <= FMatrixesBorders[i].FRight) and
+      (FCursorPos.FY >= FMatrixesBorders[i].FTop) and
+      (FCursorPos.FY <= FMatrixesBorders[i].FBottom) then
+    begin
+      EditingMatrix := DataManager.MatrixList.GetValue(i);
+      EditMatrixForm.TryGetMatrix(EditingMatrix, False);
+      DataManager.MatrixList.SetValue(i, EditingMatrix);
+      DataManager.CallBack(pbMatrixList);
+    end;
+end;
+
+procedure TMatrixListForm.pbMatrixListMouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  FCursorPos.FX := X;
+  FCursorPos.FY := Y;
+end;
+
+procedure TMatrixListForm.aSortListAtoZExecute(Sender: TObject);
+begin
+//
+end;
+
+procedure TMatrixListForm.pbMatrixListPaint(Sender: TObject);
+var
+  CurrNode: TMatrixList<Extended>.PNode;
+  X, Y, CurrMatrixPosX, CurrMatrixPosY, CurrMatrixHeight, MaxMatrixWidth: Integer;
+begin
+  CurrMatrixPosX := StartPosX;
+  CurrMatrixPosY := StartPosY;
+
+  SetLength(FMatrixesBorders, DataManager.MatrixList.Size);
+  CurrNode := DataManager.MatrixList.Head;
+  while Assigned(CurrNode) do
+  begin
+    X := CurrMatrixPosX;
+    Y := CurrMatrixPosY;
+    FMatrixesBorders[Length(FMatrixesBorders) - 1].FLeft := X;
+    FMatrixesBorders[Length(FMatrixesBorders) - 1].FTop := Y;
+
+    CurrMatrixHeight := GetMatrixHeight(CurrNode^.FValue, Sender);
+
+    MatrixNamePrint(X, Y, CurrNode^.FValue, Sender);
+
+    Y := CurrMatrixPosY;
+    MatrixPaint(X, Y, CurrNode^.FValue, BraceOutline, Sender);
+
+    X := X + 2 * ColumnInterval;
+    Y := Y + 2 * LineInterval;
+    FMatrixesBorders[Length(FMatrixesBorders) - 1].FRight := X;
+    FMatrixesBorders[Length(FMatrixesBorders) - 1].FBottom := Y;
+    CurrMatrixPosY := Y + LineInterval;
+
+    pbMatrixList.Height :=
+
+    CurrNode := CurrNode^.FNext;
+  end;
+end;
+
+procedure TMatrixListForm.sbMatrixListMouseWheel(Sender: TObject;
+  Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint;
+  var Handled: Boolean);
+begin
+  // Check if Shift key is pressed
+  if ssShift in Shift then
+  begin
+    // Scroll horizontally based on the WheelDelta value
+    if WheelDelta > 0 then
+      sbMatrixList.HorzScrollBar.Position := sbMatrixList.HorzScrollBar.Position - ScrollStep
+    else
+      sbMatrixList.HorzScrollBar.Position := sbMatrixList.HorzScrollBar.Position + ScrollStep;
+  end
+  else
+  begin
+    // Scroll vertically based on the WheelDelta value
+    if WheelDelta > 0 then
+      sbMatrixList.VertScrollBar.Position := sbMatrixList.VertScrollBar.Position - ScrollStep
+    else
+      sbMatrixList.VertScrollBar.Position := sbMatrixList.VertScrollBar.Position + ScrollStep;
+  end;
+end;
+
+end.

@@ -8,7 +8,7 @@ uses
   System.Actions, Vcl.ActnList, Vcl.ExtCtrls, System.ImageList, Vcl.ImgList, Vcl.ToolWin,
   Vcl.ComCtrls, untExprCalculate, clsDoubleLinkedList, clsMatrix, clsMatrixList,
   clsDataManager, frmMatrList, frmEditMatr, Vcl.NumberBox, untConstants, untTypes,
-  Vcl.Grids, frmHTML, untPainting;
+  Vcl.Grids, frmHTML, untPainting, untMatrixCalc;
 
 type
   TMainForm = class(TForm)
@@ -76,8 +76,6 @@ type
     Button6: TButton;
     Button7: TButton;
     pbExpression: TPaintBox;
-    butAddDimension: TButton;
-    butRemoveDimension: TButton;
     Help1: TMenuItem;
     Help2: TMenuItem;
     About1: TMenuItem;
@@ -87,6 +85,9 @@ type
     sgRank: TStringGrid;
     edColumnsAmount: TEdit;
     edLinesAmount: TEdit;
+    butAddDimension: TButton;
+    butRemoveDimension: TButton;
+    labX: TLabel;
 
     procedure edExpressionExit(Sender: TObject);
     procedure butCalculateClick(Sender: TObject);
@@ -115,8 +116,13 @@ type
       const Value: string);
     procedure sgSelectSpecificCell(ACol, ARow: Integer;
       AStringGrid: TStringGrid);
+    procedure sbExpressionClick(Sender: TObject);
+    procedure sbExpressionMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
   private
     FCarriagePos: Integer;
+    FsgLeft: Integer;
+    FsgTop: Integer;
 
     function TryStrToNatural(const ANumberSting: string; var ANumber: Integer): Boolean;
     function sgGetCurrent(): TStringGrid;
@@ -191,14 +197,13 @@ end;
 procedure TMainForm.pbExpressionPaint(Sender: TObject);
 var
   X, Y: Integer;
+  TextToOut: string;
 begin
- // pbExpression.Canvas.FillRect(pbExpression.ClientRect);
-
   case DataManager.OperationStatement of
     ostatExpression:
     begin
       X := StartPosX;
-      Y := StartPosY + 42 div 2;
+      Y := StartPosY + 42 shr 1;
 
       if DataManager.CurrentExpression.FAnswer.FIsMatrix then
       begin
@@ -214,29 +219,43 @@ begin
 
     ostatDeterminant:
     begin
-      DetOutline(sgDeterminant.Left, sgDeterminant.Top, sgDeterminant.Height,
+      X := FsgLeft;
+      Y := FsgTop;
+
+      DetOutline(X, Y, sgDeterminant.Height,
         sgDeterminant.Width, pbExpression);
-      X := pbExpression.Left;
+
+      X := X + sgDeterminant.Width + ColumnInterval shl 1;
+      TextToOut := ' = ' +
+        FloatToStr(DataManager.CurrentDeterminant.FAnswer.FNumber);
+      MidMatrixTextPrint(X, Y, sgDeterminant.Height, TextToOut, pbExpression);
+
+      pbExpression.Width := FsgLeft + sgDeterminant.Width + ColumnInterval shl 1 + X;
+      pbExpression.Height := FsgTop + sgDeterminant.Height + LineInterval shl 1;
     end;
 
     ostatInverse:
     begin
-      pbExpression.Canvas.TextOut(StartPosX, StartPosY, 'Lines:');
-      pbExpression.Canvas.TextOut(StartPosX +
-        pbExpression.Canvas.TextWidth('Lines:') + edLinesAmount.Width + 42, StartPosY,
-        'Columns:');
-      BraceOutline(sgInverse.Left, sgInverse.Top, sgInverse.Height,
+      X := FsgLeft;
+      Y := FsgTop;
+
+      BraceOutline(X, Y, sgInverse.Height,
         sgInverse.Width, pbExpression);
+
+      pbExpression.Width := FsgLeft + sgInverse.Width + ColumnInterval shl 1;
+      pbExpression.Height := FsgTop + sgInverse.Height + LineInterval shl 1;
     end;
 
     ostatRank:
     begin
-      pbExpression.Canvas.TextOut(StartPosX, StartPosY, 'Lines:');
-      pbExpression.Canvas.TextOut(StartPosX +
-        pbExpression.Canvas.TextWidth('Lines:') + edLinesAmount.Width + 42, StartPosY,
-        'Columns:');
-      BraceOutline(sgRank.Left, sgRank.Top, sgRank.Height, sgRank.Width,
+      X := FsgLeft;
+      Y := FsgTop;
+
+      BraceOutline(X, Y, sgRank.Height, sgRank.Width,
         pbExpression);
+
+      pbExpression.Width := FsgLeft + sgRank.Width + ColumnInterval shl 1;
+      pbExpression.Height := FsgTop + sgRank.Height + LineInterval shl 1;
     end;
   end;
 end;
@@ -254,13 +273,45 @@ end;
 procedure TMainForm.butCalculateClick(Sender: TObject);
 var
   Answer: TAnswer;
+  Matrix: TExtendedMatrixElements;
 begin
   Answer := DataManager.CurrentAnswer;
-  if ExprCalculation(edExpression.Text, Answer) then
-  begin
-    DataManager.CurrentAnswer := Answer;
-    DataManager.CallBack(pbExpression)
+
+  case DataManager.OperationStatement of
+    ostatExpression:
+      if ExprCalculation(edExpression.Text, Answer) then
+        DataManager.CurrentAnswer := Answer;
+
+
+    ostatDeterminant:
+    begin
+      sgResize(sgGetCurrent);
+      SetLength(Matrix, DataManager.CurrentDeterminant.FProblemMatrix.LinesAmount,
+        DataManager.CurrentDeterminant.FProblemMatrix.ColumnsAmount);
+      if DataManager.TryProblemMatrixToExtended(DataManager.CurrentDeterminant.FProblemMatrix,
+        Matrix) then
+      begin
+        Answer.FIsMatrix := False;
+        Answer.FNumber := FindDeterminant(Matrix);
+        DataManager.CurrentAnswer := Answer;
+      end
+      else
+        ShowMessage('Incorrect matrix element was found');
+      SetLength(Matrix, 0, 0);
+    end;
+
+    ostatInverse:
+    begin
+      sgResize(sgGetCurrent);
+    end;
+
+    ostatRank:
+    begin
+      sgResize(sgGetCurrent);
+    end;
   end;
+
+  DataManager.CallBack(pbExpression);
 end;
 
 procedure TMainForm.butClearClick(Sender: TObject);
@@ -303,6 +354,7 @@ begin
   butRemoveDimension.Visible := False;
   edLinesAmount.Visible := False;
   edColumnsAmount.Visible := False;
+  labX.Visible := False;
   if TButton(Sender).Tag = butExpressionChoose.Tag then
   begin
     DataManager.OperationStatement := ostatExpression;
@@ -320,6 +372,8 @@ begin
     butAddDimension.Visible := True;
     butRemoveDimension.Visible := True;
     sgInputMatrixAssign(sgGetCurrent, DataManager.GetCurrentOperation.FProblemMatrix);
+    FsgLeft := sgGetCurrent.Left;
+    FsgTop := sgGetCurrent.Top;
 
     DataManager.CallBack(pbExpression);
   end
@@ -328,13 +382,11 @@ begin
     DataManager.OperationStatement := ostatInverse;
 
     sgInverse.Visible := True;
-    edLinesAmount.Visible := True;
-    edColumnsAmount.Visible := True;
-    edLinesAmount.Text :=
-      IntToStr(DataManager.GetCurrentOperation.FProblemMatrix.LinesAmount);
-    edColumnsAmount.Text :=
-      IntToStr(DataManager.GetCurrentOperation.FProblemMatrix.ColumnsAmount);
+    butAddDimension.Visible := True;
+    butRemoveDimension.Visible := True;
     sgInputMatrixAssign(sgGetCurrent, DataManager.GetCurrentOperation.FProblemMatrix);
+    FsgLeft := sgGetCurrent.Left;
+    FsgTop := sgGetCurrent.Top;
 
     DataManager.CallBack(pbExpression);
   end
@@ -349,7 +401,10 @@ begin
       IntToStr(DataManager.GetCurrentOperation.FProblemMatrix.LinesAmount);
     edColumnsAmount.Text :=
       IntToStr(DataManager.GetCurrentOperation.FProblemMatrix.ColumnsAmount);
+     labX.Visible := True;
     sgInputMatrixAssign(sgGetCurrent, DataManager.GetCurrentOperation.FProblemMatrix);
+    FsgLeft := sgGetCurrent.Left;
+    FsgTop := sgGetCurrent.Top;
 
     DataManager.CallBack(pbExpression);
   end;
@@ -362,6 +417,7 @@ begin
   DataManager.GetCurrentOperation.FProblemMatrix.ColumnsAmount :=
     DataManager.GetCurrentOperation.FProblemMatrix.ColumnsAmount + 1;
   DataManager.GetCurrentOperation.FProblemMatrix.MartixUpdate();
+
   sgResize(sgGetCurrent);
 end;
 
@@ -374,7 +430,35 @@ begin
     DataManager.GetCurrentOperation.FProblemMatrix.ColumnsAmount :=
       DataManager.GetCurrentOperation.FProblemMatrix.ColumnsAmount - 1;
     DataManager.GetCurrentOperation.FProblemMatrix.MartixUpdate();
+
     sgResize(sgGetCurrent);
+  end;
+end;
+
+procedure TMainForm.sbExpressionClick(Sender: TObject);
+begin
+  sbExpression.SetFocus;
+end;
+
+procedure TMainForm.sbExpressionMouseWheel(Sender: TObject; Shift: TShiftState;
+  WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+begin
+  // Check if Shift key is pressed
+  if ssShift in Shift then
+  begin
+    // Scroll horizontally based on the WheelDelta value
+    if WheelDelta > 0 then
+      sbExpression.HorzScrollBar.Position := sbExpression.HorzScrollBar.Position - ScrollStep
+    else
+      sbExpression.HorzScrollBar.Position := sbExpression.HorzScrollBar.Position + ScrollStep;
+  end
+  else
+  begin
+    // Scroll vertically based on the WheelDelta value
+    if WheelDelta > 0 then
+      sbExpression.VertScrollBar.Position := sbExpression.VertScrollBar.Position - ScrollStep
+    else
+      sbExpression.VertScrollBar.Position := sbExpression.VertScrollBar.Position + ScrollStep;
   end;
 end;
 
@@ -386,51 +470,6 @@ begin
     ostatRank: Result := sgRank;
   end;
 end;
-
-{
-procedure TMainForm.sgInputMatrixExit(Sender: TObject);
-var
-  i, j: Integer;
-  Temp: Extended;
-  IsCorrectElements: Boolean;
-  MatrixElements: TMatrix.TMatrixElements;
-begin
-  SetLength(MatrixElements, TStringGrid(Sender).RowCount);
-  for i := 0 to TStringGrid(Sender).RowCount do
-    SetLength(MatrixElements[i], TStringGrid(Sender).ColCount);
-
-  IsCorrectElements := True;
-  i := 0;
-  while (i < TStringGrid(Sender).RowCount) and IsCorrectElements do
-  begin
-    j := 0;
-    while (j < TStringGrid(Sender).ColCount) and IsCorrectElements do
-    begin
-      if not TryStrToFloat(TStringGrid(Sender).Cells[j, i], Temp) then
-      begin
-        ShowMessage('Incorrect matrix element found');
-        SelectSpecificCell(i, j, TStringGrid(Sender));
-        IsCorrectElements := False;
-      end
-      else
-        MatrixElements[i, j] := Temp;
-
-      inc(j);
-    end;
-
-    inc(i);
-  end;
-
-  if not IsCorrectElements then
-  begin
-    Matrix.Destroy();
-    TStringGrid(Sender).SetFocus;
-  end
-  else
-    DataManager.GetCurrentOperation.FProblemMatrix.SetElementsTo(MatrixElements);
-
-  SetLength(MatrixElements, 0);
-end}
 
 procedure TMainForm.sgInputMatrixSetEditText(Sender: TObject; ACol,
   ARow: Integer; const Value: string);

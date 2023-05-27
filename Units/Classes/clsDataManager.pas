@@ -3,7 +3,8 @@ unit clsDataManager;
 interface
 
 uses
-  Vcl.Grids, Vcl.ExtCtrls, clsMatrixList, clsMatrix, untTypes, untConstants;
+  Vcl.Grids, Vcl.ExtCtrls, clsMatrixList, clsMatrix, untTypes, untConstants,
+  System.SysUtils;
 
 type
   TProc = procedure(Sender: TObject);
@@ -27,9 +28,11 @@ type
     procedure CallBack(Sender: TObject); overload;
     procedure CallBack(const AProc: TProc; const AStringGrid: TStringGrid); overload;
 
+    function TryProblemMatrixToExtended(const AProblemMatrix: TMatrix<string>;
+      var AMatrix: TExtendedMatrixElements): Boolean;
+
     procedure SetStringProblem(const AProblemString: string;
       const AOperation: TFullOperation);
-
     function GetCurrentOperation(): TFullOperation;
     procedure SetCurrentOperation(const AOperation: TFullOperation);
     function GetCurrentAnswer(): TAnswer;
@@ -108,6 +111,26 @@ end;
 procedure TDataManager.CallBack(const AProc: TProc; const AStringGrid: TStringGrid);
 begin
   AProc(AStringGrid);
+end;
+
+function TDataManager.TryProblemMatrixToExtended(const AProblemMatrix: TMatrix<string>;
+  var AMatrix: TExtendedMatrixElements): Boolean;
+var
+  i, j: Integer;
+begin
+  Result := True;
+
+  i := 0;
+  while (i < AProblemMatrix.LinesAmount) and Result do
+  begin
+    j := 0;
+    while (j < AProblemMatrix.ColumnsAmount) and Result do
+    begin
+      Result := TryStrToFloat(AProblemMatrix.Element[i, j], AMatrix[i, j]);
+      inc(j);
+    end;
+    inc(i);
+  end;
 end;
 
 function TDataManager.GetCurrentOperation(): TFullOperation;

@@ -6,6 +6,8 @@ uses
   clsMatrix;
 
 type
+  TExtendedMatrixElements = array of array of Extended;
+
   TAnswer = record
     FMatrix: TMatrix<Extended>;
     FNumber: Extended;

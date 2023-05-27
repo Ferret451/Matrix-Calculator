@@ -12,7 +12,8 @@ type
 
 function GetMatrixHeight(const AMatrix: TMatrix<Extended>;
   Sender: TObject): Integer;
-procedure MatrixNamePrint(var AX, AY: Integer; AMatrix: TMatrix<Extended>; Sender: TObject);
+procedure MidMatrixTextPrint(var AX, AY: Integer; const AMatrixHeight: Integer;
+  const ATextToOut: string; Sender: TObject);
 procedure MatrixPaint(var AX, AY: Integer; const AMatrix: TMatrix<Extended>;
   AOutline: TOutline; Sender: TObject);
 procedure BraceOutline(const ALeft, ATop, AHeight, AWidth: Integer;
@@ -31,21 +32,18 @@ begin
     - LineInterval;
 end;
 
-procedure MatrixNamePrint(var AX, AY: Integer; AMatrix: TMatrix<Extended>; Sender: TObject);
+procedure MidMatrixTextPrint(var AX, AY: Integer; const AMatrixHeight: Integer;
+  const ATextToOut: string; Sender: TObject);
 var
-  TextToOut: string;
-  LineHeight, MatrixHeight: Integer;
+  LineHeight: Integer;
 begin
-  TextToOut := AMatrix.Name + ' = ';
-  MatrixHeight := GetMatrixHeight(AMatrix, Sender);
+  LineHeight := TPaintBox(Sender).Canvas.TextHeight(ATextToOut);
 
-  LineHeight := TPaintBox(Sender).Canvas.TextHeight(TextToOut);
+  TPaintBox(Sender).Canvas.TextOut(AX, (AY + AY + AMatrixHeight) div 2 -
+    LineHeight div 2, ATextToOut);
 
-  TPaintBox(Sender).Canvas.TextOut(AX, (AY + AY + MatrixHeight + 2 *
-    LineInterval) div 2 - LineHeight div 2, TextToOut);
-
-  AX := AX + TPaintBox(Sender).Canvas.TextWidth(TextToOut);
-  AY := (AY + AY + MatrixHeight + 2 * LineInterval) div 2 + LineHeight div 2;
+  AX := AX + TPaintBox(Sender).Canvas.TextWidth(ATextToOut);
+  AY := (AY + AY + AMatrixHeight) div 2 - LineHeight div 2;
 end;
 
 function Left(A, B: Integer): Integer;

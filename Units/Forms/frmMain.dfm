@@ -4,20 +4,21 @@ object MainForm: TMainForm
   Margins.Bottom = 5
   Caption = 'MatrixCalculator'
   ClientHeight = 478
-  ClientWidth = 784
+  ClientWidth = 796
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
-  Font.Name = 'Tahoma'
+  Font.Height = 14
+  Font.Name = 'Times New Roman'
   Font.Style = []
   Menu = MainMenu
   OldCreateOrder = False
+  Position = poDesigned
   WindowState = wsMaximized
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
-  TextHeight = 13
+  TextHeight = 14
   object splMain: TSplitter
     Left = 185
     Top = 29
@@ -27,24 +28,28 @@ object MainForm: TMainForm
   object panCalculationsPart: TPanel
     Left = 187
     Top = 29
-    Width = 597
+    Width = 609
     Height = 449
     Align = alClient
     TabOrder = 2
+    ExplicitWidth = 597
     object sbExpression: TScrollBox
       Left = 1
       Top = 1
-      Width = 595
+      Width = 607
       Height = 169
       HorzScrollBar.Tracking = True
       VertScrollBar.Tracking = True
       Align = alClient
       TabOrder = 0
+      OnClick = sbExpressionClick
+      OnMouseWheel = sbExpressionMouseWheel
+      ExplicitWidth = 595
       object pbExpression: TPaintBox
-        Left = 3
-        Top = 3
-        Width = 2000
-        Height = 2000
+        Left = 0
+        Top = 0
+        Width = 201
+        Height = 147
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -19
@@ -53,11 +58,25 @@ object MainForm: TMainForm
         ParentFont = False
         OnPaint = pbExpressionPaint
       end
+      object labX: TLabel
+        Left = 72
+        Top = 14
+        Width = 8
+        Height = 14
+        Caption = 'X'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = 14
+        Font.Name = 'Times New Roman'
+        Font.Style = []
+        ParentFont = False
+        Visible = False
+      end
       object edExpression: TEdit
         Left = 0
         Top = 0
-        Width = 2003
-        Height = 21
+        Width = 603
+        Height = 22
         Align = alTop
         Color = clBtnFace
         TabOrder = 0
@@ -111,33 +130,60 @@ object MainForm: TMainForm
       end
       object edColumnsAmount: TEdit
         Tag = 1
-        Left = 242
+        Left = 84
         Top = 11
-        Width = 48
-        Height = 21
+        Width = 42
+        Height = 22
         TabOrder = 4
         Text = '2'
         Visible = False
         OnExit = edDimensionsExit
       end
       object edLinesAmount: TEdit
-        Left = 74
+        Left = 26
         Top = 11
-        Width = 48
-        Height = 21
+        Width = 42
+        Height = 22
+        Margins.Top = 0
+        Margins.Right = 550
         TabOrder = 5
         Text = '2'
         Visible = False
         OnExit = edDimensionsExit
       end
+      object butAddDimension: TButton
+        AlignWithMargins = True
+        Left = 26
+        Top = 11
+        Width = 42
+        Height = 21
+        Margins.Top = 99
+        Caption = '+'
+        TabOrder = 6
+        Visible = False
+        OnClick = butAddDimensionClick
+      end
+      object butRemoveDimension: TButton
+        AlignWithMargins = True
+        Left = 84
+        Top = 11
+        Width = 42
+        Height = 21
+        Margins.Top = 99
+        Caption = '-'
+        TabOrder = 7
+        Visible = False
+        OnClick = butRemoveDimensionClick
+      end
     end
     object panCalculatorButtons: TPanel
       Left = 1
       Top = 170
-      Width = 595
+      Width = 607
       Height = 278
       Align = alBottom
       TabOrder = 1
+      ExplicitWidth = 595
       object butTwo: TButton
         AlignWithMargins = True
         Left = 192
@@ -515,13 +561,14 @@ object MainForm: TMainForm
   object ToolBar: TToolBar
     Left = 0
     Top = 0
-    Width = 784
+    Width = 796
     Height = 29
     ButtonHeight = 29
     ButtonWidth = 54
     Caption = 'ToolBar'
     Images = ilToolBar
     TabOrder = 0
+    ExplicitWidth = 784
     object tbNewFile: TToolButton
       Left = 0
       Top = 0
@@ -579,30 +626,6 @@ object MainForm: TMainForm
       ParentFont = False
       ExplicitWidth = 81
     end
-  end
-  object butRemoveDimension: TButton
-    AlignWithMargins = True
-    Left = 264
-    Top = 43
-    Width = 42
-    Height = 21
-    Margins.Top = 99
-    Caption = '-'
-    TabOrder = 4
-    Visible = False
-    OnClick = butRemoveDimensionClick
-  end
-  object butAddDimension: TButton
-    AlignWithMargins = True
-    Left = 216
-    Top = 43
-    Width = 42
-    Height = 21
-    Margins.Top = 99
-    Caption = '+'
-    TabOrder = 3
-    Visible = False
-    OnClick = butAddDimensionClick
   end
   object MainMenu: TMainMenu
     Images = ilToolBar

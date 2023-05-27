@@ -237,7 +237,7 @@ begin
                 if (FirstOperand.FMatrix.ColumnsAmount <> SecondOperand.FMatrix.LinesAmount) then
                 begin
                   ShowMessage('First matrix columns does not equal to second' +
-                    'matrix lines when multiplying matrixes');
+                    ' matrix lines when multiplying matrixes');
                   Result := False;
                 end
                 else

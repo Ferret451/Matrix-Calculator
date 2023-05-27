@@ -32,7 +32,8 @@ const
   EqualsLeftBraceInterval = 7;
   TopBottomBraceLinesLength = 5;
 
-  sgSizeFixingNumber = 3;
+  ScrollStep = 42 shl 1;
+
 implementation
 
 end.
