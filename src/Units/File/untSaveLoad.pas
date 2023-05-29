@@ -17,7 +17,6 @@ procedure NewFile();
 procedure OpenMatrFile(const APath: string);
 procedure SaveMatrFile(const APath: string);
 
-
 implementation
 
 procedure NewFile();
@@ -32,9 +31,6 @@ procedure NewFile();
     AOpeartion.FAnswer.FMatrix.MartixUpdate;
     AOpeartion.FAnswer.FMatrix.Element[0, 0] := 0;
   end;
-var
-  CurrOpearation: TFullOperation;
-  i: Integer;
 begin
   DataManager.MatrixList.Clear;
   DataManager.ExprProblemString := '';

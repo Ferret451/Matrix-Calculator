@@ -24,6 +24,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure edMatrixLinesChange(Sender: TObject);
     procedure edMatrixColumnsChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     IsNewMatrix: Boolean;
 
@@ -46,6 +47,13 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TEditMatrixForm.FormCreate(Sender: TObject);
+begin
+  //Making min size for form
+  Self.Constraints.MinWidth := MinEditFormWidth;
+  Self.Constraints.MinHeight := MinEditFormHeight;
+end;
 
 procedure TEditMatrixForm.FormShow(Sender: TObject);
 begin
@@ -87,8 +95,6 @@ begin
 end;
 
 procedure TEditMatrixForm.sgMatrixElementsEnter(Sender: TObject);
-var
-  i, j: Integer;
 begin
   if not IsCorrectLinesAmount(True) then
     edMatrixLines.SetFocus
@@ -161,8 +167,6 @@ function TEditMatrixForm.IsCorrectLinesAmount(
 var
   TempValue: Integer;
 begin
-  Result := True;
-
   Result := TryStrToInt(edMatrixLines.Text, TempValue);
 
   if Result then
@@ -181,8 +185,6 @@ function TEditMatrixForm.IsCorrectColumnsAmount(
 var
   TempValue: Integer;
 begin
-  Result := True;
-
   Result := TryStrToInt(edMatrixColumns.Text, TempValue);
 
   if Result then
@@ -227,7 +229,7 @@ end;
 procedure TEditMatrixForm.butOKClick(Sender: TObject);
 begin
   if IsCorrectName(True) and IsCorrectLinesAmount(True) and
-    IsCorrectcolumnsAmount(True) and IsCorrectMatrixElements(True) then
+    IsCorrectColumnsAmount(True) and IsCorrectMatrixElements(True) then
       ModalResult := mrOK;
 end;
 

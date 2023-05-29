@@ -56,13 +56,9 @@ begin
   Result := A + B;
 end;
 
-procedure BraceOutline(const ALeft, ATop, AHeight, AWidth: Integer;
-  Sender: TObject);
-var
-  X, Y: Integer;
-
-procedure BracePaint(AX, AY, AHeight: Integer; ASideProc: TSideProc;
-  Sender: TObject);
+procedure BraceOutline(const ALeft, ATop, AHeight, AWidth: Integer; Sender: TObject);
+  procedure BracePaint(AX, AY, AHeight: Integer; ASideProc: TSideProc;
+    Sender: TObject);
 begin
   AY := AY - LineInterval;
   TPaintBox(Sender).Canvas.MoveTo(AX, AY);
@@ -81,13 +77,9 @@ begin
   BracePaint(ALeft + AWidth, ATop, AHeight, Right, Sender);
 end;
 
-procedure DetOutline(const ALeft, ATop, AHeight, AWidth: Integer;
-  Sender: TObject);
-var
-  X, Y: Integer;
-
-procedure DetBracePaint(AX, AY, AHeight: Integer; ASideProc: TSideProc;
-  Sender: TObject);
+procedure DetOutline(const ALeft, ATop, AHeight, AWidth: Integer; Sender: TObject);
+  procedure DetBracePaint(AX, AY, AHeight: Integer; ASideProc: TSideProc;
+    Sender: TObject);
 begin
   AX := ASideProc(AX, ColumnInterval);
   AY := AY - LineInterval;

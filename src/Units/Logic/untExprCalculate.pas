@@ -91,7 +91,7 @@ function OperatorProcessing(const NewOperator: Char;
   const AOperandStack: TOperandStack; const AOperatorStack: TStack<Char>): Boolean;
 var
   FirstOperand, SecondOperand, ResultOperand: TAnswer;
-  Mask, i: Integer;
+  Mask: Integer;
 begin
   Result := True;
 
@@ -311,7 +311,6 @@ end;
 function ExprCalculation(AExpressionString: string; var AAnswer: TAnswer): Boolean;
 var
   i: Integer;
-  CurrenTAnswer: string;
 begin
   OperandStack := TOperandStack.Create;
   OperatorStack := TStack<char>.Create;

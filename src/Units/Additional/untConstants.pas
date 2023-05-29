@@ -24,6 +24,13 @@ const
   MatrixInvalidNames: array of string = ['T'];
   MatrixOperations: array of string = ['T'];
 
+  MinMainFormWidth = 1367;
+  MinMainFormHeight = 600;
+  MinListFormWidth = 567;
+  MinListFormHeight = 358;
+  MinEditFormWidth = 466;
+  MinEditFormHeight = 364;
+
   ExampleText = '1234567890';
   DefaulePenWidth = 3;
   StartPosX = 10;
@@ -32,6 +39,9 @@ const
   ColumnInterval = 15;
   EqualsLeftBraceInterval = 7;
   TopBottomBraceLinesLength = 5;
+
+  MinInputMatrixLength = 1;
+  MaxInputMatrixLength = 100;
 
   ScrollStep = 42 shl 1;
 

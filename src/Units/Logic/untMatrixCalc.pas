@@ -265,7 +265,7 @@ end;
 procedure CopyMatrixPart(const AMatrFrom, AMatrTo: TMatrix<Extended>;
   const ATop, ALeft, ALines, AColumns: Integer);
 var
-  i, j, im, jm: Integer;
+  i, j: Integer;
 begin
   for i := ATop to ATop + ALines - 1 do
     for j := ALeft to ALeft + AColumns - 1 do

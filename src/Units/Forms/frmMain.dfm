@@ -3,8 +3,8 @@ object MainForm: TMainForm
   Top = 0
   Margins.Bottom = 5
   Caption = 'MatrixCalculator'
-  ClientHeight = 478
-  ClientWidth = 796
+  ClientHeight = 675
+  ClientWidth = 1366
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -23,7 +23,7 @@ object MainForm: TMainForm
   object ToolBar: TToolBar
     Left = 0
     Top = 0
-    Width = 796
+    Width = 1366
     Height = 29
     ButtonHeight = 29
     ButtonWidth = 54
@@ -66,17 +66,16 @@ object MainForm: TMainForm
   end
   object panCalculatorButtons: TPanel
     Left = 0
-    Top = 200
-    Width = 796
+    Top = 397
+    Width = 1366
     Height = 278
     Align = alBottom
     TabOrder = 1
-    OnResize = panCalculatorButtonsResize
     object butTwo: TButton
       AlignWithMargins = True
-      Left = 192
+      Left = 406
       Top = 183
-      Width = 100
+      Width = 319
       Height = 46
       Cursor = crHandPoint
       Margins.Right = 100
@@ -84,7 +83,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -93,9 +92,9 @@ object MainForm: TMainForm
     end
     object butFive: TButton
       AlignWithMargins = True
-      Left = 192
+      Left = 406
       Top = 138
-      Width = 100
+      Width = 319
       Height = 46
       Cursor = crHandPoint
       Margins.Right = 100
@@ -103,7 +102,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -112,9 +111,9 @@ object MainForm: TMainForm
     end
     object butThree: TButton
       AlignWithMargins = True
-      Left = 298
+      Left = 725
       Top = 183
-      Width = 100
+      Width = 319
       Height = 46
       Cursor = crHandPoint
       Margins.Right = 100
@@ -122,7 +121,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -131,9 +130,9 @@ object MainForm: TMainForm
     end
     object butSix: TButton
       AlignWithMargins = True
-      Left = 298
+      Left = 725
       Top = 138
-      Width = 100
+      Width = 319
       Height = 46
       Cursor = crHandPoint
       Margins.Right = 100
@@ -141,7 +140,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -152,7 +151,7 @@ object MainForm: TMainForm
       AlignWithMargins = True
       Left = 86
       Top = 183
-      Width = 100
+      Width = 319
       Height = 46
       Cursor = crHandPoint
       Margins.Top = 230
@@ -161,7 +160,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -172,7 +171,7 @@ object MainForm: TMainForm
       AlignWithMargins = True
       Left = 86
       Top = 138
-      Width = 100
+      Width = 319
       Height = 46
       Cursor = crHandPoint
       Margins.Top = 230
@@ -181,7 +180,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -190,9 +189,9 @@ object MainForm: TMainForm
     end
     object butEight: TButton
       AlignWithMargins = True
-      Left = 192
+      Left = 406
       Top = 93
-      Width = 100
+      Width = 319
       Height = 46
       Cursor = crHandPoint
       Margins.Right = 100
@@ -200,7 +199,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -211,7 +210,7 @@ object MainForm: TMainForm
       AlignWithMargins = True
       Left = 86
       Top = 93
-      Width = 100
+      Width = 319
       Height = 46
       Cursor = crHandPoint
       Margins.Top = 230
@@ -220,7 +219,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -229,9 +228,9 @@ object MainForm: TMainForm
     end
     object butNine: TButton
       AlignWithMargins = True
-      Left = 298
+      Left = 725
       Top = 93
-      Width = 100
+      Width = 319
       Height = 46
       Cursor = crHandPoint
       Margins.Right = 100
@@ -239,7 +238,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -248,9 +247,9 @@ object MainForm: TMainForm
     end
     object butZero: TButton
       AlignWithMargins = True
-      Left = 192
+      Left = 406
       Top = 228
-      Width = 100
+      Width = 319
       Height = 46
       Cursor = crHandPoint
       Margins.Right = 100
@@ -258,7 +257,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -267,9 +266,9 @@ object MainForm: TMainForm
     end
     object butComma: TButton
       AlignWithMargins = True
-      Left = 298
+      Left = 725
       Top = 228
-      Width = 100
+      Width = 319
       Height = 46
       Cursor = crHandPoint
       Margins.Right = 100
@@ -277,7 +276,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -286,7 +285,7 @@ object MainForm: TMainForm
     end
     object butDelete: TButton
       AlignWithMargins = True
-      Left = 298
+      Left = 1164
       Top = 3
       Width = 100
       Height = 46
@@ -296,7 +295,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -305,9 +304,9 @@ object MainForm: TMainForm
     end
     object butCalculate: TButton
       AlignWithMargins = True
-      Left = 404
+      Left = 1043
       Top = 228
-      Width = 100
+      Width = 319
       Height = 46
       Cursor = crHandPoint
       Margins.Left = 500
@@ -317,7 +316,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -326,9 +325,9 @@ object MainForm: TMainForm
     end
     object butPlus: TButton
       AlignWithMargins = True
-      Left = 404
+      Left = 1043
       Top = 183
-      Width = 100
+      Width = 319
       Height = 46
       Cursor = crHandPoint
       Margins.Left = 500
@@ -338,7 +337,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -347,9 +346,9 @@ object MainForm: TMainForm
     end
     object butMinus: TButton
       AlignWithMargins = True
-      Left = 404
+      Left = 1043
       Top = 138
-      Width = 100
+      Width = 319
       Height = 46
       Cursor = crHandPoint
       Margins.Left = 500
@@ -359,7 +358,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -368,9 +367,9 @@ object MainForm: TMainForm
     end
     object butMultiplication: TButton
       AlignWithMargins = True
-      Left = 404
+      Left = 1043
       Top = 93
-      Width = 100
+      Width = 319
       Height = 46
       Cursor = crHandPoint
       Margins.Left = 500
@@ -380,7 +379,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -389,9 +388,9 @@ object MainForm: TMainForm
     end
     object butDivision: TButton
       AlignWithMargins = True
-      Left = 404
+      Left = 1043
       Top = 48
-      Width = 100
+      Width = 319
       Height = 46
       Cursor = crHandPoint
       Margins.Left = 500
@@ -401,7 +400,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -410,7 +409,7 @@ object MainForm: TMainForm
     end
     object butClear: TButton
       AlignWithMargins = True
-      Left = 404
+      Left = 1264
       Top = 3
       Width = 49
       Height = 46
@@ -422,7 +421,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -431,9 +430,9 @@ object MainForm: TMainForm
     end
     object butExponentaition: TButton
       AlignWithMargins = True
-      Left = 298
+      Left = 725
       Top = 48
-      Width = 100
+      Width = 319
       Height = 46
       Cursor = crHandPoint
       Margins.Right = 100
@@ -441,7 +440,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -469,6 +468,12 @@ object MainForm: TMainForm
         Align = alTop
         Caption = 'Expr'
         Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -21
+        Font.Name = 'Times New Roman'
+        Font.Style = []
+        ParentFont = False
         TabOrder = 0
         OnClick = butChooseClick
       end
@@ -480,6 +485,12 @@ object MainForm: TMainForm
         Height = 68
         Align = alTop
         Caption = 'Det'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -21
+        Font.Name = 'Times New Roman'
+        Font.Style = []
+        ParentFont = False
         TabOrder = 1
         OnClick = butChooseClick
       end
@@ -491,6 +502,12 @@ object MainForm: TMainForm
         Height = 68
         Align = alTop
         Caption = 'Inverse'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -21
+        Font.Name = 'Times New Roman'
+        Font.Style = []
+        ParentFont = False
         TabOrder = 2
         OnClick = butChooseClick
       end
@@ -502,6 +519,12 @@ object MainForm: TMainForm
         Height = 68
         Align = alTop
         Caption = 'Rank'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -21
+        Font.Name = 'Times New Roman'
+        Font.Style = []
+        ParentFont = False
         TabOrder = 3
         OnClick = butChooseClick
       end
@@ -510,14 +533,14 @@ object MainForm: TMainForm
       AlignWithMargins = True
       Left = 86
       Top = 228
-      Width = 100
+      Width = 319
       Height = 46
       Margins.Top = 230
       Margins.Right = 100
       Caption = '*10^'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -565,7 +588,7 @@ object MainForm: TMainForm
       AlignWithMargins = True
       Left = 86
       Top = 48
-      Width = 100
+      Width = 319
       Height = 46
       Cursor = crHandPoint
       Margins.Top = 230
@@ -574,7 +597,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -583,9 +606,9 @@ object MainForm: TMainForm
     end
     object butCloseBrace: TButton
       AlignWithMargins = True
-      Left = 192
+      Left = 406
       Top = 48
-      Width = 100
+      Width = 319
       Height = 46
       Cursor = crHandPoint
       Margins.Right = 100
@@ -593,7 +616,7 @@ object MainForm: TMainForm
       DragCursor = crDefault
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -639,7 +662,7 @@ object MainForm: TMainForm
     end
     object butClearMatrix: TButton
       AlignWithMargins = True
-      Left = 455
+      Left = 1313
       Top = 3
       Width = 49
       Height = 46
@@ -652,7 +675,7 @@ object MainForm: TMainForm
       Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -24
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
@@ -663,8 +686,8 @@ object MainForm: TMainForm
   object sbExpression: TScrollBox
     Left = 0
     Top = 29
-    Width = 796
-    Height = 171
+    Width = 1366
+    Height = 368
     HorzScrollBar.Tracking = True
     VertScrollBar.Tracking = True
     Align = alClient
@@ -701,7 +724,7 @@ object MainForm: TMainForm
     object edExpression: TEdit
       Left = 0
       Top = 0
-      Width = 792
+      Width = 1362
       Height = 29
       Align = alTop
       Color = clBtnFace
@@ -842,7 +865,6 @@ object MainForm: TMainForm
       object Clearlist1: TMenuItem
         Caption = 'Clear list'
         ImageIndex = 5
-        OnClick = aClearMatrixListExecute
       end
     end
     object mmInfo: TMenuItem
