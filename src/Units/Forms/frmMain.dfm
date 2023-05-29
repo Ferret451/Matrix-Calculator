@@ -72,9 +72,6 @@ object MainForm: TMainForm
     Align = alBottom
     TabOrder = 1
     OnResize = panCalculatorButtonsResize
-    ExplicitLeft = 1
-    ExplicitTop = 170
-    ExplicitWidth = 794
     object butTwo: TButton
       AlignWithMargins = True
       Left = 192
@@ -474,7 +471,6 @@ object MainForm: TMainForm
         Enabled = False
         TabOrder = 0
         OnClick = butChooseClick
-        ExplicitTop = 5
       end
       object butDeterminantChoose: TButton
         Tag = 1
@@ -675,10 +671,6 @@ object MainForm: TMainForm
     TabOrder = 2
     OnClick = sbExpressionClick
     OnMouseWheel = sbExpressionMouseWheel
-    ExplicitLeft = 2
-    ExplicitTop = 9
-    ExplicitWidth = 794
-    ExplicitHeight = 169
     object pbExpression: TPaintBox
       Left = 0
       Top = 0
@@ -722,7 +714,6 @@ object MainForm: TMainForm
       TabOrder = 0
       OnChange = edExpressionChange
       OnExit = edExpressionExit
-      ExplicitWidth = 790
     end
     object sgDeterminant: TStringGrid
       Left = 26

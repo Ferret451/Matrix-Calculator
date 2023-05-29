@@ -739,19 +739,22 @@ end;
 
 procedure TMainForm.butAddDimensionClick(Sender: TObject);
 begin
-  DataManager.GetCurrentOperation.FProblemMatrix.LinesAmount :=
-    DataManager.GetCurrentOperation.FProblemMatrix.LinesAmount + 1;
-  DataManager.GetCurrentOperation.FProblemMatrix.ColumnsAmount :=
-    DataManager.GetCurrentOperation.FProblemMatrix.ColumnsAmount + 1;
-  DataManager.GetCurrentOperation.FProblemMatrix.MartixUpdate();
+  if sgGetCurrent.RowCount <= 100 then
+  begin
+    DataManager.GetCurrentOperation.FProblemMatrix.LinesAmount :=
+      DataManager.GetCurrentOperation.FProblemMatrix.LinesAmount + 1;
+    DataManager.GetCurrentOperation.FProblemMatrix.ColumnsAmount :=
+      DataManager.GetCurrentOperation.FProblemMatrix.ColumnsAmount + 1;
+    DataManager.GetCurrentOperation.FProblemMatrix.MartixUpdate();
 
-  sgResize(sgGetCurrent);
+    sgResize(sgGetCurrent);
 
-  case DataManager.OperationStatement of
-    ostatDeterminant:
-      inc(FStatistics.FDeterminantMatrChangeAmount);
-    ostatInverse:
-      inc(FStatistics.FInverseMatrChangeAmount);
+    case DataManager.OperationStatement of
+      ostatDeterminant:
+        inc(FStatistics.FDeterminantMatrChangeAmount);
+      ostatInverse:
+        inc(FStatistics.FInverseMatrChangeAmount);
+    end;
   end;
 end;
 
@@ -872,8 +875,10 @@ end;
 procedure TMainForm.edDimensionsExit(Sender: TObject);
 var
   Amount: Integer;
+  IsCorrect: Boolean;
 begin
-  if TryStrToNatural(TEdit(Sender).Text, Amount) then
+  IsCorrect := TryStrToNatural(TEdit(Sender).Text, Amount);
+  if IsCorrect and (Amount <= 100) then
   begin
     inc(FStatistics.FRankMatrChangeAmount);
 
