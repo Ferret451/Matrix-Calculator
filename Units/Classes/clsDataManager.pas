@@ -29,7 +29,7 @@ type
     procedure CallBack(const AProc: TProc; const AStringGrid: TStringGrid); overload;
 
     function TryProblemMatrixToExtended(const AProblemMatrix: TMatrix<string>;
-      var AMatrix: TExtendedMatrixElements): Boolean;
+      var AMatrix: TMatrix<Extended>): Boolean;
 
     procedure SetStringProblem(const AProblemString: string;
       const AOperation: TFullOperation);
@@ -43,6 +43,14 @@ type
     property CurrentDeterminant: TFullOperation read FCurrentDeterminant;
     property CurrentInverse: TFullOperation read FCurrentInverse;
     property CurrentRank: TFullOperation read FCurrentRank;
+    property ExprProblemString: string read FCurrentExpression.FProblemString write
+      FCurrentExpression.FProblemString;
+    property ExprNumbAnswer: Extended read FCurrentExpression.FAnswer.FNumber write
+      FCurrentExpression.FAnswer.FNumber;
+    property DetNumbAnswer: Extended read FCurrentDeterminant.FAnswer.FNumber write
+      FCurrentDeterminant.FAnswer.FNumber;
+    property RankNumbAnswer: Extended read FCurrentRank.FAnswer.FNumber write
+      FCurrentRank.FAnswer.FNumber;
     property CurrentOperation: TFullOperation read GetCurrentOperation
       write SetCurrentOperation;
     property CurrentAnswer: TAnswer read GetCurrentAnswer
@@ -114,9 +122,10 @@ begin
 end;
 
 function TDataManager.TryProblemMatrixToExtended(const AProblemMatrix: TMatrix<string>;
-  var AMatrix: TExtendedMatrixElements): Boolean;
+  var AMatrix: TMatrix<Extended>): Boolean;
 var
   i, j: Integer;
+  Temp: Extended;
 begin
   Result := True;
 
@@ -126,7 +135,8 @@ begin
     j := 0;
     while (j < AProblemMatrix.ColumnsAmount) and Result do
     begin
-      Result := TryStrToFloat(AProblemMatrix.Element[i, j], AMatrix[i, j]);
+      Result := TryStrToFloat(AProblemMatrix.Element[i, j], Temp);
+      AMatrix.Element[i, j] := Temp;
       inc(j);
     end;
     inc(i);

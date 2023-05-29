@@ -34,7 +34,8 @@ type
     procedure Clear(); virtual;
 
     property Head: PNode read FHead;
-    property Size: Integer read FSize;
+    property Tail: PNode read FTail;
+    property Size: Integer read FSize write FSize;
   end;
 
 implementation

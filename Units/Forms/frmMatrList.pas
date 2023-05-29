@@ -6,7 +6,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls,
   System.Actions, Vcl.ActnList, System.ImageList, Vcl.ImgList, Vcl.ComCtrls, Vcl.ExtCtrls,
-  clsMatrixList, clsMatrix, clsDataManager, untConstants, frmEditMatr, untPainting;
+  clsMatrixList, clsMatrix, clsDataManager, untConstants, frmEditMatr, untPainting,
+  untStatistics;
 
 type
   TMatrixListForm = class(TForm)
@@ -34,6 +35,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure sbMatrixListMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure aSortListZtoAExecute(Sender: TObject);
 
   private type
     TMatrixBorders = record
@@ -71,10 +73,19 @@ begin
 end;
 
 procedure TMatrixListForm.aClearListExecute(Sender: TObject);
+var
+  Answer: Integer;
 begin
-  SetLength(FMatrixesBorders, 0);
-  DataManager.MatrixList.Clear();
-  DataManager.CallBack(pbMatrixList);
+  if DataManager.MatrixList.Size > 0 then
+  begin
+    Answer := MessageDlg(msMatrListDelete, mtInformation, [mbOK, mbCancel], 0);
+    if Answer = mrOK then
+    begin
+      SetLength(FMatrixesBorders, 0);
+      DataManager.MatrixList.Clear();
+      DataManager.CallBack(pbMatrixList)
+    end;
+  end;
 end;
 
 procedure TMatrixListForm.aNewMatrixExecute(Sender: TObject);
@@ -117,7 +128,14 @@ end;
 
 procedure TMatrixListForm.aSortListAtoZExecute(Sender: TObject);
 begin
-//
+  DataManager.MatrixList.Sort(Ascending);
+  DataManager.CallBack(pbMatrixList);
+end;
+
+procedure TMatrixListForm.aSortListZtoAExecute(Sender: TObject);
+begin
+  DataManager.MatrixList.Sort(Descending);
+  DataManager.CallBack(pbMatrixList);
 end;
 
 procedure TMatrixListForm.pbMatrixListPaint(Sender: TObject);

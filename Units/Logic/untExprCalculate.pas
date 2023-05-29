@@ -33,11 +33,14 @@ end;
 function OperandProcessing(var APointerPos: Integer; const AExpressionString: string;
   const AOperandStack: TOperandStack): Boolean;
 var
+  i: Integer;
   OperandString: string;
   Operand: TAnswer;
+  IsMatrixOperation: Boolean;
 begin
   Result := True;
   OperandString := '';
+  Operand.FMatrix := TMatrix<Extended>.Create;
 
   while (APointerPos <= Length(AExpressionString)) and
     (AExpressionString[APointerPos] in Symbols) do
@@ -46,27 +49,40 @@ begin
     Inc(APointerPos);
   end;
 
-  Operand.FMatrix := TMatrix<Extended>.Create;
-  if (OperandString[1] in MatrixNameFirstElValidSymbols) then
+  IsMatrixOperation := False;
+  i := Low(MatrixOperations);
+  while (i <= High(MatrixOperations)) and not IsMatrixOperation do
   begin
-    Operand.FIsMatrix := True;
-
-    if not DataManager.MatrixList.TryGetMatrixFromList(OperandString, Operand.FMatrix) then
+    if MatrixOperations[i] = OperandString then
     begin
-      ShowMessage('Matrix name was not found in the matrix list');
-      Result := False;
+      Operand.FIsMatrix := True;
+      Operand.FMatrix.Name := OperandString;
+      IsMatrixOperation := True;
     end;
-  end
-  else
-  begin
-    Operand.FIsMatrix := False;
-
-    if not TryStrToFloat(OperandString, Operand.FNumber) then
-    begin
-      ShowMessage('Incorrect number found');
-      Result := False;
-    end;
+    inc(i);
   end;
+
+  if not IsMatrixOperation then
+    if (OperandString[1] in MatrixNameFirstElValidSymbols) then
+    begin
+      Operand.FIsMatrix := True;
+
+      if not DataManager.MatrixList.TryGetMatrixFromList(OperandString, Operand.FMatrix) then
+      begin
+        ShowMessage('Matrix name was not found in the matrix list');
+        Result := False;
+      end;
+    end
+    else
+    begin
+      Operand.FIsMatrix := False;
+
+      if not TryStrToFloat(OperandString, Operand.FNumber) then
+      begin
+        ShowMessage('Incorrect number found');
+        Result := False;
+      end;
+    end;
 
   OperandStack.Push(Operand);
 end;
@@ -74,8 +90,8 @@ end;
 function OperatorProcessing(const NewOperator: Char;
   const AOperandStack: TOperandStack; const AOperatorStack: TStack<Char>): Boolean;
 var
-  FirstOperand, SecondOperand, ResultAnswer: TAnswer;
-  Mask : Integer;
+  FirstOperand, SecondOperand, ResultOperand: TAnswer;
+  Mask, i: Integer;
 begin
   Result := True;
 
@@ -101,16 +117,16 @@ begin
         case Mask Of
           $0:
           begin
-            ResultAnswer.FIsMatrix := False;
-
+            ResultOperand.FIsMatrix := False;
+            ResultOperand.FMatrix := TMatrix<Extended>.Create();
 
               case AOperatorStack.Top of
                 '+':
-                  ResultAnswer.FNumber := FirstOperand.FNumber + SecondOperand.FNumber;
+                  ResultOperand.FNumber := FirstOperand.FNumber + SecondOperand.FNumber;
                 '-':
-                  ResultAnswer.FNumber := FirstOperand.FNumber - SecondOperand.FNumber;
+                  ResultOperand.FNumber := FirstOperand.FNumber - SecondOperand.FNumber;
                 '*':
-                  ResultAnswer.FNumber := FirstOperand.FNumber * SecondOperand.FNumber;
+                  ResultOperand.FNumber := FirstOperand.FNumber * SecondOperand.FNumber;
                 '/':
                   if SecondOperand.FNumber = 0 then
                   begin
@@ -118,15 +134,15 @@ begin
                     Result := False;
                   end
                   else
-                    ResultAnswer.FNumber := FirstOperand.FNumber / SecondOperand.FNumber;
+                    ResultOperand.FNumber := FirstOperand.FNumber / SecondOperand.FNumber;
                 '^':
-                  ResultAnswer.FNumber := Power(FirstOperand.FNumber, SecondOperand.FNumber);
+                  ResultOperand.FNumber := Power(FirstOperand.FNumber, SecondOperand.FNumber);
               end;
           end;
 
           $1:
           begin
-            ResultAnswer.FIsMatrix := True;
+            ResultOperand.FIsMatrix := True;
 
             case AOperatorStack.Top of
               '+':
@@ -143,7 +159,7 @@ begin
 
               '*':
               begin
-                ResultAnswer.FMatrix :=
+                ResultOperand.FMatrix :=
                   MultMatrixConst(SecondOperand.FMatrix, FirstOperand.FNumber);
               end;
 
@@ -156,7 +172,7 @@ begin
 
               '^':
               begin
-                ShowMessage('Exponentiation of number to matrix was found');
+                ShowMessage('Exponentiation of number on matrix was found');
                 Result := False;
               end;
             end;
@@ -164,7 +180,7 @@ begin
 
           $2:
           begin
-            ResultAnswer.FIsMatrix := True;
+            ResultOperand.FIsMatrix := True;
 
             case AOperatorStack.Top of
               '+':
@@ -180,7 +196,7 @@ begin
               end;
 
               '*':
-                ResultAnswer.FMatrix :=
+                ResultOperand.FMatrix :=
                   MultMatrixConst(FirstOperand.FMatrix, SecondOperand.FNumber);
 
               '/':
@@ -190,12 +206,12 @@ begin
                   Result := False;
                 end
                 else
-                  ResultAnswer.FMatrix :=
+                  ResultOperand.FMatrix :=
                     DivMatrixConst(FirstOperand.FMatrix, SecondOperand.FNumber);
 
               '^':
               begin
-                ShowMessage('Exponentiation of number to matrix was found');
+                ShowMessage('Exponentiation of matrix on number was found');
                 Result := False;
               end;
             end;
@@ -203,7 +219,7 @@ begin
 
           $3:
           begin
-            ResultAnswer.FIsMatrix := True;
+            ResultOperand.FIsMatrix := True;
 
             case AOperatorStack.Top of
               '+':
@@ -215,7 +231,7 @@ begin
                   Result := False;
                 end
                 else
-                  ResultAnswer.FMatrix :=
+                  ResultOperand.FMatrix :=
                     SumMatrixes(FirstOperand.FMatrix, SecondOperand.FMatrix);
               end;
 
@@ -228,7 +244,7 @@ begin
                   Result := False;
                 end
                 else
-                  ResultAnswer.FMatrix :=
+                  ResultOperand.FMatrix :=
                     SubstrMatrixes(FirstOperand.FMatrix, SecondOperand.FMatrix);
               end;
 
@@ -241,7 +257,7 @@ begin
                   Result := False;
                 end
                 else
-                  ResultAnswer.FMatrix :=
+                  ResultOperand.FMatrix :=
                     MultMatrixes(FirstOperand.FMatrix, SecondOperand.FMatrix);
               end;
 
@@ -252,9 +268,14 @@ begin
               end;
 
               '^':
-              begin
-                ShowMessage('Exponentiation of matrixes was found');
-                Result := False;
+              begin //Isnt working!!!
+                if SecondOperand.FMatrix.Name = 'T' then
+                  ResultOperand.FMatrix := TransposeMatrix(FirstOperand.FMatrix)
+                else
+                begin
+                  ShowMessage('Exponentiation of matrixes was found');
+                  Result := False;
+                end;
               end;
             end;
           end;
@@ -270,7 +291,7 @@ begin
       if Result then
       begin
         OperatorStack.Pop;
-        OperandStack.Push(ResultAnswer);
+        OperandStack.Push(ResultOperand);
       end;
 
     end

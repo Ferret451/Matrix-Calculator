@@ -11,17 +11,18 @@ type
 const
   Infinity = 1.0 / 0.0;
 
-  DefaultMatrixLength = 2;
-  DefaultMatrixHeight = 2;
+  DefaultMatrixLength = 1;
+  DefaultMatrixHeight = 1;
   DefaultMatrixStringElement = '0';
 
   Symbols = ['0'..'9', ',', '_', 'a'..'z', 'A'..'Z'];
-  Operators = ['+', '-', '*', '/', '(', ')'];
+  Operators = ['+', '-', '*', '/', '(', ')', '^'];
   Numbers = ['0'..'9'];
 
   MatrixNameFirstElValidSymbols = ['a'..'z', 'A'..'Z', '_'];
   MatrixNameValidSymbols = ['a'..'z', 'A'..'Z', '_', '0'..'9'];
   MatrixInvalidNames: array of string = ['T'];
+  MatrixOperations: array of string = ['T'];
 
   ExampleText = '1234567890';
   DefaulePenWidth = 3;
@@ -34,6 +35,14 @@ const
 
   ScrollStep = 42 shl 1;
 
+  Ascending = True;
+  Descending = False;
+
+  dirAppData = 'AppData';
+  constExtStat = '.stat';
+  constExtFile = 'matr';
+
+  msMatrListDelete = 'Are you sure you want to delete matrix list? All Matrixes will be deleted permatly';
 implementation
 
 end.

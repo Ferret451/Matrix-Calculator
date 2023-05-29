@@ -8,20 +8,21 @@ uses
   System.Actions, Vcl.ActnList, Vcl.ExtCtrls, System.ImageList, Vcl.ImgList, Vcl.ToolWin,
   Vcl.ComCtrls, untExprCalculate, clsDoubleLinkedList, clsMatrix, clsMatrixList,
   clsDataManager, frmMatrList, frmEditMatr, Vcl.NumberBox, untConstants, untTypes,
-  Vcl.Grids, frmHTML, untPainting, untMatrixCalc;
+  Vcl.Grids, frmHTML, untPainting, untMatrixCalc, Vcl.ButtonGroup, untStatistics,
+  untSaveLoad;
 
 type
   TMainForm = class(TForm)
     MainMenu: TMainMenu;
-    File1: TMenuItem;
-    Open1: TMenuItem;
-    Close1: TMenuItem;
-    SaveAs1: TMenuItem;
+    mmFile: TMenuItem;
+    mmOpen: TMenuItem;
+    mmSave: TMenuItem;
+    mmSaveAs: TMenuItem;
     ToolBar: TToolBar;
     alToolBar: TActionList;
     ilToolBar: TImageList;
-    New1: TMenuItem;
-    Exit1: TMenuItem;
+    mmNew: TMenuItem;
+    mmExit: TMenuItem;
     aNewFile: TAction;
     tbSaveFileAs: TToolButton;
     aSaveFileAs: TAction;
@@ -32,16 +33,21 @@ type
     tbOpenFile: TToolButton;
     N1: TMenuItem;
     aExit: TAction;
-    Matrix: TMenuItem;
-    ViewList1: TMenuItem;
+    mmMatrix: TMenuItem;
+    mmViewList: TMenuItem;
     aViewMatrixList: TAction;
     tbViewMatrixList: TToolButton;
     Clearlist1: TMenuItem;
     tbSeparator1: TToolButton;
-    sbHistory: TScrollBox;
-    pbHistory: TPaintBox;
-    panCalculationsPart: TPanel;
-    sbExpression: TScrollBox;
+    mmInfo: TMenuItem;
+    mmHelp: TMenuItem;
+    mmAbout: TMenuItem;
+    aOpenHelp: TAction;
+    aOpenAbout: TAction;
+    mmStatistics: TMenuItem;
+    mmCurrentStat: TMenuItem;
+    mmOtherStat: TMenuItem;
+    odMain: TOpenDialog;
     panCalculatorButtons: TPanel;
     butTwo: TButton;
     butFive: TButton;
@@ -60,34 +66,33 @@ type
     butMinus: TButton;
     butMultiplication: TButton;
     butDivision: TButton;
-    butOpenBrace: TButton;
-    butCloseBrace: TButton;
     butClear: TButton;
-    splMain: TSplitter;
     butExponentaition: TButton;
-    edExpression: TEdit;
-    sgDeterminant: TStringGrid;
     panCalcChoose: TPanel;
     butExpressionChoose: TButton;
     butDeterminantChoose: TButton;
     butInverseChoose: TButton;
     butRankChoose: TButton;
-    Button5: TButton;
-    Button6: TButton;
-    Button7: TButton;
+    butMant: TButton;
+    butMoveLeft: TButton;
+    butMoveRight: TButton;
+    butOpenBrace: TButton;
+    butCloseBrace: TButton;
+    sbExpression: TScrollBox;
     pbExpression: TPaintBox;
-    Help1: TMenuItem;
-    Help2: TMenuItem;
-    About1: TMenuItem;
-    aOpenHelp: TAction;
-    aOpenAbout: TAction;
+    labX: TLabel;
+    edExpression: TEdit;
+    sgDeterminant: TStringGrid;
     sgInverse: TStringGrid;
     sgRank: TStringGrid;
     edColumnsAmount: TEdit;
     edLinesAmount: TEdit;
     butAddDimension: TButton;
     butRemoveDimension: TButton;
-    labX: TLabel;
+    sdMain: TSaveDialog;
+    butMoveUp: TButton;
+    butMoveDown: TButton;
+    butClearMatrix: TButton;
 
     procedure edExpressionExit(Sender: TObject);
     procedure butCalculateClick(Sender: TObject);
@@ -119,14 +124,25 @@ type
     procedure sbExpressionClick(Sender: TObject);
     procedure sbExpressionMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure mmCurrentStatClick(Sender: TObject);
+    procedure mmOtherStatClick(Sender: TObject);
+    procedure panCalculatorButtonsResize(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure butMoveSelectionClick(Sender: TObject);
+    procedure butClearMatrixClick(Sender: TObject);
   private
     FCarriagePos: Integer;
     FsgLeft: Integer;
     FsgTop: Integer;
 
+    FStatistics: TUserInfo;
+    FLastSavePath: string;
+    FIsSaved: Boolean;
+
     function TryStrToNatural(const ANumberSting: string; var ANumber: Integer): Boolean;
     function sgGetCurrent(): TStringGrid;
-
+    function TryToSaveAndContinue(): Boolean;
+    procedure ViewUpdate();
   public
 
   end;
@@ -138,15 +154,57 @@ implementation
 
 {$R *.dfm}
 
+procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  if TryToSaveAndContinue then
+  begin
+    Action := caFree;
+  end
+  else
+    Action := caNone;
+end;
+
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  ClearUserInfo(FStatistics);
+  FStatistics.FLoginTime := Now;
+  FStatistics.FUserName := GetWindowsUserName;
+  FStatistics.FExpressionCalcAmount := 0;
+  FStatistics.FDeterminantCalcAmount := 0;
+  FStatistics.FInverseCalcAmount := 0;
+  FStatistics.FRankCalcAmount := 0;
+  FStatistics.FDeterminantMatrChangeAmount := 0;
+  FStatistics.FInverseMatrChangeAmount := 0;
+  FStatistics.FRankMatrChangeAmount := 0;
+  FLastSavePath := '';
+
   DataManager := TDataManager.Create();
   FCarriagePos := 1;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  FStatistics.FLogoutTime := Now;
+  SaveStatistics(FStatistics);
+
   DataManager.Destroy();
+end;
+
+procedure TMainForm.mmCurrentStatClick(Sender: TObject);
+begin
+  ShowMessage(FormatStatistics(Self.FStatistics));
+end;
+
+procedure TMainForm.mmOtherStatClick(Sender: TObject);
+begin
+  odMain.DefaultExt := constExtStat;
+  var FilePath: string := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0))) +
+    dirAppData;
+  if DirectoryExists(FilePath) then
+    odMain.InitialDir := FilePath;
+  if odMain.Execute then
+    ShowMessage(FormatStatistics(LoadStatistics(odMain.FileName)));
+  odMain.InitialDir := '';
 end;
 
 procedure TMainForm.aClearMatrixListExecute(Sender: TObject);
@@ -154,29 +212,90 @@ begin
 //
 end;
 
-procedure TMainForm.aExitExecute(Sender: TObject);
+function TMainForm.TryToSaveAndContinue(): Boolean;
+var
+  Answer: Integer;
 begin
-//
+  Answer := MessageDlg(msTryToSave, mtInformation, [mbYes, mbNo, mbCancel], 0);
+  case Answer of
+    mrYes:
+    begin
+      aSaveFileExecute(MainForm);
+      Result := True;
+    end;
+
+    mrNo:
+      Result := True;
+
+    mrCancel:
+      Result := False;
+  end;
 end;
 
 procedure TMainForm.aNewFileExecute(Sender: TObject);
 begin
-//
+  if TryToSaveAndContinue then
+  begin
+    FLastSavePath := '';
+
+  end;
 end;
 
 procedure TMainForm.aOpenFileExecute(Sender: TObject);
+var
+  FilePath, FileExt: string;
 begin
-//
-end;
-
-procedure TMainForm.aSaveFileAsExecute(Sender: TObject);
-begin
-//
+  if TryToSaveAndContinue() then
+  begin
+    odMain.DefaultExt := constExtFile;
+    FilePath := 'C:\';
+    if DirectoryExists(FilePath) then
+      odMain.InitialDir := FilePath;
+    if odMain.Execute then
+    begin
+      FilePath := odMain.FileName;
+      FileExt := ExtractFileExt(FilePath);
+      if FileExt = constExtFile then
+      begin
+        OpenMatrFile(odMain.FileName);
+        ViewUpdate;
+      end;
+    end;
+    odMain.InitialDir := '';
+  end;
 end;
 
 procedure TMainForm.aSaveFileExecute(Sender: TObject);
 begin
-//
+  if FLastSavePath = '' then
+    aSaveFileAsExecute(MainForm)
+  else
+    SaveMatrFile(FLastSavePath);
+end;
+
+procedure TMainForm.aSaveFileAsExecute(Sender: TObject);
+var
+  FilePath: string;
+begin
+  sdMain.DefaultExt := constExtFile;
+  if FLastSavePath = '' then
+    FilePath := 'C:\'
+  else
+    FilePath := ExtractFilePath(FLastSavePath);
+  if DirectoryExists(FilePath) then
+    sdMain.InitialDir := FilePath;
+  if sdMain.Execute then
+  begin
+    FLastSavePath := sdMain.FileName;
+
+    SaveMatrFile(FLastSavePath);
+  end;
+  sdMain.InitialDir := '';
+end;
+
+procedure TMainForm.aExitExecute(Sender: TObject);
+begin
+  Close;
 end;
 
 procedure TMainForm.aExecuteInfo(Sender: TObject);
@@ -194,6 +313,37 @@ begin
   MatrixListForm.Show;
 end;
 
+procedure TMainForm.panCalculatorButtonsResize(Sender: TObject);
+var
+  i: Integer;
+begin
+
+end;
+
+procedure TMainForm.ViewUpdate();
+  procedure sgUpdate(const AStringGrid: TStringGrid; const AOpearation: TFullOperation);
+  var
+    i, j: Integer;
+  begin
+    AStringGrid.RowCount := AOpearation.FProblemMatrix.LinesAmount;
+    AStringGrid.ColCount := AOpearation.FProblemMatrix.ColumnsAmount;
+    for i := 0 to AStringGrid.RowCount - 1 do
+      for j := 0 to AStringGrid.ColCount - 1 do
+        AStringGrid.Cells[j, i] := AOpearation.FProblemMatrix.Element[i, j];
+  end;
+begin
+  edExpression.Text := DataManager.CurrentExpression.FProblemString;
+  edLinesAmount.Text := IntToStr(DefaultMatrixLength);
+  edColumnsAmount.Text := IntToStr(DefaultMatrixHeight);
+
+  sgUpdate(sgDeterminant, DataManager.CurrentDeterminant);
+  sgUpdate(sgInverse, DataManager.CurrentInverse);
+  sgUpdate(sgRank, DataManager.CurrentRank);
+  sgResize(sgDeterminant);
+  sgResize(sgInverse);
+  sgResize(sgRank);
+end;
+
 procedure TMainForm.pbExpressionPaint(Sender: TObject);
 var
   X, Y: Integer;
@@ -203,7 +353,7 @@ begin
     ostatExpression:
     begin
       X := StartPosX;
-      Y := StartPosY + 42 shr 1;
+      Y := StartPosY + 30;
 
       if DataManager.CurrentExpression.FAnswer.FIsMatrix then
       begin
@@ -230,7 +380,7 @@ begin
         FloatToStr(DataManager.CurrentDeterminant.FAnswer.FNumber);
       MidMatrixTextPrint(X, Y, sgDeterminant.Height, TextToOut, pbExpression);
 
-      pbExpression.Width := FsgLeft + sgDeterminant.Width + ColumnInterval shl 1 + X;
+      pbExpression.Width := X + ColumnInterval;
       pbExpression.Height := FsgTop + sgDeterminant.Height + LineInterval shl 1;
     end;
 
@@ -242,7 +392,19 @@ begin
       BraceOutline(X, Y, sgInverse.Height,
         sgInverse.Width, pbExpression);
 
-      pbExpression.Width := FsgLeft + sgInverse.Width + ColumnInterval shl 1;
+      X := X + sgInverse.Width + ColumnInterval shl 1;
+      TextToOut := ' = ';
+      MidMatrixTextPrint(X, Y, sgInverse.Height, TextToOut, pbExpression);
+
+      X := X + ColumnInterval;
+      Y := Y - (pbExpression.Canvas.TextHeight(TextToOut) +
+        GetMatrixHeight(DataManager.CurrentInverse.FAnswer.FMatrix, pbExpression)) shr 1 -
+        LineInterval;
+
+      MatrixPaint(X, Y, DataManager.CurrentInverse.FAnswer.FMatrix, BraceOutline,
+        pbExpression);
+
+      pbExpression.Width := X + ColumnInterval shl 1;
       pbExpression.Height := FsgTop + sgInverse.Height + LineInterval shl 1;
     end;
 
@@ -254,7 +416,12 @@ begin
       BraceOutline(X, Y, sgRank.Height, sgRank.Width,
         pbExpression);
 
-      pbExpression.Width := FsgLeft + sgRank.Width + ColumnInterval shl 1;
+      X := X + sgRank.Width + ColumnInterval shl 1;
+      TextToOut := ' = ' +
+        FloatToStr(DataManager.CurrentRank.FAnswer.FNumber);
+      MidMatrixTextPrint(X, Y, sgRank.Height, TextToOut, pbExpression);
+
+      pbExpression.Width := X + ColumnInterval;
       pbExpression.Height := FsgTop + sgRank.Height + LineInterval shl 1;
     end;
   end;
@@ -273,75 +440,221 @@ end;
 procedure TMainForm.butCalculateClick(Sender: TObject);
 var
   Answer: TAnswer;
-  Matrix: TExtendedMatrixElements;
+  Matrix: TMatrix<Extended>;
 begin
   Answer := DataManager.CurrentAnswer;
 
   case DataManager.OperationStatement of
     ostatExpression:
+    begin
       if ExprCalculation(edExpression.Text, Answer) then
+      begin
         DataManager.CurrentAnswer := Answer;
-
+        inc(FStatistics.FExpressionCalcAmount);
+      end;
+    end;
 
     ostatDeterminant:
     begin
       sgResize(sgGetCurrent);
-      SetLength(Matrix, DataManager.CurrentDeterminant.FProblemMatrix.LinesAmount,
+      Matrix := TMatrix<Extended>.Create(DataManager.CurrentDeterminant.FProblemMatrix.LinesAmount,
         DataManager.CurrentDeterminant.FProblemMatrix.ColumnsAmount);
       if DataManager.TryProblemMatrixToExtended(DataManager.CurrentDeterminant.FProblemMatrix,
         Matrix) then
       begin
+        inc(FStatistics.FDeterminantCalcAmount);
         Answer.FIsMatrix := False;
         Answer.FNumber := FindDeterminant(Matrix);
         DataManager.CurrentAnswer := Answer;
       end
       else
         ShowMessage('Incorrect matrix element was found');
-      SetLength(Matrix, 0, 0);
+      Matrix.Destroy;
     end;
 
     ostatInverse:
     begin
       sgResize(sgGetCurrent);
+      Matrix := TMatrix<Extended>.Create(DataManager.CurrentInverse.FProblemMatrix.LinesAmount,
+        DataManager.CurrentInverse.FProblemMatrix.ColumnsAmount);
+      if DataManager.TryProblemMatrixToExtended(DataManager.CurrentInverse.FProblemMatrix,
+        Matrix) then
+      begin
+        inc(FStatistics.FInverseCalcAmount);
+        Answer.FIsMatrix := True;
+        Answer.FMatrix.LinesAmount := DataManager.CurrentInverse.FProblemMatrix.LinesAmount;
+        Answer.FMatrix.ColumnsAmount := DataManager.CurrentInverse.FProblemMatrix.ColumnsAmount;
+        Answer.FMatrix.MartixUpdate();
+        FindInverse(Matrix, Answer.FMatrix);
+        DataManager.CurrentAnswer := Answer;
+      end
+      else
+        ShowMessage('Incorrect matrix element was found');
+      Matrix.Destroy;
     end;
 
     ostatRank:
     begin
       sgResize(sgGetCurrent);
+      Matrix := TMatrix<Extended>.Create(DataManager.CurrentRank.FProblemMatrix.LinesAmount,
+        DataManager.CurrentRank.FProblemMatrix.ColumnsAmount);
+      if DataManager.TryProblemMatrixToExtended(DataManager.CurrentRank.FProblemMatrix,
+        Matrix) then
+     begin
+        inc(FStatistics.FRankCalcAmount);
+        Answer.FIsMatrix := False;
+        Answer.FNumber := FindRank(Matrix);
+        DataManager.CurrentAnswer := Answer;
+      end
+      else
+        ShowMessage('Incorrect matrix element was found');
+      Matrix.Destroy;
     end;
   end;
 
   DataManager.CallBack(pbExpression);
 end;
 
-procedure TMainForm.butClearClick(Sender: TObject);
-begin
-  edExpression.Text := '';
-  FCarriagePos := 1;
-
-  edExpression.SetFocus;
-  edExpression.SelStart := FCarriagePos;
-end;
-
 procedure TMainForm.butInputClick(Sender: TObject);
+var
+  SelectedCol, SelectedRow: Integer;
+  StringGrid: TStringGrid;
 begin
-  edExpression.Text := Copy(edExpression.Text, 1, FCarriagePos) + (Sender as TButton).Caption + Copy(edExpression.Text, FCarriagePos + 1);
-  inc(FCarriagePos);
-
-  edExpression.SetFocus;
-  edExpression.SelStart := FCarriagePos;
+  if DataManager.OperationStatement = ostatExpression then
+  begin
+    edExpression.Text := Copy(edExpression.Text, 1, FCarriagePos) +
+      (Sender as TButton).Caption + Copy(edExpression.Text, FCarriagePos + 1);
+    FCarriagePos := FCarriagePos + Length((Sender as TButton).Caption);
+    edExpression.SetFocus;
+    edExpression.SelStart := FCarriagePos;
+  end
+  else
+  begin
+    StringGrid := sgGetCurrent;
+    SelectedCol := StringGrid.Col;
+    SelectedRow := StringGrid.Row;
+    StringGrid.Cells[SelectedCol, SelectedRow] :=
+      StringGrid.Cells[SelectedCol, SelectedRow] + (Sender as TButton).Caption;
+    StringGrid.SetFocus;
+    StringGrid.EditorMode := True;
+  end;
 end;
 
 procedure TMainForm.butDeleteClick(Sender: TObject);
+var
+  SelectedCol, SelectedRow: Integer;
+  StringGrid: TStringGrid;
 begin
-  if FCarriagePos >= 1 then
+  if DataManager.OperationStatement = ostatExpression then
   begin
-    edExpression.Text := Copy(edExpression.Text, 1, FCarriagePos - 1) + Copy(edExpression.Text, FCarriagePos + 1);
-    dec(FCarriagePos);
+    if FCarriagePos >= 1 then
+    begin
+      edExpression.Text := Copy(edExpression.Text, 1, FCarriagePos - 1) +
+        Copy(edExpression.Text, FCarriagePos + 1);
+      dec(FCarriagePos);
+      edExpression.SetFocus;
+      edExpression.SelStart := FCarriagePos
+    end;
+  end
+  else
+  begin
+    StringGrid := sgGetCurrent;
+    SelectedCol := StringGrid.Col;
+    SelectedRow := StringGrid.Row;
+    StringGrid.Cells[SelectedCol, SelectedRow] :=
+      Copy(StringGrid.Cells[SelectedCol, SelectedRow], 1,
+        Length(StringGrid.Cells[SelectedCol, SelectedRow]) - 1);
+    StringGrid.SetFocus;
+    StringGrid.EditorMode := True;
   end;
+end;
 
-  edExpression.SetFocus;
-  edExpression.SelStart := FCarriagePos;
+procedure TMainForm.butClearClick(Sender: TObject);
+var
+  SelectedCol, SelectedRow: Integer;
+  StringGrid: TStringGrid;
+begin
+  if DataManager.OperationStatement = ostatExpression then
+  begin
+    edExpression.Text := '';
+    FCarriagePos := 1;
+    edExpression.SetFocus;
+    edExpression.SelStart := FCarriagePos;
+  end
+  else
+  begin
+    StringGrid := StringGrid;
+    SelectedCol := StringGrid.Col;
+    SelectedRow := StringGrid.Row;
+    StringGrid.Cells[SelectedCol, SelectedRow] := '';
+    StringGrid.SetFocus;
+    StringGrid.EditorMode := True;
+  end;
+end;
+
+procedure TMainForm.butClearMatrixClick(Sender: TObject);
+var
+  StringGrid: TStringGrid;
+  i, j: Integer;
+begin
+  StringGrid := sgGetCurrent;
+  for i := 0 to StringGrid.RowCount - 1 do
+    for j := 0 to StringGrid.ColCount - 1 do
+      StringGrid.Cells[j, i] := '';
+end;
+
+procedure TMainForm.butMoveSelectionClick(Sender: TObject);
+begin
+  if DataManager.OperationStatement = ostatExpression then
+  begin
+    case TButton(Sender).Tag of
+      2:
+      begin
+        if FCarriagePos > 0 then
+        begin
+          dec(FCarriagePos);
+          edExpression.SetFocus;
+          edExpression.SelStart := FCarriagePos;
+        end;
+      end;
+
+      3:
+      begin
+        if FCarriagePos < Length(edExpression.Text)  then
+        begin
+          inc(FCarriagePos);
+          edExpression.SetFocus;
+          edExpression.SelStart := FCarriagePos;
+        end;
+      end;
+    end;
+  end
+  else
+    case TButton(Sender).Tag of
+      0:
+      begin
+        if sgGetCurrent.Row > 0 then
+          sgGetCurrent.Row := sgGetCurrent.Row - 1;
+      end;
+
+      1:
+      begin
+        if sgGetCurrent.Row < sgGetCurrent.RowCount - 1 then
+          sgGetCurrent.Row := sgGetCurrent.Row + 1;
+      end;
+
+      2:
+      begin
+        if sgGetCurrent.Col > 0 then
+          sgGetCurrent.Col := sgGetCurrent.Col - 1;
+      end;
+
+      3:
+      begin
+        if sgGetCurrent.Col < sgGetCurrent.ColCount - 1 then
+          sgGetCurrent.Col := sgGetCurrent.Col + 1;
+      end;
+    end;
 end;
 
 procedure TMainForm.butChooseClick(Sender: TObject);
@@ -355,12 +668,23 @@ begin
   edLinesAmount.Visible := False;
   edColumnsAmount.Visible := False;
   labX.Visible := False;
+  butExpressionChoose.Enabled := True;
+  butDeterminantChoose.Enabled := True;
+  butInverseChoose.Enabled := True;
+  butRankChoose.Enabled := True;
+  butMoveUp.Enabled := True;
+  butMoveDown.Enabled := True;
+  butClearMatrix.Enabled := True;
   if TButton(Sender).Tag = butExpressionChoose.Tag then
   begin
     DataManager.OperationStatement := ostatExpression;
 
     edExpression.Visible := True;
     edExpression.Text := DataManager.GetCurrentOperation.FProblemString;
+    butExpressionChoose.Enabled := False;
+    butMoveUp.Enabled := False;
+    butMoveDown.Enabled := False;
+    butClearMatrix.Enabled := False;
 
     DataManager.CallBack(pbExpression);
   end
@@ -374,6 +698,7 @@ begin
     sgInputMatrixAssign(sgGetCurrent, DataManager.GetCurrentOperation.FProblemMatrix);
     FsgLeft := sgGetCurrent.Left;
     FsgTop := sgGetCurrent.Top;
+    butDeterminantChoose.Enabled := False;
 
     DataManager.CallBack(pbExpression);
   end
@@ -387,6 +712,7 @@ begin
     sgInputMatrixAssign(sgGetCurrent, DataManager.GetCurrentOperation.FProblemMatrix);
     FsgLeft := sgGetCurrent.Left;
     FsgTop := sgGetCurrent.Top;
+    butInverseChoose.Enabled := False;
 
     DataManager.CallBack(pbExpression);
   end
@@ -405,6 +731,7 @@ begin
     sgInputMatrixAssign(sgGetCurrent, DataManager.GetCurrentOperation.FProblemMatrix);
     FsgLeft := sgGetCurrent.Left;
     FsgTop := sgGetCurrent.Top;
+    butRankChoose.Enabled := False;
 
     DataManager.CallBack(pbExpression);
   end;
@@ -419,6 +746,13 @@ begin
   DataManager.GetCurrentOperation.FProblemMatrix.MartixUpdate();
 
   sgResize(sgGetCurrent);
+
+  case DataManager.OperationStatement of
+    ostatDeterminant:
+      inc(FStatistics.FDeterminantMatrChangeAmount);
+    ostatInverse:
+      inc(FStatistics.FInverseMatrChangeAmount);
+  end;
 end;
 
 procedure TMainForm.butRemoveDimensionClick(Sender: TObject);
@@ -432,6 +766,13 @@ begin
     DataManager.GetCurrentOperation.FProblemMatrix.MartixUpdate();
 
     sgResize(sgGetCurrent);
+
+    case DataManager.OperationStatement of
+    ostatDeterminant:
+      inc(FStatistics.FDeterminantMatrChangeAmount);
+    ostatInverse:
+      inc(FStatistics.FInverseMatrChangeAmount);
+    end;
   end;
 end;
 
@@ -533,6 +874,9 @@ var
   Amount: Integer;
 begin
   if TryStrToNatural(TEdit(Sender).Text, Amount) then
+  begin
+    inc(FStatistics.FRankMatrChangeAmount);
+
     if TEdit(Sender).Tag = edLinesAmount.Tag then
     begin
       DataManager.GetCurrentOperation.FProblemMatrix.LinesAmount := Amount;
@@ -547,7 +891,8 @@ begin
         DataManager.GetCurrentOperation.FProblemMatrix.MartixUpdate();
         sgResize(sgGetCurrent);
       end;
-    end
+    end;
+  end
   else
   begin
     ShowMessage('Inсorrect dimension');

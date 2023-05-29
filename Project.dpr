@@ -18,7 +18,9 @@ uses
   untTypes in 'Units\Additional\untTypes.pas',
   untPainting in 'Units\Logic\untPainting.pas',
   frmHTML in 'Units\Forms\frmHTML.pas' {HTMLForm},
-  untMatrixCalc in 'Units\Logic\untMatrixCalc.pas';
+  untMatrixCalc in 'Units\Logic\untMatrixCalc.pas',
+  untStatistics in 'Units\File\untStatistics.pas',
+  untSaveLoad in 'Units\File\untSaveLoad.pas';
 
 {$R *.res}
 

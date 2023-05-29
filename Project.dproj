@@ -125,6 +125,8 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="Units\Logic\untMatrixCalc.pas"/>
+        <DCCReference Include="Units\File\untStatistics.pas"/>
+        <DCCReference Include="Units\File\untSaveLoad.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

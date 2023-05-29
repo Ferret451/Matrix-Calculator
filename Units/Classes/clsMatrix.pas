@@ -70,9 +70,7 @@ procedure TMatrix<T>.MartixUpdate();
 var
   i, j: Integer;
 begin
-  SetLength(FElements, FLinesAmount);
-  for i := 0 to FLinesAmount - 1 do
-    SetLength(FElements[i], FColumnsAmount);
+  SetLength(FElements, FLinesAmount, FColumnsAmount);
 end;
 
 procedure TMatrix<T>.AssignTo(const AMatrix: TMatrix<T>);

@@ -15,549 +15,11 @@ object MainForm: TMainForm
   OldCreateOrder = False
   Position = poDesigned
   WindowState = wsMaximized
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 14
-  object splMain: TSplitter
-    Left = 185
-    Top = 29
-    Width = 2
-    Height = 449
-  end
-  object panCalculationsPart: TPanel
-    Left = 187
-    Top = 29
-    Width = 609
-    Height = 449
-    Align = alClient
-    TabOrder = 2
-    ExplicitWidth = 597
-    object sbExpression: TScrollBox
-      Left = 1
-      Top = 1
-      Width = 607
-      Height = 169
-      HorzScrollBar.Tracking = True
-      VertScrollBar.Tracking = True
-      Align = alClient
-      TabOrder = 0
-      OnClick = sbExpressionClick
-      OnMouseWheel = sbExpressionMouseWheel
-      ExplicitWidth = 595
-      object pbExpression: TPaintBox
-        Left = 0
-        Top = 0
-        Width = 201
-        Height = 147
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -19
-        Font.Name = 'Times New Roman'
-        Font.Style = [fsBold]
-        ParentFont = False
-        OnPaint = pbExpressionPaint
-      end
-      object labX: TLabel
-        Left = 72
-        Top = 14
-        Width = 8
-        Height = 14
-        Caption = 'X'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = 14
-        Font.Name = 'Times New Roman'
-        Font.Style = []
-        ParentFont = False
-        Visible = False
-      end
-      object edExpression: TEdit
-        Left = 0
-        Top = 0
-        Width = 603
-        Height = 22
-        Align = alTop
-        Color = clBtnFace
-        TabOrder = 0
-        OnChange = edExpressionChange
-        OnExit = edExpressionExit
-      end
-      object sgDeterminant: TStringGrid
-        Left = 26
-        Top = 56
-        Width = 135
-        Height = 55
-        ColCount = 2
-        FixedCols = 0
-        RowCount = 2
-        FixedRows = 0
-        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goFixedRowDefAlign]
-        ScrollBars = ssNone
-        TabOrder = 1
-        Visible = False
-        OnSetEditText = sgInputMatrixSetEditText
-      end
-      object sgInverse: TStringGrid
-        Left = 26
-        Top = 56
-        Width = 135
-        Height = 55
-        ColCount = 2
-        FixedCols = 0
-        RowCount = 2
-        FixedRows = 0
-        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goFixedRowDefAlign]
-        ScrollBars = ssNone
-        TabOrder = 2
-        Visible = False
-        OnSetEditText = sgInputMatrixSetEditText
-      end
-      object sgRank: TStringGrid
-        Left = 26
-        Top = 56
-        Width = 135
-        Height = 55
-        ColCount = 2
-        FixedCols = 0
-        RowCount = 2
-        FixedRows = 0
-        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goFixedRowDefAlign]
-        ScrollBars = ssNone
-        TabOrder = 3
-        Visible = False
-        OnSetEditText = sgInputMatrixSetEditText
-      end
-      object edColumnsAmount: TEdit
-        Tag = 1
-        Left = 84
-        Top = 11
-        Width = 42
-        Height = 22
-        TabOrder = 4
-        Text = '2'
-        Visible = False
-        OnExit = edDimensionsExit
-      end
-      object edLinesAmount: TEdit
-        Left = 26
-        Top = 11
-        Width = 42
-        Height = 22
-        Margins.Top = 0
-        Margins.Right = 550
-        TabOrder = 5
-        Text = '2'
-        Visible = False
-        OnExit = edDimensionsExit
-      end
-      object butAddDimension: TButton
-        AlignWithMargins = True
-        Left = 26
-        Top = 11
-        Width = 42
-        Height = 21
-        Margins.Top = 99
-        Caption = '+'
-        TabOrder = 6
-        Visible = False
-        OnClick = butAddDimensionClick
-      end
-      object butRemoveDimension: TButton
-        AlignWithMargins = True
-        Left = 84
-        Top = 11
-        Width = 42
-        Height = 21
-        Margins.Top = 99
-        Caption = '-'
-        TabOrder = 7
-        Visible = False
-        OnClick = butRemoveDimensionClick
-      end
-    end
-    object panCalculatorButtons: TPanel
-      Left = 1
-      Top = 170
-      Width = 607
-      Height = 278
-      Align = alBottom
-      TabOrder = 1
-      ExplicitWidth = 595
-      object butTwo: TButton
-        AlignWithMargins = True
-        Left = 192
-        Top = 185
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Right = 100
-        Caption = '2'
-        DragCursor = crDefault
-        TabOrder = 0
-        OnClick = butInputClick
-      end
-      object butFive: TButton
-        AlignWithMargins = True
-        Left = 192
-        Top = 139
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Right = 100
-        Caption = '5'
-        DragCursor = crDefault
-        TabOrder = 1
-        OnClick = butInputClick
-      end
-      object butThree: TButton
-        AlignWithMargins = True
-        Left = 298
-        Top = 185
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Right = 100
-        Caption = '3'
-        DragCursor = crDefault
-        TabOrder = 2
-        OnClick = butInputClick
-      end
-      object butSix: TButton
-        AlignWithMargins = True
-        Left = 298
-        Top = 139
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Right = 100
-        Caption = '6'
-        DragCursor = crDefault
-        TabOrder = 3
-        OnClick = butInputClick
-      end
-      object butOne: TButton
-        AlignWithMargins = True
-        Left = 86
-        Top = 185
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Top = 230
-        Margins.Right = 100
-        Caption = '1'
-        DragCursor = crDefault
-        TabOrder = 4
-        OnClick = butInputClick
-      end
-      object butFour: TButton
-        AlignWithMargins = True
-        Left = 86
-        Top = 139
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Top = 230
-        Margins.Right = 100
-        Caption = '4'
-        DragCursor = crDefault
-        TabOrder = 5
-        OnClick = butInputClick
-      end
-      object butEight: TButton
-        AlignWithMargins = True
-        Left = 192
-        Top = 98
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Right = 100
-        Caption = '8'
-        DragCursor = crDefault
-        TabOrder = 6
-        OnClick = butInputClick
-      end
-      object butSeven: TButton
-        AlignWithMargins = True
-        Left = 86
-        Top = 98
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Top = 230
-        Margins.Right = 100
-        Caption = '7'
-        DragCursor = crDefault
-        TabOrder = 7
-        OnClick = butInputClick
-      end
-      object butNine: TButton
-        AlignWithMargins = True
-        Left = 298
-        Top = 98
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Right = 100
-        Caption = '9'
-        DragCursor = crDefault
-        TabOrder = 8
-        OnClick = butInputClick
-      end
-      object butZero: TButton
-        AlignWithMargins = True
-        Left = 192
-        Top = 237
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Right = 100
-        Caption = '0'
-        DragCursor = crDefault
-        TabOrder = 9
-        OnClick = butInputClick
-      end
-      object butComma: TButton
-        AlignWithMargins = True
-        Left = 298
-        Top = 237
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Right = 100
-        Caption = ','
-        DragCursor = crDefault
-        TabOrder = 10
-        OnClick = butInputClick
-      end
-      object butDelete: TButton
-        AlignWithMargins = True
-        Left = 298
-        Top = 1
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Right = 100
-        Caption = #8592
-        DragCursor = crDefault
-        TabOrder = 11
-        OnClick = butDeleteClick
-      end
-      object butCalculate: TButton
-        AlignWithMargins = True
-        Left = 404
-        Top = 237
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Left = 500
-        Margins.Right = 100
-        Margins.Bottom = 7
-        Caption = '='
-        DragCursor = crDefault
-        TabOrder = 12
-        OnClick = butCalculateClick
-      end
-      object butPlus: TButton
-        AlignWithMargins = True
-        Left = 404
-        Top = 185
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Left = 500
-        Margins.Right = 100
-        Margins.Bottom = 7
-        Caption = '+'
-        DragCursor = crDefault
-        TabOrder = 13
-        OnClick = butInputClick
-      end
-      object butMinus: TButton
-        AlignWithMargins = True
-        Left = 404
-        Top = 139
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Left = 500
-        Margins.Right = 100
-        Margins.Bottom = 7
-        Caption = '-'
-        DragCursor = crDefault
-        TabOrder = 14
-        OnClick = butInputClick
-      end
-      object butMultiplication: TButton
-        AlignWithMargins = True
-        Left = 404
-        Top = 98
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Left = 500
-        Margins.Right = 100
-        Margins.Bottom = 7
-        Caption = '*'
-        DragCursor = crDefault
-        TabOrder = 15
-        OnClick = butInputClick
-      end
-      object butDivision: TButton
-        AlignWithMargins = True
-        Left = 404
-        Top = 46
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Left = 500
-        Margins.Right = 100
-        Margins.Bottom = 7
-        Caption = '/'
-        DragCursor = crDefault
-        TabOrder = 16
-        OnClick = butInputClick
-      end
-      object butOpenBrace: TButton
-        AlignWithMargins = True
-        Left = 86
-        Top = 46
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Top = 230
-        Margins.Right = 100
-        Caption = '('
-        DragCursor = crDefault
-        TabOrder = 17
-        OnClick = butInputClick
-      end
-      object butCloseBrace: TButton
-        AlignWithMargins = True
-        Left = 192
-        Top = 46
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Right = 100
-        Caption = ')'
-        DragCursor = crDefault
-        TabOrder = 18
-        OnClick = butInputClick
-      end
-      object butClear: TButton
-        AlignWithMargins = True
-        Left = 404
-        Top = 1
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Left = 500
-        Margins.Right = 100
-        Margins.Bottom = 7
-        Caption = 'C'
-        DragCursor = crDefault
-        TabOrder = 19
-        OnClick = butClearClick
-      end
-      object butExponentaition: TButton
-        AlignWithMargins = True
-        Left = 298
-        Top = 46
-        Width = 100
-        Height = 46
-        Cursor = crHandPoint
-        Margins.Right = 100
-        Caption = '^'
-        DragCursor = crDefault
-        TabOrder = 20
-        OnClick = butInputClick
-      end
-      object panCalcChoose: TPanel
-        Left = 1
-        Top = 1
-        Width = 80
-        Height = 276
-        Align = alLeft
-        TabOrder = 21
-        object butExpressionChoose: TButton
-          Left = 1
-          Top = 1
-          Width = 78
-          Height = 68
-          Align = alTop
-          Caption = 'Expr'
-          TabOrder = 0
-          OnClick = butChooseClick
-        end
-        object butDeterminantChoose: TButton
-          Tag = 1
-          Left = 1
-          Top = 69
-          Width = 78
-          Height = 68
-          Align = alTop
-          Caption = 'Det'
-          TabOrder = 1
-          OnClick = butChooseClick
-        end
-        object butInverseChoose: TButton
-          Tag = 2
-          Left = 1
-          Top = 137
-          Width = 78
-          Height = 68
-          Align = alTop
-          Caption = 'Inverse'
-          TabOrder = 2
-          OnClick = butChooseClick
-        end
-        object butRankChoose: TButton
-          Tag = 3
-          Left = 1
-          Top = 205
-          Width = 78
-          Height = 68
-          Align = alTop
-          Caption = 'Rank'
-          TabOrder = 3
-          OnClick = butChooseClick
-        end
-      end
-      object Button5: TButton
-        AlignWithMargins = True
-        Left = 192
-        Top = 1
-        Width = 100
-        Height = 46
-        Margins.Right = 100
-        Caption = 'Button5'
-        TabOrder = 22
-      end
-      object Button6: TButton
-        AlignWithMargins = True
-        Left = 86
-        Top = 1
-        Width = 100
-        Height = 46
-        Margins.Top = 230
-        Margins.Right = 100
-        Caption = 'Button6'
-        TabOrder = 23
-      end
-      object Button7: TButton
-        AlignWithMargins = True
-        Left = 86
-        Top = 237
-        Width = 100
-        Height = 46
-        Margins.Top = 230
-        Margins.Right = 100
-        Caption = 'Button7'
-        TabOrder = 24
-      end
-    end
-  end
   object ToolBar: TToolBar
     Left = 0
     Top = 0
@@ -568,7 +30,6 @@ object MainForm: TMainForm
     Caption = 'ToolBar'
     Images = ilToolBar
     TabOrder = 0
-    ExplicitWidth = 784
     object tbNewFile: TToolButton
       Left = 0
       Top = 0
@@ -603,58 +64,788 @@ object MainForm: TMainForm
       Action = aViewMatrixList
     end
   end
-  object sbHistory: TScrollBox
+  object panCalculatorButtons: TPanel
+    Left = 0
+    Top = 200
+    Width = 796
+    Height = 278
+    Align = alBottom
+    TabOrder = 1
+    OnResize = panCalculatorButtonsResize
+    ExplicitLeft = 1
+    ExplicitTop = 170
+    ExplicitWidth = 794
+    object butTwo: TButton
+      AlignWithMargins = True
+      Left = 192
+      Top = 183
+      Width = 100
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Right = 100
+      Caption = '2'
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+      OnClick = butInputClick
+    end
+    object butFive: TButton
+      AlignWithMargins = True
+      Left = 192
+      Top = 138
+      Width = 100
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Right = 100
+      Caption = '5'
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+      OnClick = butInputClick
+    end
+    object butThree: TButton
+      AlignWithMargins = True
+      Left = 298
+      Top = 183
+      Width = 100
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Right = 100
+      Caption = '3'
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 2
+      OnClick = butInputClick
+    end
+    object butSix: TButton
+      AlignWithMargins = True
+      Left = 298
+      Top = 138
+      Width = 100
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Right = 100
+      Caption = '6'
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 3
+      OnClick = butInputClick
+    end
+    object butOne: TButton
+      AlignWithMargins = True
+      Left = 86
+      Top = 183
+      Width = 100
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Top = 230
+      Margins.Right = 100
+      Caption = '1'
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 4
+      OnClick = butInputClick
+    end
+    object butFour: TButton
+      AlignWithMargins = True
+      Left = 86
+      Top = 138
+      Width = 100
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Top = 230
+      Margins.Right = 100
+      Caption = '4'
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 5
+      OnClick = butInputClick
+    end
+    object butEight: TButton
+      AlignWithMargins = True
+      Left = 192
+      Top = 93
+      Width = 100
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Right = 100
+      Caption = '8'
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 6
+      OnClick = butInputClick
+    end
+    object butSeven: TButton
+      AlignWithMargins = True
+      Left = 86
+      Top = 93
+      Width = 100
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Top = 230
+      Margins.Right = 100
+      Caption = '7'
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 7
+      OnClick = butInputClick
+    end
+    object butNine: TButton
+      AlignWithMargins = True
+      Left = 298
+      Top = 93
+      Width = 100
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Right = 100
+      Caption = '9'
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 8
+      OnClick = butInputClick
+    end
+    object butZero: TButton
+      AlignWithMargins = True
+      Left = 192
+      Top = 228
+      Width = 100
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Right = 100
+      Caption = '0'
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 9
+      OnClick = butInputClick
+    end
+    object butComma: TButton
+      AlignWithMargins = True
+      Left = 298
+      Top = 228
+      Width = 100
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Right = 100
+      Caption = ','
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 10
+      OnClick = butInputClick
+    end
+    object butDelete: TButton
+      AlignWithMargins = True
+      Left = 298
+      Top = 3
+      Width = 100
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Right = 100
+      Caption = #8592
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 11
+      OnClick = butDeleteClick
+    end
+    object butCalculate: TButton
+      AlignWithMargins = True
+      Left = 404
+      Top = 228
+      Width = 100
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Left = 500
+      Margins.Right = 100
+      Margins.Bottom = 7
+      Caption = '='
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 12
+      OnClick = butCalculateClick
+    end
+    object butPlus: TButton
+      AlignWithMargins = True
+      Left = 404
+      Top = 183
+      Width = 100
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Left = 500
+      Margins.Right = 100
+      Margins.Bottom = 7
+      Caption = '+'
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 13
+      OnClick = butInputClick
+    end
+    object butMinus: TButton
+      AlignWithMargins = True
+      Left = 404
+      Top = 138
+      Width = 100
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Left = 500
+      Margins.Right = 100
+      Margins.Bottom = 7
+      Caption = '-'
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 14
+      OnClick = butInputClick
+    end
+    object butMultiplication: TButton
+      AlignWithMargins = True
+      Left = 404
+      Top = 93
+      Width = 100
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Left = 500
+      Margins.Right = 100
+      Margins.Bottom = 7
+      Caption = '*'
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 15
+      OnClick = butInputClick
+    end
+    object butDivision: TButton
+      AlignWithMargins = True
+      Left = 404
+      Top = 48
+      Width = 100
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Left = 500
+      Margins.Right = 100
+      Margins.Bottom = 7
+      Caption = '/'
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 16
+      OnClick = butInputClick
+    end
+    object butClear: TButton
+      AlignWithMargins = True
+      Left = 404
+      Top = 3
+      Width = 49
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Left = 500
+      Margins.Right = 100
+      Margins.Bottom = 7
+      Caption = 'C'
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 17
+      OnClick = butClearClick
+    end
+    object butExponentaition: TButton
+      AlignWithMargins = True
+      Left = 298
+      Top = 48
+      Width = 100
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Right = 100
+      Caption = '^'
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 18
+      OnClick = butInputClick
+    end
+    object panCalcChoose: TPanel
+      Left = 1
+      Top = 1
+      Width = 80
+      Height = 276
+      Align = alLeft
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 19
+      object butExpressionChoose: TButton
+        Left = 1
+        Top = 1
+        Width = 78
+        Height = 68
+        Align = alTop
+        Caption = 'Expr'
+        Enabled = False
+        TabOrder = 0
+        OnClick = butChooseClick
+        ExplicitTop = 5
+      end
+      object butDeterminantChoose: TButton
+        Tag = 1
+        Left = 1
+        Top = 69
+        Width = 78
+        Height = 68
+        Align = alTop
+        Caption = 'Det'
+        TabOrder = 1
+        OnClick = butChooseClick
+      end
+      object butInverseChoose: TButton
+        Tag = 2
+        Left = 1
+        Top = 137
+        Width = 78
+        Height = 68
+        Align = alTop
+        Caption = 'Inverse'
+        TabOrder = 2
+        OnClick = butChooseClick
+      end
+      object butRankChoose: TButton
+        Tag = 3
+        Left = 1
+        Top = 205
+        Width = 78
+        Height = 68
+        Align = alTop
+        Caption = 'Rank'
+        TabOrder = 3
+        OnClick = butChooseClick
+      end
+    end
+    object butMant: TButton
+      AlignWithMargins = True
+      Left = 86
+      Top = 228
+      Width = 100
+      Height = 46
+      Margins.Top = 230
+      Margins.Right = 100
+      Caption = '*10^'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 20
+      OnClick = butInputClick
+    end
+    object butMoveLeft: TButton
+      Tag = 2
+      AlignWithMargins = True
+      Left = 86
+      Top = 3
+      Width = 67
+      Height = 46
+      Margins.Top = 230
+      Margins.Right = 100
+      Caption = #9664
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 21
+      OnClick = butMoveSelectionClick
+    end
+    object butMoveRight: TButton
+      Tag = 3
+      AlignWithMargins = True
+      Left = 224
+      Top = 3
+      Width = 68
+      Height = 46
+      Margins.Right = 100
+      Caption = #9654
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 22
+      OnClick = butMoveSelectionClick
+    end
+    object butOpenBrace: TButton
+      AlignWithMargins = True
+      Left = 86
+      Top = 48
+      Width = 100
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Top = 230
+      Margins.Right = 100
+      Caption = '('
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 23
+      OnClick = butInputClick
+    end
+    object butCloseBrace: TButton
+      AlignWithMargins = True
+      Left = 192
+      Top = 48
+      Width = 100
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Right = 100
+      Caption = ')'
+      DragCursor = crDefault
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 24
+      OnClick = butInputClick
+    end
+    object butMoveUp: TButton
+      AlignWithMargins = True
+      Left = 155
+      Top = 3
+      Width = 67
+      Height = 23
+      Margins.Right = 100
+      Caption = #9650
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 25
+      OnClick = butMoveSelectionClick
+    end
+    object butMoveDown: TButton
+      Tag = 1
+      AlignWithMargins = True
+      Left = 155
+      Top = 26
+      Width = 67
+      Height = 23
+      Margins.Right = 100
+      Caption = #9660
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 26
+      OnClick = butMoveSelectionClick
+    end
+    object butClearMatrix: TButton
+      AlignWithMargins = True
+      Left = 455
+      Top = 3
+      Width = 49
+      Height = 46
+      Cursor = crHandPoint
+      Margins.Left = 500
+      Margins.Right = 100
+      Margins.Bottom = 7
+      Caption = 'CM'
+      DragCursor = crDefault
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 27
+      OnClick = butClearMatrixClick
+    end
+  end
+  object sbExpression: TScrollBox
     Left = 0
     Top = 29
-    Width = 185
-    Height = 449
+    Width = 796
+    Height = 171
     HorzScrollBar.Tracking = True
     VertScrollBar.Tracking = True
-    Align = alLeft
-    TabOrder = 1
-    object pbHistory: TPaintBox
+    Align = alClient
+    TabOrder = 2
+    OnClick = sbExpressionClick
+    OnMouseWheel = sbExpressionMouseWheel
+    ExplicitLeft = 2
+    ExplicitTop = 9
+    ExplicitWidth = 794
+    ExplicitHeight = 169
+    object pbExpression: TPaintBox
       Left = 0
       Top = 0
-      Width = 181
-      Height = 445
-      Align = alClient
+      Width = 201
+      Height = 147
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -19
+      Font.Name = 'Times New Roman'
+      Font.Style = [fsBold]
+      ParentFont = False
+      OnPaint = pbExpressionPaint
+    end
+    object labX: TLabel
+      Left = 72
+      Top = 14
+      Width = 8
+      Height = 14
+      Caption = 'X'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = 14
+      Font.Name = 'Times New Roman'
+      Font.Style = []
+      ParentFont = False
+      Visible = False
+    end
+    object edExpression: TEdit
+      Left = 0
+      Top = 0
+      Width = 792
+      Height = 29
+      Align = alTop
+      Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -19
       Font.Name = 'Times New Roman'
       Font.Style = []
       ParentFont = False
-      ExplicitWidth = 81
+      TabOrder = 0
+      OnChange = edExpressionChange
+      OnExit = edExpressionExit
+      ExplicitWidth = 790
+    end
+    object sgDeterminant: TStringGrid
+      Left = 26
+      Top = 56
+      Width = 70
+      Height = 30
+      ColCount = 1
+      FixedCols = 0
+      RowCount = 1
+      FixedRows = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goFixedRowDefAlign]
+      ScrollBars = ssNone
+      TabOrder = 1
+      Visible = False
+      OnSetEditText = sgInputMatrixSetEditText
+    end
+    object sgInverse: TStringGrid
+      Left = 26
+      Top = 56
+      Width = 70
+      Height = 30
+      ColCount = 1
+      FixedCols = 0
+      RowCount = 1
+      FixedRows = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goFixedRowDefAlign]
+      ScrollBars = ssNone
+      TabOrder = 2
+      Visible = False
+      OnSetEditText = sgInputMatrixSetEditText
+    end
+    object sgRank: TStringGrid
+      Left = 26
+      Top = 56
+      Width = 70
+      Height = 30
+      ColCount = 1
+      FixedCols = 0
+      RowCount = 1
+      FixedRows = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goFixedRowDefAlign]
+      ScrollBars = ssNone
+      TabOrder = 3
+      Visible = False
+      OnSetEditText = sgInputMatrixSetEditText
+    end
+    object edColumnsAmount: TEdit
+      Tag = 1
+      Left = 84
+      Top = 11
+      Width = 42
+      Height = 22
+      TabOrder = 4
+      Text = '2'
+      Visible = False
+      OnExit = edDimensionsExit
+    end
+    object edLinesAmount: TEdit
+      Left = 26
+      Top = 11
+      Width = 42
+      Height = 22
+      Margins.Top = 0
+      Margins.Right = 550
+      TabOrder = 5
+      Text = '2'
+      Visible = False
+      OnExit = edDimensionsExit
+    end
+    object butAddDimension: TButton
+      AlignWithMargins = True
+      Left = 26
+      Top = 11
+      Width = 42
+      Height = 21
+      Margins.Top = 99
+      Caption = '+'
+      TabOrder = 6
+      Visible = False
+      OnClick = butAddDimensionClick
+    end
+    object butRemoveDimension: TButton
+      AlignWithMargins = True
+      Left = 86
+      Top = 11
+      Width = 42
+      Height = 21
+      Margins.Top = 99
+      Caption = '-'
+      TabOrder = 7
+      Visible = False
+      OnClick = butRemoveDimensionClick
     end
   end
   object MainMenu: TMainMenu
     Images = ilToolBar
-    Left = 136
-    Top = 328
-    object File1: TMenuItem
+    Left = 576
+    Top = 64
+    object mmFile: TMenuItem
       Caption = 'File'
-      object New1: TMenuItem
+      object mmNew: TMenuItem
         Action = aNewFile
       end
-      object Open1: TMenuItem
+      object mmOpen: TMenuItem
         Action = aOpenFile
+        Caption = 'Open...'
       end
-      object Close1: TMenuItem
+      object mmSave: TMenuItem
         Action = aSaveFile
       end
-      object SaveAs1: TMenuItem
+      object mmSaveAs: TMenuItem
         Action = aSaveFileAs
       end
       object N1: TMenuItem
         Caption = '-'
       end
-      object Exit1: TMenuItem
+      object mmExit: TMenuItem
         Action = aExit
       end
     end
-    object Matrix: TMenuItem
+    object mmMatrix: TMenuItem
       Caption = 'Matrix'
-      object ViewList1: TMenuItem
+      object mmViewList: TMenuItem
         Action = aViewMatrixList
       end
       object Clearlist1: TMenuItem
@@ -663,20 +854,31 @@ object MainForm: TMainForm
         OnClick = aClearMatrixListExecute
       end
     end
-    object Help1: TMenuItem
+    object mmInfo: TMenuItem
       Caption = 'Info'
-      object Help2: TMenuItem
+      object mmHelp: TMenuItem
         Action = aOpenHelp
       end
-      object About1: TMenuItem
+      object mmAbout: TMenuItem
         Action = aOpenAbout
+      end
+      object mmStatistics: TMenuItem
+        Caption = 'Statistics'
+        object mmCurrentStat: TMenuItem
+          Caption = 'Current'
+          OnClick = mmCurrentStatClick
+        end
+        object mmOtherStat: TMenuItem
+          Caption = 'Other...'
+          OnClick = mmOtherStatClick
+        end
       end
     end
   end
   object alToolBar: TActionList
     Images = ilToolBar
-    Left = 80
-    Top = 328
+    Left = 632
+    Top = 64
     object aNewFile: TAction
       Caption = 'New'
       ImageIndex = 0
@@ -722,8 +924,8 @@ object MainForm: TMainForm
     end
   end
   object ilToolBar: TImageList
-    Left = 24
-    Top = 328
+    Left = 688
+    Top = 64
     Bitmap = {
       494C010105000800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
@@ -995,5 +1197,13 @@ object MainForm: TMainForm
       80030000000000008003000000000000800300000000002F800700000000FF47
       800F00000000FF4F801F00000000FF1F00000000000000000000000000000000
       000000000000}
+  end
+  object odMain: TOpenDialog
+    Left = 689
+    Top = 118
+  end
+  object sdMain: TSaveDialog
+    Left = 640
+    Top = 117
   end
 end

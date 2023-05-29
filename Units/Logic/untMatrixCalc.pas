@@ -3,7 +3,7 @@ unit untMatrixCalc;
 interface
 
 uses
-  clsMatrix, untTypes;
+  clsMatrix, untTypes, Math, Vcl.Dialogs;
 
 function SumMatrixes(const AFirstMatr, ASecondMatr: TMatrix<Extended>):
   TMatrix<Extended>;
@@ -15,7 +15,11 @@ function DivMatrixConst(const AMatr: TMatrix<Extended>;
   const ANumb: Extended): TMatrix<Extended>;
 function MultMatrixes(const AFirstMatr, ASecondMatr: TMatrix<Extended>):
   TMatrix<Extended>;
-function FindDeterminant(const AMatr: TExtendedMatrixElements): Extended;
+function TransposeMatrix(const AMatr: TMatrix<Extended>):
+  TMatrix<Extended>;
+function FindDeterminant(const AMatr: TMatrix<Extended>): Extended;
+procedure FindInverse(const AMatr, AInverseMatr: TMatrix<Extended>);
+function FindRank(const AMatr: TMatrix<Extended>): Integer;
 
 implementation
 
@@ -113,7 +117,7 @@ begin
       Result.Elements[i, j] := AMatr.Elements[j, i];
 end;
 
-function FindDeterminant(const AMatr: TExtendedMatrixElements): Extended;
+function FindDeterminant(const AMatr: TMatrix<Extended>): Extended;
 var
   i, j, SwapAmount: Integer;
   IsDetFound: Boolean;
@@ -143,10 +147,10 @@ begin
 end;
 
 begin
-  SetLength(Matr, High(AMatr), High(AMatr[0]));
-  for i := Low(AMatr) to High(AMatr) do
-    for j := Low(AMatr[0]) to High(AMatr[0]) do
-      Matr[i][j] := AMatr[i][j];
+  SetLength(Matr, AMatr.LinesAmount, AMatr.ColumnsAmount);
+  for i := Low(Matr) to High(Matr) do
+    for j := Low(Matr[0]) to High(Matr[0]) do
+      Matr[i][j] := AMatr.Element[i, j];
 
   IsDetFound := False;
   Result := 1;
@@ -182,36 +186,36 @@ begin
   end;
 
   for i := Low(Matr) to High(Matr) do
-    Result := Result * AMatr[i, i];
+    Result := Result * Matr[i, i];
 
   if SwapAmount mod 2 = 1 then
     Result := Result * (-1);
 end;
 
-function FindMinor(const AMatr: TExtendedMatrixElements;
+function FindMinor(const AMatr: TMatrix<Extended>;
   const ALine, AColumn: Integer): Extended;
 var
   i, j, im, jm: Integer;
-  MinorMatrix: TExtendedMatrixElements;
+  MinorMatrix: TMatrix<Extended>;
 begin
-  if High(AMatr) = 1 then
+  if AMatr.LinesAmount = 1 then
     Result := 0
   else
   begin
-    SetLength(MinorMatrix, High(AMatr) - 1, High(AMatr[0]) - 1);
+    MinorMatrix := TMatrix<Extended>.Create(AMatr.LinesAmount - 1, AMatr.ColumnsAmount - 1);
     i := 0;
     im := 0;
-    while i <= High(AMatr) do
+    while i < AMatr.LinesAmount do
     begin
       if i <> ALine then
       begin
         j := 0;
         jm := 0;
-        while j <= High(AMatr[0]) do
+        while j < AMatr.ColumnsAmount do
         begin
           if j <> AColumn then
           begin
-            MinorMatrix[im][jm] := AMatr[i][j];
+            MinorMatrix.Element[im, jm] := AMatr.Element[i, j];
             inc(jm);
           end;
           inc(j);
@@ -222,24 +226,83 @@ begin
     end;
 
     Result := FindDeterminant(MinorMatrix);
-    SetLength(MinorMatrix, 0, 0);
+    MinorMatrix.Destroy;
   end;
 end;
 
-procedure FindAdjoint(const AMatr, AInverseMatr: TExtendedMatrixElements);
+procedure FindAdjoint(const AMatr, AAdjoint: TMatrix<Extended>);
 var
   i, j: Integer;
 begin
-
+  for i := 0 to AAdjoint.LinesAmount - 1 do
+    for j := 0 to AAdjoint.ColumnsAmount - 1 do
+      AAdjoint.Element[i, j] := power(-1, i + j) * FindMinor(AMatr, i, j);
 end;
 
-procedure FindInverse(const AMatr, AInverseMatr: TExtendedMatrixElements);
+procedure FindInverse(const AMatr, AInverseMatr: TMatrix<Extended>);
 var
-  Adjont: TExtendedMatrixElements;
-begin
-  SetLength(Adjont, High(AMatr), High(AMatr[0])) ;
+  i, j: Integer;
+  Determinant: Extended;
+  Adjoint: TMatrix<Extended>;
 
-  AInverseMatr
+begin
+  Adjoint := TMatrix<Extended>.Create(AMatr.LinesAmount, AMatr.ColumnsAmount);
+  Determinant := FindDeterminant(AMatr);
+  if Determinant <> 0 then
+  begin
+    FindAdjoint(AMatr, Adjoint);
+
+    for i := 0 to Adjoint.LinesAmount - 1 do
+      for j := 0 to Adjoint.ColumnsAmount - 1 do
+        AInverseMatr.Element[i, j] := (1 / Determinant) * Adjoint.Element[j, i];
+  end
+  else
+    ShowMessage('Can not find inverse matrix because determaint is equal zero');
+
+  Adjoint.Destroy;
+end;
+
+procedure CopyMatrixPart(const AMatrFrom, AMatrTo: TMatrix<Extended>;
+  const ATop, ALeft, ALines, AColumns: Integer);
+var
+  i, j, im, jm: Integer;
+begin
+  for i := ATop to ATop + ALines - 1 do
+    for j := ALeft to ALeft + AColumns - 1 do
+      AMatrTo.Element[i - ATop, j - ALeft] := AMatrFrom.Element[i, j];
+end;
+
+function FindRank(const AMatr: TMatrix<Extended>): Integer;
+var
+  MinorMatrix: TMatrix<Extended>;
+  i, j: Integer;
+  IsNotZeroMinorForund: Boolean;
+begin
+  IsNotZeroMinorForund := False;
+  Result := Min(AMatr.LinesAmount, AMatr.ColumnsAmount);
+  while (Result > 0) and not IsNotZeroMinorForund do
+  begin
+    i := 0;
+    while (i + Result <= AMatr.LinesAmount) and not IsNotZeroMinorForund do
+    begin
+      j := 0;
+      while (j + Result <= AMatr.ColumnsAmount) and not IsNotZeroMinorForund do
+      begin
+        MinorMatrix := TMatrix<Extended>.Create(Result, Result);
+        CopyMatrixPart(AMatr, MinorMatrix, i, j, Result, Result);
+        if FindDeterminant(MinorMatrix) <> 0 then
+          IsNotZeroMinorForund := True;
+        MinorMatrix.Destroy;
+
+        inc(j);
+      end;
+
+      inc(i);
+    end;
+
+    if not IsNotZeroMinorForund then
+      dec(Result);
+  end;
 end;
 
 end.
